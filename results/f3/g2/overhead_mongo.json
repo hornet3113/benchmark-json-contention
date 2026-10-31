@@ -1,0 +1,25 @@
+{
+  "gate": "g2",
+  "engine": "mongo",
+  "repeticiones": 5,
+  "muestras_s": {
+    "mongoimport": [
+      0.325,
+      0.265,
+      0.26,
+      0.255,
+      0.277
+    ],
+    "mongosh": [
+      1.599,
+      1.49,
+      1.287,
+      1.285,
+      1.283
+    ]
+  },
+  "mediana_s": {
+    "mongoimport": 0.265,
+    "mongosh": 1.287
+  }
+}

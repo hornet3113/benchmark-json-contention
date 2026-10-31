@@ -1,0 +1,7 @@
+== Diagnóstico repetido (Postgres, PROFILE_A, cpuset 0-7) — 20261101T210642Z
+Host: bateria estado=2 carga=100%
+GUID de plan de energ¡a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)CPU (WMI): 2010/2301 MHz, carga 30%
+loadavg antes: 0.36 1.32 1.10 1/643 30308
+Q2_MEM_LOW por el adaptador (ms): [822, 1019, 1060, 1377, 1147] · mediana 1060 · EXPLAIN 914 ms   [G3: EXPLAIN 607 ms]
+Q1 por el adaptador: 11.3 s y luego 9.5 s   [G3: EXPLAIN 8.6 s; F5.3 hace un rato: 47.3 s y 32.9 s]
+throttled durante el diagnóstico: 786 ms · loadavg después: 0.97 1.38 1.13

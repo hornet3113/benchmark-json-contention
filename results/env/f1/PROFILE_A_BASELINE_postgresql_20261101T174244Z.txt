@@ -1,0 +1,38 @@
+== Verificación de límites reales — F1
+fecha_utc        : 20261101T174244Z
+perfil           : PROFILE_A_BASELINE  (etiqueta del contenedor: PROFILE_A_BASELINE)
+motor            : postgresql
+contenedor       : bench_postgres
+imagen (etiqueta): postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+imagen (digest)  : postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+imagen (id)      : sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+version motor    : 18.6 (Debian 18.6-1.pgdg13+2)
+storage engine   : n/a
+docker inspect   : NanoCpus=4000000000 CpuQuota=0 CpuPeriod=0 Memory=4294967296 MemorySwap=4294967296 MemorySwappiness=null OOMKilled=false
+
+-- cgroup v2 leído DENTRO del contenedor --
+  OK    cpu.max          esperado=400000 100000          obtenido=400000 100000
+  OK    memory.max       esperado=4294967296             obtenido=4294967296
+  OK    memory.swap.max  esperado=0                      obtenido=0
+
+-- mem_swappiness (ver SPEC A7, V8) --
+  docker inspect MemorySwappiness = null
+  NOTA: /sys/fs/cgroup/memory.swappiness no existe en este contenedor.
+        cgroup v2 no expone un knob de swappiness por cgroup (era de v1).
+        La garantia efectiva de 'sin swap' es memory.swap.max=0, verificado arriba.
+        No se marca como fallo: se declara en la seccion 1 del reporte.
+
+-- archivos de métricas que alimentarán el CSV --
+  OK    presente        /sys/fs/cgroup/cpu.stat
+  OK    presente        /sys/fs/cgroup/memory.stat
+  OK    presente        /sys/fs/cgroup/memory.peak
+  OK    presente        /sys/fs/cgroup/memory.events
+  OK    presente        /sys/fs/cgroup/memory.swap.max
+
+-- contexto de la VM en el momento de la verificación (capture_env.py) --
+  kernel  : 6.6.87.2-microsoft-standard-WSL2  nproc=12
+  loadavg : 1.16 0.61 0.40 1/629 15135
+  memoria : total=7331MB disp=5260MB buff/cache=1499MB
+  swap    : total=2048MB used=0MB
+
+RESULTADO: TODOS LOS LIMITES COINCIDEN

@@ -1,0 +1,113 @@
+# docker-compose.yml — F1: infraestructura de los dos motores bajo contención.
+# Requisito R-25 (playbook.pdf §8.1, p.4): compose parametrizado por perfiles.
+#
+# DOS SENTIDOS DISTINTOS DE LA PALABRA "PERFIL" — no confundirlos:
+#
+#   1. Perfil de RECURSOS (el del manual, §3): A/B/C. Se elige con el archivo
+#      docker/profiles/*.env que se carga antes de llamar a compose.
+#   2. Perfil de COMPOSE (--profile mongo | --profile postgres): mecanismo de
+#      Compose para elegir QUÉ servicio se levanta. Lo usamos para garantizar
+#      que solo un motor corre a la vez (SPEC §2, decisión 1): si los dos
+#      estuvieran arriba competirían por el caché de páginas de la VM y la
+#      comparación dejaría de ser válida.
+#
+# scripts/up_profile.sh combina ambos y es la forma recomendada de arrancar.
+#
+# ALMACENAMIENTO: volúmenes nombrados, nunca bind mounts a /mnt/c/ (SPEC L6).
+# Los volúmenes viven en el disco virtual de la distro docker-desktop, en ext4.
+
+name: benchjson
+
+services:
+
+  mongo:
+    profiles: ["mongo"]
+    image: ${MONGO_IMAGE:?falta MONGO_IMAGE - usa scripts/up_profile.sh}
+    container_name: bench_mongo
+
+    # Límites de recursos (R-05/R-06/R-07).
+    # cpus -> cgroup cpu.max ; mem_limit -> memory.max
+    # memswap_limit = mem_limit -> memory.swap.max = 0  (SPEC A7)
+    cpus: ${CPUS_LIMIT:?falta CPUS_LIMIT}
+    mem_limit: ${MEM_LIMIT:?falta MEM_LIMIT}
+    memswap_limit: ${MEMSWAP_LIMIT:?falta MEMSWAP_LIMIT}
+    mem_swappiness: ${MEM_SWAPPINESS:?falta MEM_SWAPPINESS}
+    # F5-c: CPUs lógicas donde puede correr el motor (cpuset.cpus). La cuota
+    # (cpus) sigue siendo la del perfil; esto solo evita compartir núcleo
+    # físico con el runner. Definido en docker/images.env.
+    cpuset: ${ENGINE_CPUSET:?falta ENGINE_CPUSET}
+
+    # Solo loopback: nada de esto queda expuesto fuera de la máquina.
+    ports:
+      - "127.0.0.1:27017:27017"
+
+    volumes:
+      - mongo_data:/data/db
+
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 10s
+
+    # Sin reinicio automático: si el contenedor muere por OOM queremos que
+    # quede muerto y registrado, no que Docker lo resucite y borre la evidencia.
+    restart: "no"
+
+    labels:
+      bench.profile: ${PROFILE_ID:?falta PROFILE_ID}
+      bench.engine: "mongodb"
+
+  postgres:
+    profiles: ["postgres"]
+    image: ${PG_IMAGE:?falta PG_IMAGE - usa scripts/up_profile.sh}
+    container_name: bench_postgres
+
+    cpus: ${CPUS_LIMIT:?falta CPUS_LIMIT}
+    mem_limit: ${MEM_LIMIT:?falta MEM_LIMIT}
+    memswap_limit: ${MEMSWAP_LIMIT:?falta MEMSWAP_LIMIT}
+    mem_swappiness: ${MEM_SWAPPINESS:?falta MEM_SWAPPINESS}
+    # F5-c: CPUs lógicas donde puede correr el motor (cpuset.cpus). La cuota
+    # (cpus) sigue siendo la del perfil; esto solo evita compartir núcleo
+    # físico con el runner. Definido en docker/images.env.
+    cpuset: ${ENGINE_CPUSET:?falta ENGINE_CPUSET}
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Sin esto, los datos irían a un subdirectorio del volumen y complicaría
+      # medir el tamaño en disco en F3.
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+    ports:
+      - "127.0.0.1:5432:5432"
+
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+    # Postgres usa /dev/shm para algunas operaciones; el default de Docker
+    # (64 MB) es bajo. NO es una optimización de rendimiento del motor: es
+    # evitar un fallo artificial ajeno a lo que el manual quiere medir.
+    # Queda declarado como desviación menor en la sección 1 del reporte.
+    shm_size: 256mb
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 10s
+
+    restart: "no"
+
+    labels:
+      bench.profile: ${PROFILE_ID:?falta PROFILE_ID}
+      bench.engine: "postgresql"
+
+volumes:
+  mongo_data:
+    name: benchjson_mongo_data
+  pg_data:
+    name: benchjson_pg_data

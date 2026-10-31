@@ -1,0 +1,78 @@
+{
+  "fase": "F1",
+  "fecha_utc": "20261101T204320Z",
+  "profile": "PROFILE_B_MEDIUM",
+  "esperado": {
+    "cpu.max": "200000 100000",
+    "memory.max": "2147483648",
+    "memory.swap.max": "0",
+    "cpuset.cpus.effective": "0-7"
+  },
+  "coinciden": true,
+  "schema": "capture_env/1",
+  "captured_at_utc": "2026-11-01T20:43:28Z",
+  "engine": "mongodb",
+  "container": "bench_mongo",
+  "profile_label": "PROFILE_B_MEDIUM",
+  "image": {
+    "tag": "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+    "id": "sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+    "repo_digests": [
+      "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3"
+    ]
+  },
+  "engine_version": "8.2.12",
+  "storage_engine": "wiredTiger",
+  "cgroup": {
+    "limits": {
+      "cpu.max": "200000 100000",
+      "memory.max": "2147483648",
+      "memory.swap.max": "0",
+      "cpuset.cpus.effective": "0-7"
+    },
+    "metric_files": {
+      "cpu.stat": true,
+      "memory.stat": true,
+      "memory.peak": true,
+      "memory.events": true,
+      "memory.swap.max": true
+    },
+    "memory_swappiness": {
+      "present": false,
+      "value": null
+    }
+  },
+  "docker_inspect": {
+    "NanoCpus": 2000000000,
+    "CpuQuota": 0,
+    "CpuPeriod": 0,
+    "Memory": 2147483648,
+    "MemorySwap": 2147483648,
+    "MemorySwappiness": null,
+    "CpusetCpus": "0-7",
+    "OOMKilled": false
+  },
+  "host": {
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "nproc": 12,
+    "loadavg": {
+      "raw": "1.04 0.49 0.58 5/690 26586",
+      "1m": 1.04,
+      "5m": 0.49,
+      "15m": 0.58
+    },
+    "memory": {
+      "MemTotal_kb": 7507156,
+      "MemFree_kb": 2402832,
+      "MemAvailable_kb": 5111084,
+      "Buffers_kb": 45552,
+      "Cached_kb": 2621088,
+      "SReclaimable_kb": 242592,
+      "SwapTotal_kb": 2097152,
+      "SwapFree_kb": 2096372,
+      "buff_cache_kb": 2909232,
+      "swap_used_kb": 780
+    }
+  },
+  "errores": []
+}

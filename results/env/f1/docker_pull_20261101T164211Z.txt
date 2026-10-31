@@ -1,0 +1,86 @@
+== docker pull — F1 — 20261101T164211Z
+
+$ docker pull mongo:8.2
+8.2: Pulling from library/mongo
+ece2966105df: Pulling fs layer
+e3a92d6db844: Pulling fs layer
+ca2678b20700: Pulling fs layer
+be8bd401cb77: Pulling fs layer
+dd73b7dff09c: Pulling fs layer
+21ac84f9ca5c: Pulling fs layer
+f5288e6265f3: Pulling fs layer
+e7dcacb0816f: Pulling fs layer
+1872e150d3c4: Download complete
+e3a92d6db844: Download complete
+dd73b7dff09c: Download complete
+21ac84f9ca5c: Download complete
+e7dcacb0816f: Download complete
+a4c7e52d1052: Download complete
+ece2966105df: Download complete
+be8bd401cb77: Download complete
+ca2678b20700: Download complete
+ca2678b20700: Pull complete
+e3a92d6db844: Pull complete
+be8bd401cb77: Pull complete
+ece2966105df: Pull complete
+21ac84f9ca5c: Pull complete
+dd73b7dff09c: Pull complete
+f5288e6265f3: Download complete
+e7dcacb0816f: Pull complete
+f5288e6265f3: Pull complete
+Digest: sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+Status: Downloaded newer image for mongo:8.2
+docker.io/library/mongo:8.2
+exit=0
+
+$ docker pull postgres:18
+18: Pulling from library/postgres
+d0fbcb0db440: Pulling fs layer
+fbc84e711712: Pulling fs layer
+cea4f0db46a6: Pulling fs layer
+3795839385bc: Pulling fs layer
+9b1a18996a22: Pulling fs layer
+6fc242d221a6: Pulling fs layer
+ef90fb83cca5: Pulling fs layer
+d89068781d71: Pulling fs layer
+879995175298: Pulling fs layer
+7c25aa4e8a77: Pulling fs layer
+7e6d71cb0490: Pulling fs layer
+d06edb2e3f43: Pulling fs layer
+00ff7a4924f2: Pulling fs layer
+1b52931e2f91: Download complete
+d0fbcb0db440: Download complete
+7e6d71cb0490: Download complete
+7c25aa4e8a77: Download complete
+879995175298: Download complete
+d89068781d71: Download complete
+d06edb2e3f43: Download complete
+fbc84e711712: Download complete
+00ff7a4924f2: Download complete
+cea4f0db46a6: Download complete
+a3fcee8384ca: Download complete
+9b1a18996a22: Download complete
+3795839385bc: Download complete
+6fc242d221a6: Download complete
+6fc242d221a6: Pull complete
+d06edb2e3f43: Pull complete
+3795839385bc: Pull complete
+cea4f0db46a6: Pull complete
+9b1a18996a22: Pull complete
+fbc84e711712: Pull complete
+879995175298: Pull complete
+d89068781d71: Pull complete
+ef90fb83cca5: Download complete
+ef90fb83cca5: Pull complete
+7e6d71cb0490: Pull complete
+7c25aa4e8a77: Pull complete
+d0fbcb0db440: Pull complete
+00ff7a4924f2: Pull complete
+Digest: sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+Status: Downloaded newer image for postgres:18
+docker.io/library/postgres:18
+exit=0
+
+== Digests e IDs
+mongo:8.2  id=sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3  repo_digests=mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3  created=2026-07-22T22:13:21.129595375Z  arch=amd64
+postgres:18  id=sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81  repo_digests=postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81  created=2026-10-28T01:30:24.595032418Z  arch=amd64

@@ -1,0 +1,65 @@
+{
+  "engine": "mongodb",
+  "fecha_utc": "2026-11-01T20:58:02Z",
+  "referencia": "results/f3/g3/queries_mongo.json",
+  "queries": {
+    "Q1": {
+      "archivo_query": "queries/mongo/q1_unwind_group.json",
+      "sesion": {
+        "aggregate_kwargs": {
+          "maxTimeMS": 300000
+        }
+      },
+      "filas": 240,
+      "filas_G3": 240,
+      "igual_a_G3": true,
+      "latencia_1a_ms": 10350.1,
+      "latencia_2a_ms": 7123.9,
+      "ok": true
+    },
+    "Q2_MEM_LOW": {
+      "archivo_query": "queries/mongo/q2_sort_topk.json",
+      "sesion": {
+        "aggregate_kwargs": {
+          "maxTimeMS": 300000,
+          "allowDiskUse": false
+        }
+      },
+      "filas": 1000,
+      "filas_G3": 1000,
+      "mismo_conjunto_que_G3": true,
+      "mismo_vector_final_total": true,
+      "latencia_1a_ms": 2216.5,
+      "latencia_2a_ms": 2997.6,
+      "ok": true
+    },
+    "Q2_MEM_HIGH": {
+      "archivo_query": "queries/mongo/q2_sort_topk.json",
+      "sesion": {
+        "aggregate_kwargs": {
+          "maxTimeMS": 300000,
+          "allowDiskUse": true
+        }
+      },
+      "filas": 1000,
+      "filas_G3": 1000,
+      "mismo_conjunto_que_G3": true,
+      "mismo_vector_final_total": true,
+      "latencia_1a_ms": 2164.5,
+      "latencia_2a_ms": 1711.8,
+      "ok": true
+    }
+  },
+  "timeout": {
+    "timeout_s": 0.001,
+    "sesion": {
+      "aggregate_kwargs": {
+        "maxTimeMS": 1
+      }
+    },
+    "lanzo_QueryTimeout": true,
+    "mensaje": "operation exceeded time limit, full error: {'ok': 0.0, 'errmsg': 'operation exceeded time limit', 'code': 50, 'codeName': 'MaxTimeMSExpired'}",
+    "conexion_sigue_viva": true
+  },
+  "ok": true
+}

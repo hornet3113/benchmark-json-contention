@@ -1,0 +1,23 @@
+{
+  "fase": "F1",
+  "fecha_utc": "20261101T171059Z",
+  "profile": "PROFILE_B_MEDIUM",
+  "engine": "postgresql",
+  "container": "bench_postgres",
+  "image_tag": "postgres:18",
+  "image_repo_digest": "postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81",
+  "engine_version": "18.6 (Debian 18.6-1.pgdg13+2)",
+  "storage_engine": "n/a",
+  "esperado": {
+    "cpu_max": "200000 100000",
+    "memory_max": "2147483648",
+    "memory_swap_max": "0"
+  },
+  "obtenido": {
+    "cpu_max": "200000 100000",
+    "memory_max": "2147483648",
+    "memory_swap_max": "0"
+  },
+  "docker_inspect": "NanoCpus=2000000000 CpuQuota=0 CpuPeriod=0 Memory=2147483648 MemorySwap=2147483648 MemorySwappiness=<no value> OOMKilled=false",
+  "coinciden": true
+}

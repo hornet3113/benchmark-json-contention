@@ -1,0 +1,151 @@
+{
+  "gate": "g3",
+  "engine": "mongo",
+  "fecha_utc": "2026-11-01T19:23:09Z",
+  "esperado": 500000,
+  "conteo": 500000,
+  "export": {
+    "archivo": "data/exports/g3_mongo.jsonl",
+    "lineas": 500000,
+    "sha256": "868c7627c6e205a5b545206ecfae021c1f0bcc9141068affcd16ccf3b6954ecb"
+  },
+  "tipos_documento": [
+    {
+      "_id": {
+        "order_id": "string",
+        "timestamp": "string",
+        "final_total": "double"
+      },
+      "n": 500000
+    }
+  ],
+  "tipos_items": [
+    {
+      "_id": {
+        "price": "double",
+        "qty": "int"
+      },
+      "n": 1499548
+    }
+  ],
+  "order_id_repetidos": 0,
+  "indices": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_"
+    },
+    {
+      "v": 2,
+      "key": {
+        "timestamp": 1
+      },
+      "name": "idx_orders_timestamp"
+    },
+    {
+      "v": 2,
+      "key": {
+        "order_id": 1
+      },
+      "name": "idx_orders_order_id"
+    }
+  ],
+  "r01": {
+    "storage_engine": "wiredTiger",
+    "storageStats_tiene_wiredTiger": true,
+    "hello_msg": null,
+    "es_mongos": false,
+    "replica_set": null,
+    "coleccion": true
+  },
+  "tamano_en_disco": {
+    "documentos": 500000,
+    "datos_sin_comprimir_bytes": 553216083,
+    "tamano_medio_documento_bytes": 1106,
+    "datos_en_disco_bytes": 226717696,
+    "indices_bytes": 37232640,
+    "por_indice_bytes": {
+      "_id_": 5505024,
+      "idx_orders_timestamp": 9117696,
+      "idx_orders_order_id": 22609920
+    },
+    "total_bytes": 263950336,
+    "directorio_de_datos_du_bytes": 475711202
+  },
+  "r15_indices_con_final_total": [],
+  "comprobaciones": {
+    "conteo_esperado": true,
+    "export_completo": true,
+    "sin_order_id_repetidos": true,
+    "r15_sin_indice_final_total": true
+  },
+  "ok": true,
+  "entorno": {
+    "schema": "capture_env/1",
+    "captured_at_utc": "2026-11-01T19:23:07Z",
+    "engine": "mongodb",
+    "container": "bench_mongo",
+    "profile_label": "PROFILE_A_BASELINE",
+    "image": {
+      "tag": "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+      "id": "sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+      "repo_digests": [
+        "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3"
+      ]
+    },
+    "engine_version": "8.2.12",
+    "storage_engine": "wiredTiger",
+    "cgroup": {
+      "limits": {
+        "cpu.max": "400000 100000",
+        "memory.max": "4294967296",
+        "memory.swap.max": "0"
+      },
+      "metric_files": {
+        "cpu.stat": true,
+        "memory.stat": true,
+        "memory.peak": true,
+        "memory.events": true,
+        "memory.swap.max": true
+      },
+      "memory_swappiness": {
+        "present": false,
+        "value": null
+      }
+    },
+    "docker_inspect": {
+      "NanoCpus": 4000000000,
+      "CpuQuota": 0,
+      "CpuPeriod": 0,
+      "Memory": 4294967296,
+      "MemorySwap": 4294967296,
+      "MemorySwappiness": null,
+      "OOMKilled": false
+    },
+    "host": {
+      "kernel": "6.6.87.2-microsoft-standard-WSL2",
+      "nproc": 12,
+      "loadavg": {
+        "raw": "4.51 2.67 1.24 1/678 22719",
+        "1m": 4.51,
+        "5m": 2.67,
+        "15m": 1.24
+      },
+      "memory": {
+        "MemTotal_kb": 7507156,
+        "MemFree_kb": 1811124,
+        "MemAvailable_kb": 4566644,
+        "Buffers_kb": 45072,
+        "Cached_kb": 2653668,
+        "SReclaimable_kb": 257884,
+        "SwapTotal_kb": 2097152,
+        "SwapFree_kb": 2097152,
+        "buff_cache_kb": 2956624,
+        "swap_used_kb": 0
+      }
+    },
+    "errores": []
+  }
+}

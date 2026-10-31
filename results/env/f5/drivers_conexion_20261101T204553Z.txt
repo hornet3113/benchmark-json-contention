@@ -1,0 +1,7 @@
+== F5.1 conexión de los drivers — 20261101T204553Z
+$ .venv/bin/pip install -r requirements.txt  (comprobación: nada que cambiar)
+Requirement already satisfied: psycopg-binary==3.3.6 in ./.venv/lib/python3.14/site-packages (from -r requirements.txt (line 11)) (3.3.6)
+pymongo 4.19.0 | servidor 8.2.12 | orders = 500000
+   un documento: {'order_id': 'str', 'timestamp': 'str', 'customer': 'dict', 'items': 'list', 'payment': 'dict', 'metadata': 'dict'}
+psycopg 3.3.6 | libpq 180006 | servidor 18.6 (Debian 18.6-1.pgdg13+2) | orders = 500000 | SET work_mem por sesión -> 64MB
+down exit=0

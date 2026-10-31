@@ -1,0 +1,232 @@
+== Suite F5 (cierre) — 20261102T004918Z — Python 3.14.4
+test_archivos_de_metricas (test_capture_env.CaptureEnvTest.test_archivos_de_metricas) ... ok
+test_contenedor_parado (test_capture_env.CaptureEnvTest.test_contenedor_parado) ... ok
+test_datos_del_host (test_capture_env.CaptureEnvTest.test_datos_del_host) ... ok
+test_lectura_fallida_queda_null_y_se_registra (test_capture_env.CaptureEnvTest.test_lectura_fallida_queda_null_y_se_registra) ... ok
+test_lee_limites_reales_del_cgroup (test_capture_env.CaptureEnvTest.test_lee_limites_reales_del_cgroup) ... ok
+test_salida_es_json_serializable (test_capture_env.CaptureEnvTest.test_salida_es_json_serializable) ... ok
+test_swappiness_ausente_no_es_error (test_capture_env.CaptureEnvTest.test_swappiness_ausente_no_es_error) ... ok
+test_version_digest_y_perfil (test_capture_env.CaptureEnvTest.test_version_digest_y_perfil) ... ok
+test_comentario_al_final_de_la_linea (test_capture_env.EnvFileTest.test_comentario_al_final_de_la_linea) ... ok
+test_comillas_y_comentarios (test_capture_env.EnvFileTest.test_comillas_y_comentarios) ... ok
+test_images_env_fijado_por_digest (test_capture_env.EnvFileTest.test_images_env_fijado_por_digest) ... ok
+test_faltan_y_terminan_despues (test_concurrency.CrossTest.test_faltan_y_terminan_despues) ... ok
+test_postgres_usa_consultas_activas (test_concurrency.CrossTest.test_postgres_usa_consultas_activas) ... ok
+test_resumen (test_concurrency.CrossTest.test_resumen) ... ok
+test_cortado_cuenta_solo_desde_su_ultima_muestra (test_concurrency.InFlightTest.test_cortado_cuenta_solo_desde_su_ultima_muestra) ... ok
+test_cortado_sin_ninguna_muestra (test_concurrency.InFlightTest.test_cortado_sin_ninguna_muestra) ... ok
+test_en_vuelo_durante_todo_el_intervalo (test_concurrency.InFlightTest.test_en_vuelo_durante_todo_el_intervalo) ... ok
+test_una_consulta_que_termina_dentro_de_la_foto_no_es_segura (test_concurrency.InFlightTest.test_una_consulta_que_termina_dentro_de_la_foto_no_es_segura) ... ok
+test_lee_cada_intervalo_y_registra_errores (test_concurrency.PeriodicReaderTest.test_lee_cada_intervalo_y_registra_errores) ... ok
+test_no_lee_antes_del_primer_intervalo (test_concurrency.PeriodicReaderTest.test_no_lee_antes_del_primer_intervalo) ... ok
+test_14_columnas (test_csv_schema.EncabezadoTest.test_14_columnas) ... ok
+test_con_espacios_es_el_texto_del_pdf (test_csv_schema.EncabezadoTest.test_con_espacios_es_el_texto_del_pdf) ... ok
+test_igual_a_spec (test_csv_schema.EncabezadoTest.test_igual_a_spec) ... ok
+test_igual_al_pdf_sin_espacios (test_csv_schema.EncabezadoTest.test_igual_al_pdf_sin_espacios)
+§8.2 de playbook.pdf, extraído con pdftotext, sin espacios (F5-h). ... ok
+test_con_espacios_si_se_pide (test_csv_schema.EscritorTest.test_con_espacios_si_se_pide) ... ok
+test_escribe_encabezado_una_vez_y_filas (test_csv_schema.EscritorTest.test_escribe_encabezado_una_vez_y_filas) ... ok
+test_no_mezcla_encabezados (test_csv_schema.EscritorTest.test_no_mezcla_encabezados) ... ok
+test_rechaza_columna_de_mas (test_csv_schema.EscritorTest.test_rechaza_columna_de_mas) ... ok
+test_rechaza_columna_faltante (test_csv_schema.EscritorTest.test_rechaza_columna_faltante) ... ok
+test_throughput_conserva_el_conteo_de_completadas (test_csv_schema.EscritorTest.test_throughput_conserva_el_conteo_de_completadas) ... ok
+test_archivo_bueno_pasa (test_csv_schema.ValidadorTest.test_archivo_bueno_pasa) ... ok
+test_columna_extra_hace_fallar (test_csv_schema.ValidadorTest.test_columna_extra_hace_fallar) ... ok
+test_columna_renombrada_hace_fallar (test_csv_schema.ValidadorTest.test_columna_renombrada_hace_fallar) ... ok
+test_columnas_reordenadas_hacen_fallar (test_csv_schema.ValidadorTest.test_columnas_reordenadas_hacen_fallar) ... ok
+test_conteo_de_filas (test_csv_schema.ValidadorTest.test_conteo_de_filas) ... ok
+test_disk_spill_no_booleano (test_csv_schema.ValidadorTest.test_disk_spill_no_booleano) ... ok
+test_encabezado_con_espacios_solo_con_la_opcion (test_csv_schema.ValidadorTest.test_encabezado_con_espacios_solo_con_la_opcion) ... ok
+test_fila_con_columnas_de_menos (test_csv_schema.ValidadorTest.test_fila_con_columnas_de_menos) ... ok
+test_fila_duplicada (test_csv_schema.ValidadorTest.test_fila_duplicada) ... ok
+test_mongo (test_engines.ErroresTest.test_mongo) ... ok
+test_postgres (test_engines.ErroresTest.test_postgres) ... ok
+test_formas_iguales_a_check_equivalence (test_engines.NormalizacionTest.test_formas_iguales_a_check_equivalence) ... ok
+test_mongo_variantes_y_timeout (test_engines.OpcionesTest.test_mongo_variantes_y_timeout) ... ok
+test_postgres_sesion (test_engines.OpcionesTest.test_postgres_sesion) ... ok
+test_rechaza_celda_de_otro_motor (test_engines.QueriesDesdeDiscoTest.test_rechaza_celda_de_otro_motor) ... ok
+test_texto_identico_al_archivo (test_engines.QueriesDesdeDiscoTest.test_texto_identico_al_archivo) ... ok
+test_count_distinto (test_equivalence.CompareQ1Test.test_count_distinto) ... ok
+test_decimal_exacto_da_cero (test_equivalence.CompareQ1Test.test_decimal_exacto_da_cero) ... ok
+test_floats_de_mongo_dentro_de_tolerancia (test_equivalence.CompareQ1Test.test_floats_de_mongo_dentro_de_tolerancia) ... ok
+test_fuera_de_tolerancia (test_equivalence.CompareQ1Test.test_fuera_de_tolerancia) ... ok
+test_grupo_faltante_y_sobrante (test_equivalence.CompareQ1Test.test_grupo_faltante_y_sobrante) ... ok
+test_customer_id_distinto (test_equivalence.CompareQ2Test.test_customer_id_distinto) ... ok
+test_filas_de_menos (test_equivalence.CompareQ2Test.test_filas_de_menos) ... ok
+test_mismo_conjunto_en_otro_orden (test_equivalence.CompareQ2Test.test_mismo_conjunto_en_otro_orden) ... ok
+test_un_order_id_cambiado (test_equivalence.CompareQ2Test.test_un_order_id_cambiado) ... ok
+test_vector_fuera_de_tolerancia (test_equivalence.CompareQ2Test.test_vector_fuera_de_tolerancia) ... ok
+test_hashes_registrados (test_equivalence.QueriesLiteralesTest.test_hashes_registrados) ... ok
+test_pipelines_son_json_valido (test_equivalence.QueriesLiteralesTest.test_pipelines_son_json_valido) ... ok
+test_coincide_con_un_calculo_independiente_en_float (test_equivalence.ReferenciaQ1Test.test_coincide_con_un_calculo_independiente_en_float) ... ok
+test_precio_exactamente_50_no_entra (test_equivalence.ReferenciaQ1Test.test_precio_exactamente_50_no_entra) ... ok
+test_detecta_la_trampa_de_fracciones_de_segundo (test_equivalence.ReferenciaQ2Test.test_detecta_la_trampa_de_fracciones_de_segundo) ... ok
+test_frontera_y_repetidos (test_equivalence.ReferenciaQ2Test.test_frontera_y_repetidos) ... ok
+test_limite_de_fecha_incluido_y_excluido (test_equivalence.ReferenciaQ2Test.test_limite_de_fecha_incluido_y_excluido) ... ok
+test_sobre_datos_reales_el_top_esta_ordenado (test_equivalence.ReferenciaQ2Test.test_sobre_datos_reales_el_top_esta_ordenado) ... ok
+test_bloques_propios_por_nodo (test_equivalence.TempBlocksTest.test_bloques_propios_por_nodo) ... ok
+test_total_es_el_del_nodo_raiz (test_equivalence.TempBlocksTest.test_total_es_el_del_nodo_raiz) ... ok
+test_iter_exact_lee_decimales (test_equivalence.UnaPasadaTest.test_iter_exact_lee_decimales) ... ok
+test_misma_referencia (test_equivalence.UnaPasadaTest.test_misma_referencia) ... ok
+test_csv_de_psql_con_show (test_equivalence.VariantesYPlanesTest.test_csv_de_psql_con_show) ... ok
+test_resumen_plan_mongo (test_equivalence.VariantesYPlanesTest.test_resumen_plan_mongo) ... ok
+test_resumen_plan_postgres (test_equivalence.VariantesYPlanesTest.test_resumen_plan_postgres) ... ok
+test_same_result_ignora_el_orden_de_filas (test_equivalence.VariantesYPlanesTest.test_same_result_ignora_el_orden_de_filas) ... ok
+test_rutas_por_defecto (test_generator_determinism.CliTest.test_rutas_por_defecto) ... ok
+test_solo_acepta_los_tamanos_del_plan (test_generator_determinism.CliTest.test_solo_acepta_los_tamanos_del_plan) ... usage: python -m unittest [-h] --size {1000,10000,500000} [--seed SEED]
+                          [--out OUT] [--stats STATS]
+python -m unittest: error: argument --size: invalid choice: '123' (choose from 1000, 10000, 500000)
+ok
+test_el_archivo_chico_es_el_inicio_del_grande (test_generator_determinism.GenerateTest.test_el_archivo_chico_es_el_inicio_del_grande) ... ok
+test_estadisticas_basicas (test_generator_determinism.GenerateTest.test_estadisticas_basicas) ... ok
+test_hash_declarado_es_el_del_archivo (test_generator_determinism.GenerateTest.test_hash_declarado_es_el_del_archivo) ... ok
+test_misma_semilla_mismo_hash (test_generator_determinism.GenerateTest.test_misma_semilla_mismo_hash) ... ok
+test_no_queda_archivo_temporal (test_generator_determinism.GenerateTest.test_no_queda_archivo_temporal) ... ok
+test_otra_semilla_otro_hash (test_generator_determinism.GenerateTest.test_otra_semilla_otro_hash) ... ok
+test_una_linea_json_por_registro (test_generator_determinism.GenerateTest.test_una_linea_json_por_registro) ... ok
+test_formato_fijo (test_generator_determinism.SerializeTest.test_formato_fijo) ... ok
+test_detecta_empate_en_la_frontera (test_generator_determinism.StatsTest.test_detecta_empate_en_la_frontera) ... ok
+test_detecta_order_id_repetido (test_generator_determinism.StatsTest.test_detecta_order_id_repetido) ... ok
+test_no_aplica_si_hay_menos_filas_que_k (test_generator_determinism.StatsTest.test_no_aplica_si_hay_menos_filas_que_k) ... ok
+test_registro_invalido_se_cuenta_sin_romper (test_generator_determinism.StatsTest.test_registro_invalido_se_cuenta_sin_romper) ... ok
+test_sin_empate (test_generator_determinism.StatsTest.test_sin_empate) ... ok
+test_solo_cuenta_filas_que_pasan_el_filtro_de_q2 (test_generator_determinism.StatsTest.test_solo_cuenta_filas_que_pasan_el_filtro_de_q2) ... ok
+test_misma_semilla_mismos_registros (test_generator_schema.DeterminismoTest.test_misma_semilla_mismos_registros) ... ok
+test_otra_semilla_otros_registros (test_generator_schema.DeterminismoTest.test_otra_semilla_otros_registros) ... ok
+test_240_grupos_pais_categoria (test_generator_schema.DistribucionesTest.test_240_grupos_pais_categoria) ... ok
+test_catalogos_ascii (test_generator_schema.DistribucionesTest.test_catalogos_ascii) ... ok
+test_completed_70 (test_generator_schema.DistribucionesTest.test_completed_70) ... ok
+test_media_de_items (test_generator_schema.DistribucionesTest.test_media_de_items) ... ok
+test_pesos_de_items_tienen_media_exacta_3 (test_generator_schema.DistribucionesTest.test_pesos_de_items_tienen_media_exacta_3) ... ok
+test_price_mayor_50 (test_generator_schema.DistribucionesTest.test_price_mayor_50) ... ok
+test_timestamp_2026_50 (test_generator_schema.DistribucionesTest.test_timestamp_2026_50) ... ok
+test_dos_decimales_como_maximo (test_generator_schema.ImportesTest.test_dos_decimales_como_maximo) ... ok
+test_final_total_es_numero_y_cuadra (test_generator_schema.ImportesTest.test_final_total_es_numero_y_cuadra) ... ok
+test_estricto_rechaza_otro_orden (test_generator_schema.OrdenDeClavesTest.test_estricto_rechaza_otro_orden) ... ok
+test_sin_orden_acepta_otro_orden (test_generator_schema.OrdenDeClavesTest.test_sin_orden_acepta_otro_orden) ... ok
+test_sin_orden_sigue_exigiendo_las_mismas_claves (test_generator_schema.OrdenDeClavesTest.test_sin_orden_sigue_exigiendo_las_mismas_claves) ... ok
+test_sin_orden_sigue_revisando_tipos (test_generator_schema.OrdenDeClavesTest.test_sin_orden_sigue_revisando_tipos) ... ok
+test_forma_canonica_como_la_escribe_postgres (test_generator_schema.OrderIdTest.test_forma_canonica_como_la_escribe_postgres) ... ok
+test_unicos_en_la_muestra (test_generator_schema.OrderIdTest.test_unicos_en_la_muestra) ... ok
+test_definicion (test_generator_schema.ProfundidadTest.test_definicion) ... ok
+test_orden_de_claves (test_generator_schema.RegistroValidoTest.test_orden_de_claves) ... ok
+test_profundidad_exactamente_3 (test_generator_schema.RegistroValidoTest.test_profundidad_exactamente_3) ... ok
+test_sobrevive_ida_y_vuelta_por_json (test_generator_schema.RegistroValidoTest.test_sobrevive_ida_y_vuelta_por_json) ... ok
+test_todos_los_registros_cumplen_el_contrato (test_generator_schema.RegistroValidoTest.test_todos_los_registros_cumplen_el_contrato) ... ok
+test_formato_estricto_y_en_rango (test_generator_schema.TimestampTest.test_formato_estricto_y_en_rango) ... ok
+test_orden_alfabetico_igual_al_cronologico (test_generator_schema.TimestampTest.test_orden_alfabetico_igual_al_cronologico) ... ok
+test_barra_invertida_rompe_copy (test_generator_schema.ValidadorDetectaErroresTest.test_barra_invertida_rompe_copy) ... ok
+test_clave_de_mas (test_generator_schema.ValidadorDetectaErroresTest.test_clave_de_mas) ... ok
+test_clave_faltante (test_generator_schema.ValidadorDetectaErroresTest.test_clave_faltante) ... ok
+test_discounts_como_objetos_suben_a_4_niveles (test_generator_schema.ValidadorDetectaErroresTest.test_discounts_como_objetos_suben_a_4_niveles) ... ok
+test_final_total_como_string (test_generator_schema.ValidadorDetectaErroresTest.test_final_total_como_string) ... ok
+test_final_total_dentro_de_totals (test_generator_schema.ValidadorDetectaErroresTest.test_final_total_dentro_de_totals) ... ok
+test_final_total_que_no_cuadra (test_generator_schema.ValidadorDetectaErroresTest.test_final_total_que_no_cuadra) ... ok
+test_order_id_en_mayusculas (test_generator_schema.ValidadorDetectaErroresTest.test_order_id_en_mayusculas) ... ok
+test_qty_booleano (test_generator_schema.ValidadorDetectaErroresTest.test_qty_booleano) ... ok
+test_timestamp_con_desfase_horario (test_generator_schema.ValidadorDetectaErroresTest.test_timestamp_con_desfase_horario) ... ok
+test_timestamp_con_fraccion (test_generator_schema.ValidadorDetectaErroresTest.test_timestamp_con_fraccion) ... ok
+test_36_celdas_108_corridas_con_variante_explicita (test_matrix.MatrizTest.test_36_celdas_108_corridas_con_variante_explicita) ... ok
+test_36_sin_elegir_variante_falla (test_matrix.MatrizTest.test_36_sin_elegir_variante_falla) ... ok
+test_54_celdas_162_corridas (test_matrix.MatrizTest.test_54_celdas_162_corridas) ... ok
+test_54_no_admite_variante (test_matrix.MatrizTest.test_54_no_admite_variante) ... ok
+test_ids_unicos (test_matrix.MatrizTest.test_ids_unicos) ... ok
+test_orden_por_bloques_de_motor_y_perfil (test_matrix.MatrizTest.test_orden_por_bloques_de_motor_y_perfil) ... ok
+test_query_ids_en_el_dominio_del_csv (test_matrix.MatrizTest.test_query_ids_en_el_dominio_del_csv) ... ok
+test_variantes_por_motor (test_matrix.MatrizTest.test_variantes_por_motor) ... ok
+test_salto_hacia_atras_del_reloj_de_pared (test_matrix.SuspensionTest.test_salto_hacia_atras_del_reloj_de_pared) ... ok
+test_sin_suspension (test_matrix.SuspensionTest.test_sin_suspension) ... ok
+test_snapshot_real_tiene_los_tres_relojes (test_matrix.SuspensionTest.test_snapshot_real_tiene_los_tres_relojes) ... ok
+test_suspension_solo_en_boottime (test_matrix.SuspensionTest.test_suspension_solo_en_boottime) ... ok
+test_umbral (test_matrix.SuspensionTest.test_umbral) ... ok
+test_vm_congelada_reloj_de_pared (test_matrix.SuspensionTest.test_vm_congelada_reloj_de_pared) ... ok
+test_clasificacion (test_matrix.VentanaTest.test_clasificacion) ... ok
+test_ventana_sin_completadas (test_matrix.VentanaTest.test_ventana_sin_completadas) ... ok
+test_baja_densidad_por_debajo_de_20 (test_percentiles.PocasMuestrasTest.test_baja_densidad_por_debajo_de_20) ... ok
+test_cero_muestras_no_lanza (test_percentiles.PocasMuestrasTest.test_cero_muestras_no_lanza) ... ok
+test_dos_muestras_si_calcula (test_percentiles.PocasMuestrasTest.test_dos_muestras_si_calcula) ... ok
+test_una_muestra_no_lanza (test_percentiles.PocasMuestrasTest.test_una_muestra_no_lanza) ... ok
+test_coincide_con_la_formula_lineal (test_percentiles.ValoresConocidosTest.test_coincide_con_la_formula_lineal) ... ok
+test_metodo_declarado (test_percentiles.ValoresConocidosTest.test_metodo_declarado) ... ok
+test_orden_de_entrada_no_importa (test_percentiles.ValoresConocidosTest.test_orden_de_entrada_no_importa) ... ok
+test_uno_a_diez (test_percentiles.ValoresConocidosTest.test_uno_a_diez) ... ok
+test_latencias_vacias_con_oom (test_status_domain.LatenciasVaciasTest.test_latencias_vacias_con_oom) ... ok
+test_parcialmente_vacias_rechazado (test_status_domain.LatenciasVaciasTest.test_parcialmente_vacias_rechazado) ... ok
+test_percentiles_desordenados_rechazados (test_status_domain.LatenciasVaciasTest.test_percentiles_desordenados_rechazados) ... ok
+test_throttling_y_memoria_vacios_solo_con_error_u_oom (test_status_domain.LatenciasVaciasTest.test_throttling_y_memoria_vacios_solo_con_error_u_oom) ... ok
+test_throughput_nunca_vacio (test_status_domain.LatenciasVaciasTest.test_throughput_nunca_vacio) ... ok
+test_vacias_con_error_valido (test_status_domain.LatenciasVaciasTest.test_vacias_con_error_valido) ... ok
+test_vacias_con_ok_rechazado (test_status_domain.LatenciasVaciasTest.test_vacias_con_ok_rechazado) ... ok
+test_perfiles_literales_del_manual (test_status_domain.OtrosDominiosTest.test_perfiles_literales_del_manual) ... ok
+test_query_id_segun_a2 (test_status_domain.OtrosDominiosTest.test_query_id_segun_a2) ... ok
+test_tipos (test_status_domain.OtrosDominiosTest.test_tipos) ... ok
+test_dominio_cerrado (test_status_domain.StatusTest.test_dominio_cerrado) ... ok
+test_error_con_disk_spill_es_valido (test_status_domain.StatusTest.test_error_con_disk_spill_es_valido) ... ok
+test_ok_con_spill_esta_prohibido (test_status_domain.StatusTest.test_ok_con_spill_esta_prohibido) ... ok
+test_precedencia_oom_error_spill_ok (test_status_domain.StatusTest.test_precedencia_oom_error_spill_ok) ... ok
+test_spill_con_disk_spill_es_valido (test_status_domain.StatusTest.test_spill_con_disk_spill_es_valido) ... ok
+test_12_igual_a_12_punto_0 (test_verify_gate.CanonicalDigestTest.test_12_igual_a_12_punto_0) ... ok
+test_booleano_frente_a_entero (test_verify_gate.CanonicalDigestTest.test_booleano_frente_a_entero) ... ok
+test_devuelve_el_order_id (test_verify_gate.CanonicalDigestTest.test_devuelve_el_order_id) ... ok
+test_ignora_orden_de_claves (test_verify_gate.CanonicalDigestTest.test_ignora_orden_de_claves) ... ok
+test_numero_cambiado_en_un_centavo (test_verify_gate.CanonicalDigestTest.test_numero_cambiado_en_un_centavo) ... ok
+test_numero_frente_a_texto (test_verify_gate.CanonicalDigestTest.test_numero_frente_a_texto) ... ok
+test_quita_el_id_de_mongo (test_verify_gate.CanonicalDigestTest.test_quita_el_id_de_mongo) ... ok
+test_documento_cambiado_en_postgres (test_verify_gate.CompareFilesTest.test_documento_cambiado_en_postgres) ... ok
+test_documento_de_mas_en_postgres (test_verify_gate.CompareFilesTest.test_documento_de_mas_en_postgres) ... ok
+test_documento_faltante_en_mongo (test_verify_gate.CompareFilesTest.test_documento_faltante_en_mongo) ... ok
+test_todo_igual (test_verify_gate.CompareFilesTest.test_todo_igual) ... ok
+test_booleano_frente_a_entero_es_diferencia (test_verify_gate.FirstDifferenceTest.test_booleano_frente_a_entero_es_diferencia) ... ok
+test_clave_faltante (test_verify_gate.FirstDifferenceTest.test_clave_faltante) ... ok
+test_entero_y_flotante_iguales_son_iguales (test_verify_gate.FirstDifferenceTest.test_entero_y_flotante_iguales_son_iguales) ... ok
+test_iguales_con_otro_orden_de_claves (test_verify_gate.FirstDifferenceTest.test_iguales_con_otro_orden_de_claves) ... ok
+test_numero_cambiado (test_verify_gate.FirstDifferenceTest.test_numero_cambiado) ... ok
+test_numero_frente_a_texto_es_diferencia (test_verify_gate.FirstDifferenceTest.test_numero_frente_a_texto_es_diferencia) ... ok
+test_orden_de_arreglo_si_importa (test_verify_gate.FirstDifferenceTest.test_orden_de_arreglo_si_importa) ... ok
+test_quita_id_de_mongo (test_verify_gate.OtrasTest.test_quita_id_de_mongo) ... ok
+test_r15_detecta_indice_sobre_final_total (test_verify_gate.OtrasTest.test_r15_detecta_indice_sobre_final_total) ... ok
+test_documento_de_mas_en_un_motor (test_verify_gate.ThreeWayTest.test_documento_de_mas_en_un_motor) ... ok
+test_documento_distinto_se_cuenta_y_se_explica (test_verify_gate.ThreeWayTest.test_documento_distinto_se_cuenta_y_se_explica) ... ok
+test_documento_faltante_en_un_motor (test_verify_gate.ThreeWayTest.test_documento_faltante_en_un_motor) ... ok
+test_todo_igual (test_verify_gate.ThreeWayTest.test_todo_igual) ... ok
+test_baja_densidad_se_anota (test_workload.AssembleRowTest.test_baja_densidad_se_anota) ... ok
+test_censura_1_por_ciento_es_error (test_workload.AssembleRowTest.test_censura_1_por_ciento_es_error)
+Decisión de Alix: con ≥ 1 % de timeouts el P99 cae en la zona censurada → error. ... ok
+test_censura_de_la_corrida_3_del_humo (test_workload.AssembleRowTest.test_censura_de_la_corrida_3_del_humo)
+El caso real de F5.5: 4 completadas y 46 timeouts → 92 %: ningún percentil vale. ... ok
+test_censura_por_debajo_del_1_por_ciento_no_es_error (test_workload.AssembleRowTest.test_censura_por_debajo_del_1_por_ciento_no_es_error) ... ok
+test_contenedor_caido (test_workload.AssembleRowTest.test_contenedor_caido) ... ok
+test_error_de_consulta (test_workload.AssembleRowTest.test_error_de_consulta) ... ok
+test_menos_de_dos_muestras (test_workload.AssembleRowTest.test_menos_de_dos_muestras) ... ok
+test_normal (test_workload.AssembleRowTest.test_normal) ... ok
+test_oom_con_cgroup_desaparecido (test_workload.AssembleRowTest.test_oom_con_cgroup_desaparecido) ... ok
+test_oom_por_contador (test_workload.AssembleRowTest.test_oom_por_contador) ... ok
+test_p95_vale_entre_1_y_5_por_ciento (test_workload.AssembleRowTest.test_p95_vale_entre_1_y_5_por_ciento) ... ok
+test_sin_timeouts_percentiles_validos (test_workload.AssembleRowTest.test_sin_timeouts_percentiles_validos) ... ok
+test_spill (test_workload.AssembleRowTest.test_spill) ... ok
+test_suspension (test_workload.AssembleRowTest.test_suspension) ... ok
+test_actividad_cada_solo_con_smoke (test_workload.CliTest.test_actividad_cada_solo_con_smoke) ... ERROR: --actividad-cada solo se admite con --smoke y con S > 0 (comparaciones del runner, F5.5b).
+ERROR: --actividad-cada solo se admite con --smoke y con S > 0 (comparaciones del runner, F5.5b).
+ok
+test_real_exige_confirmacion (test_workload.CliTest.test_real_exige_confirmacion) ... ERROR: sin --smoke es una medición REAL que escribe en results/measurements.csv.
+       Añade --confirmo-medicion-real si es lo que quieres.
+ok
+test_ventanas_solo_con_smoke (test_workload.CliTest.test_ventanas_solo_con_smoke) ... ERROR: --ventanas solo se admite con --smoke: las corridas reales usan 60/300/60 (playbook.pdf §6).
+ok
+test_parse (test_workload.CpusetTest.test_parse) ... ok
+test_filtro_en_el_comando_y_solo_aggregates (test_workload.MongoActivityTest.test_filtro_en_el_comando_y_solo_aggregates) ... ok
+test_reparto_explicito (test_workload.PlanWorkersTest.test_reparto_explicito) ... ok
+test_reparto_por_defecto (test_workload.PlanWorkersTest.test_reparto_por_defecto) ... ok
+test_consultas_mas_largas_que_la_repeticion (test_workload.RunLoadTest.test_consultas_mas_largas_que_la_repeticion)
+PROFILE_C con concurrencia 50: ninguna consulta termina. El runner no se cuelga. ... ok
+test_consultas_rapidas (test_workload.RunLoadTest.test_consultas_rapidas) ... ok
+test_fallos_intercalados (test_workload.RunLoadTest.test_fallos_intercalados) ... ok
+test_hilos_cortados_se_cuentan_por_hilo (test_workload.RunLoadTest.test_hilos_cortados_se_cuentan_por_hilo) ... ok
+test_procesos_por_hilos (test_workload.RunLoadTest.test_procesos_por_hilos)
+6 workers en 2 procesos × 3 hilos: el motor vería 6 clientes, igual que con 6 procesos. ... ok
+test_worker_que_no_conecta_aborta (test_workload.RunLoadTest.test_worker_que_no_conecta_aborta) ... ok
+
+----------------------------------------------------------------------
+Ran 213 tests in 28.178s
+
+OK

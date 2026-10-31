@@ -1,0 +1,58 @@
+== 1. Casts texto -> timestamp/timestamptz según pg_cast (consulta de SPEC A3.2)
+   castmethod: f = función, i = conversión por I/O (funciones de entrada del tipo), b = binaria
+SELECT c.castsource::regtype AS origen, c.casttarget::regtype AS destino, c.castmethod,
+       p.proname AS funcion, p.provolatile AS volatilidad
+FROM pg_cast c LEFT JOIN pg_proc p ON p.oid = c.castfunc
+WHERE c.castsource = 'text'::regtype
+  AND c.casttarget IN ('timestamp'::regtype, 'timestamptz'::regtype);
+ origen | destino | castmethod | funcion | volatilidad 
+--------+---------+------------+---------+-------------
+(0 rows)
+
+== 2. Funciones de entrada de los tipos (las que usa una conversión por I/O)
+   provolatile: i = IMMUTABLE, s = STABLE, v = VOLATILE. Un índice exige IMMUTABLE.
+SELECT t.typname AS tipo, p.proname AS funcion_entrada, p.provolatile AS volatilidad
+FROM pg_type t JOIN pg_proc p ON p.oid = t.typinput
+WHERE t.typname IN ('timestamp', 'timestamptz', 'text')
+ORDER BY t.typname;
+    tipo     | funcion_entrada | volatilidad 
+-------------+-----------------+-------------
+ text        | textin          | i
+ timestamp   | timestamp_in    | s
+ timestamptz | timestamptz_in  | s
+(3 rows)
+
+== 3. Intento de crear cada variante
+-- 3a. texto sin cast (la decidida en A3.2)
+CREATE INDEX a32_test_text ON orders ((data->>'timestamp'));
+CREATE INDEX
+-- 3b. cast a timestamp (sin zona)
+CREATE INDEX a32_test_ts ON orders (((data->>'timestamp')::timestamp));
+ERROR:  functions in index expression must be marked IMMUTABLE
+-- 3c. cast a timestamptz (el que usa Q2)
+CREATE INDEX a32_test_tstz ON orders (((data->>'timestamp')::timestamptz));
+ERROR:  functions in index expression must be marked IMMUTABLE
+== 4. Índices de prueba que llegaron a existir
+SELECT indexname, indexdef FROM pg_indexes
+WHERE tablename = 'orders' AND indexname LIKE 'a32_test_%' ORDER BY indexname;
+   indexname   |                                         indexdef                                         
+---------------+------------------------------------------------------------------------------------------
+ a32_test_text | CREATE INDEX a32_test_text ON public.orders USING btree (((data ->> 'timestamp'::text)))
+(1 row)
+
+== 5. Limpieza: se borran todos los índices de prueba
+DROP INDEX IF EXISTS a32_test_text;
+DROP INDEX
+DROP INDEX IF EXISTS a32_test_ts;
+DROP INDEX
+DROP INDEX IF EXISTS a32_test_tstz;
+NOTICE:  index "a32_test_ts" does not exist, skipping
+NOTICE:  index "a32_test_tstz" does not exist, skipping
+DROP INDEX
+SELECT count(*) AS indices_de_prueba_restantes FROM pg_indexes
+WHERE tablename = 'orders' AND indexname LIKE 'a32_test_%';
+ indices_de_prueba_restantes 
+-----------------------------
+                           0
+(1 row)
+

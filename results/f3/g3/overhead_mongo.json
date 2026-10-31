@@ -1,0 +1,25 @@
+{
+  "gate": "g3",
+  "engine": "mongo",
+  "repeticiones": 5,
+  "muestras_s": {
+    "mongoimport": [
+      0.299,
+      0.273,
+      0.261,
+      0.258,
+      0.272
+    ],
+    "mongosh": [
+      1.577,
+      1.494,
+      1.363,
+      1.425,
+      1.28
+    ]
+  },
+  "mediana_s": {
+    "mongoimport": 0.272,
+    "mongosh": 1.425
+  }
+}

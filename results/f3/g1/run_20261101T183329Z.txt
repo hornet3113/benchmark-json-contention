@@ -1,0 +1,156 @@
+== G1 — 20261101T183329Z — python 3.14.4 · 6.6.87.2-microsoft-standard-WSL2
+
+### 1a. Levantar Mongo (PROFILE_A)
+$ scripts/up_profile.sh a_baseline mongo
+== Perfil: PROFILE_A_BASELINE  |  Motor: mongo
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_mongo Creating 
+ Container bench_mongo Created 
+ Container bench_mongo Starting 
+ Container bench_mongo Started 
+== Esperando healthcheck de bench_mongo ......... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline mongo
+
+### 1b. Cargar 1 000 en Mongo
+$ scripts/load_dataset.sh 1000 mongo
+== Carga g1: 1000 registros en mongo
+   archivo : data/orders_1000_seed42.jsonl  sha256=fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c (coincide con results/f2/dataset_stats_1000_seed42.json)
+init.js: colección 'orders' recreada en la base bench
+   mongoimport: 2026-11-01T18:34:01.672+0000	connected to: mongodb://localhost/
+   mongoimport: 2026-11-01T18:34:02.366+0000	1000 document(s) imported successfully. 0 document(s) failed to import.
+indexes.js: ["_id_","idx_orders_timestamp","idx_orders_order_id"]
+   conteo  : 1000 (esperado 1000)
+   tiempos : carga=1.75s  índices=4.988s  analyze=0.0s
+   evidencia: results/f3/g1/load_mongo.json
+
+### 1c. Exportar y verificar Mongo
+$ python3 scripts/verify_gate.py export --gate g1 --engine mongo
+== export g1 / mongo: conteo=1000 (esperado 1000)
+   tipos documento : [{"_id": {"order_id": "string", "timestamp": "string", "final_total": "double"}, "n": 1000}]
+   tipos items     : [{"_id": {"price": "double", "qty": "int"}, "n": 3075}]
+   OK    conteo_esperado
+   OK    export_completo
+   OK    sin_order_id_repetidos
+   OK    r15_sin_indice_final_total
+   RESULTADO: OK  ->  results/f3/g1/export_mongo.json
+
+### 2a. Levantar Postgres (baja Mongo)
+$ scripts/up_profile.sh a_baseline postgres
+== Perfil: PROFILE_A_BASELINE  |  Motor: postgres
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_postgres Creating 
+ Container bench_postgres Created 
+ Container bench_postgres Starting 
+ Container bench_postgres Started 
+== Esperando healthcheck de bench_postgres ... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline postgres
+
+### 2b. Cargar 1 000 en Postgres
+$ scripts/load_dataset.sh 1000 postgres
+== Carga g1: 1000 registros en postgres
+   archivo : data/orders_1000_seed42.jsonl  sha256=fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c (coincide con results/f2/dataset_stats_1000_seed42.json)
+psql:<stdin>:10: NOTICE:  table "orders_staging" does not exist, skipping
+psql:<stdin>:11: NOTICE:  table "orders" does not exist, skipping
+   conteo  : 1000 (esperado 1000)
+   tiempos : carga=0.989s  índices=0.322s  analyze=0.333s
+   evidencia: results/f3/g1/load_postgres.json
+
+### 2c. A3.2 — variantes de índice (los errores son resultados, no fallos)
+== 1. Casts texto -> timestamp/timestamptz según pg_cast (consulta de SPEC A3.2)
+   castmethod: f = función, i = conversión por I/O (funciones de entrada del tipo), b = binaria
+SELECT c.castsource::regtype AS origen, c.casttarget::regtype AS destino, c.castmethod,
+       p.proname AS funcion, p.provolatile AS volatilidad
+FROM pg_cast c LEFT JOIN pg_proc p ON p.oid = c.castfunc
+WHERE c.castsource = 'text'::regtype
+  AND c.casttarget IN ('timestamp'::regtype, 'timestamptz'::regtype);
+ origen | destino | castmethod | funcion | volatilidad 
+--------+---------+------------+---------+-------------
+(0 rows)
+
+== 2. Funciones de entrada de los tipos (las que usa una conversión por I/O)
+   provolatile: i = IMMUTABLE, s = STABLE, v = VOLATILE. Un índice exige IMMUTABLE.
+SELECT t.typname AS tipo, p.proname AS funcion_entrada, p.provolatile AS volatilidad
+FROM pg_type t JOIN pg_proc p ON p.oid = t.typinput
+WHERE t.typname IN ('timestamp', 'timestamptz', 'text')
+ORDER BY t.typname;
+    tipo     | funcion_entrada | volatilidad 
+-------------+-----------------+-------------
+ text        | textin          | i
+ timestamp   | timestamp_in    | s
+ timestamptz | timestamptz_in  | s
+(3 rows)
+
+== 3. Intento de crear cada variante
+-- 3a. texto sin cast (la decidida en A3.2)
+CREATE INDEX a32_test_text ON orders ((data->>'timestamp'));
+CREATE INDEX
+-- 3b. cast a timestamp (sin zona)
+CREATE INDEX a32_test_ts ON orders (((data->>'timestamp')::timestamp));
+ERROR:  functions in index expression must be marked IMMUTABLE
+-- 3c. cast a timestamptz (el que usa Q2)
+CREATE INDEX a32_test_tstz ON orders (((data->>'timestamp')::timestamptz));
+== 4. Índices de prueba que llegaron a existir
+SELECT indexname, indexdef FROM pg_indexes
+WHERE tablename = 'orders' AND indexname LIKE 'a32_test_%' ORDER BY indexname;
+ERROR:  functions in index expression must be marked IMMUTABLE
+   indexname   |                                         indexdef                                         
+---------------+------------------------------------------------------------------------------------------
+ a32_test_text | CREATE INDEX a32_test_text ON public.orders USING btree (((data ->> 'timestamp'::text)))
+(1 row)
+
+== 5. Limpieza: se borran todos los índices de prueba
+DROP INDEX IF EXISTS a32_test_text;
+DROP INDEX
+DROP INDEX IF EXISTS a32_test_ts;
+DROP INDEX
+DROP INDEX IF EXISTS a32_test_tstz;
+NOTICE:  index "a32_test_ts" does not exist, skipping
+DROP INDEX
+SELECT count(*) AS indices_de_prueba_restantes FROM pg_indexes
+WHERE tablename = 'orders' AND indexname LIKE 'a32_test_%';
+NOTICE:  index "a32_test_tstz" does not exist, skipping
+ indices_de_prueba_restantes 
+-----------------------------
+                           0
+(1 row)
+
+
+### 2d. Exportar y verificar Postgres
+$ python3 scripts/verify_gate.py export --gate g1 --engine postgres
+== export g1 / postgres: conteo=1000 (esperado 1000)
+   tipos documento : [{"order_id": "string", "timestamp": "string", "final_total": "number", "n": 1000}]
+   tipos items     : [{"price": "number", "qty": "number", "n": 3075}]
+   OK    conteo_esperado
+   OK    export_completo
+   OK    sin_order_id_repetidos
+   OK    r15_sin_indice_final_total
+   OK    id_igual_a_order_id
+   RESULTADO: OK  ->  results/f3/g1/export_postgres.json
+
+### 3a. Bajar motores
+$ scripts/down_profile.sh
+ Container bench_postgres Stopping 
+ Container bench_postgres Stopped 
+ Container bench_postgres Removing 
+ Container bench_postgres Removed 
+ Network benchjson_default Removing 
+ Network benchjson_default Removed 
+Listo.
+
+### 3b. Comparar en tres direcciones
+$ python3 scripts/verify_gate.py compare --gate g1
+== compare g1: iguales en los tres = 1000 de 1000 (mongo=1000, postgres=1000)
+   faltan_en={'fuente': 0, 'mongo': 0, 'postgres': 0}  distintos={'mongo': 0, 'postgres': 0}
+   esquema fuente (orden estricto): 1000 validados, 0 inválidos
+   esquema mongo (sin orden): 1000 validados, 0 inválidos
+   esquema postgres (sin orden): 1000 validados, 0 inválidos
+   mismo orden de claves que la fuente: {'mongo': 1000, 'postgres': 0}
+   RESULTADO: OK  ->  results/f3/g1/compare.json
+
+== G1 terminó: todos los pasos con exit 0. Evidencia en results/f3/g1/

@@ -1,0 +1,11 @@
+== Perfil: PROFILE_A_BASELINE  |  Motor: mongo
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_mongo Creating 
+ Container bench_mongo Created 
+ Container bench_mongo Starting 
+ Container bench_mongo Started 
+== Esperando healthcheck de bench_mongo .... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline mongo

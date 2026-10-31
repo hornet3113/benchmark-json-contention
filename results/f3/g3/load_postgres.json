@@ -1,0 +1,11 @@
+{
+  "gate": "g3",
+  "engine": "postgres",
+  "fecha_utc": "2026-11-01T19:24:46Z",
+  "archivo": "data/orders_500000_seed42.jsonl",
+  "sha256": "0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414",
+  "esperado": 500000,
+  "conteo": 500000,
+  "segundos": {"carga": 42.16, "indices": 7.404, "analyze": 6.094},
+  "ok": true
+}

@@ -1,0 +1,143 @@
+== g2 — 20261101T185807Z — 10000 registros — python 3.14.4 · 6.6.87.2-microsoft-standard-WSL2
+
+### 0. Queries de queries/ iguales a las extraídas del PDF
+$ python3 scripts/extract_queries.py --check
+IGUAL  queries/mongo/q1_unwind_group.json
+IGUAL  queries/postgres/q1_unwind_group.sql
+IGUAL  queries/mongo/q2_sort_topk.json
+IGUAL  queries/postgres/q2_sort_topk.sql
+
+### 1.a Levantar mongo (PROFILE_A)
+$ scripts/up_profile.sh a_baseline mongo
+== Perfil: PROFILE_A_BASELINE  |  Motor: mongo
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_mongo Creating 
+ Container bench_mongo Created 
+ Container bench_mongo Starting 
+ Container bench_mongo Started 
+== Esperando healthcheck de bench_mongo .... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline mongo
+
+### 1.b Arranque de herramientas (mongo)
+$ scripts/checks/tool_overhead.sh g2 mongo
+== arranque de herramientas (mongo), mediana de 5: {'mongoimport': 0.265, 'mongosh': 1.287}
+
+### 1.c Cargar 10000 en mongo
+$ scripts/load_dataset.sh 10000 mongo
+== Carga g2: 10000 registros en mongo
+   archivo : data/orders_10000_seed42.jsonl  sha256=66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111 (coincide con results/f2/dataset_stats_10000_seed42.json)
+init.js: colección 'orders' recreada en la base bench
+   mongoimport: 2026-11-01T18:58:30.603+0000	connected to: mongodb://localhost/
+   mongoimport: 2026-11-01T18:58:31.861+0000	10000 document(s) imported successfully. 0 document(s) failed to import.
+indexes.js: ["_id_","idx_orders_timestamp","idx_orders_order_id"]
+   conteo  : 10000 (esperado 10000)
+   tiempos : carga=1.563s  índices=1.552s  analyze=0.0s
+   evidencia: results/f3/g2/load_mongo.json
+
+### 1.d Exportar y verificar carga (mongo)
+$ python3 scripts/verify_gate.py export --gate g2 --engine mongo
+== export g2 / mongo: conteo=10000 (esperado 10000)
+   tipos documento : [{"_id": {"order_id": "string", "timestamp": "string", "final_total": "double"}, "n": 10000}]
+   tipos items     : [{"_id": {"price": "double", "qty": "int"}, "n": 30038}]
+   OK    conteo_esperado
+   OK    export_completo
+   OK    sin_order_id_repetidos
+   OK    r15_sin_indice_final_total
+   RESULTADO: OK  ->  results/f3/g2/export_mongo.json
+
+### 1.e Q1 y Q2 con variantes (mongo)
+$ python3 scripts/check_equivalence.py run --gate g2 --engine mongo
+== queries g2 / mongo
+   q1_default               filas=240   work_mem=None  plan={"etapas_plan": ["PROJECTION_DEFAULT", "COLLSCAN"], "etapas_pipeline": ["$cursor", "$unwind", "$match", "$group"], "indices_usados": [], "usa_indice": false, "usedDisk": false, "totalDocsExamined": 10000, "totalKeysExamined": 0}
+   q2_allowDiskUse_false    filas=1000  work_mem=None  plan={"etapas_plan": ["PROJECTION_DEFAULT", "SORT", "FETCH", "IXSCAN"], "etapas_pipeline": [], "indices_usados": ["idx_orders_timestamp"], "usa_indice": true, "usedDisk": false, "totalDocsExamined": 4960, "totalKeysExamined": 4960}
+   q2_allowDiskUse_true     filas=1000  work_mem=None  plan={"etapas_plan": ["PROJECTION_DEFAULT", "SORT", "FETCH", "IXSCAN"], "etapas_pipeline": [], "indices_usados": ["idx_orders_timestamp"], "usa_indice": true, "usedDisk": false, "totalDocsExamined": 4960, "totalKeysExamined": 4960}
+   -> results/f3/g2/queries_mongo.json
+
+### 2.a Levantar postgres (PROFILE_A)
+$ scripts/up_profile.sh a_baseline postgres
+== Perfil: PROFILE_A_BASELINE  |  Motor: postgres
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_postgres Creating 
+ Container bench_postgres Created 
+ Container bench_postgres Starting 
+ Container bench_postgres Started 
+== Esperando healthcheck de bench_postgres ... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline postgres
+
+### 2.b Arranque de herramientas (postgres)
+$ scripts/checks/tool_overhead.sh g2 postgres
+== arranque de herramientas (postgres), mediana de 5: {'psql': 0.298}
+
+### 2.c Cargar 10000 en postgres
+$ scripts/load_dataset.sh 10000 postgres
+== Carga g2: 10000 registros en postgres
+   archivo : data/orders_10000_seed42.jsonl  sha256=66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111 (coincide con results/f2/dataset_stats_10000_seed42.json)
+psql:<stdin>:10: NOTICE:  table "orders_staging" does not exist, skipping
+   conteo  : 10000 (esperado 10000)
+   tiempos : carga=1.642s  índices=0.423s  analyze=0.442s
+   evidencia: results/f3/g2/load_postgres.json
+
+### 2.d Exportar y verificar carga (postgres)
+$ python3 scripts/verify_gate.py export --gate g2 --engine postgres
+== export g2 / postgres: conteo=10000 (esperado 10000)
+   tipos documento : [{"order_id": "string", "timestamp": "string", "final_total": "number", "n": 10000}]
+   tipos items     : [{"price": "number", "qty": "number", "n": 30038}]
+   OK    conteo_esperado
+   OK    export_completo
+   OK    sin_order_id_repetidos
+   OK    r15_sin_indice_final_total
+   OK    id_igual_a_order_id
+   RESULTADO: OK  ->  results/f3/g2/export_postgres.json
+
+### 2.e Q1 y Q2 con variantes (postgres)
+$ python3 scripts/check_equivalence.py run --gate g2 --engine postgres
+== queries g2 / postgres
+   q1_default               filas=240   work_mem=4MB  plan={"nodos": ["Aggregate", "Incremental Sort", "Nested Loop", "Gather Merge", "Sort", "Seq Scan", "Function Scan"], "indices_usados": [], "usa_indice": false, "ordenamientos": [{"Sort Method": "external merge", "Sort Space Used": 7616, "Sort Space Type": "Disk"}, {"Sort Method": "external merge", "Sort Space Used": 5664, "Sort Space Type": "Disk"}], "temp_written_blocks": 8310, "execution_time_ms": 156.404}
+   q2_work_mem_4MB          filas=1000  work_mem=4MB  plan={"nodos": ["Limit", "Sort", "Seq Scan"], "indices_usados": [], "usa_indice": false, "ordenamientos": [{"Sort Method": "top-N heapsort", "Sort Space Used": 271, "Sort Space Type": "Memory"}], "temp_written_blocks": 0, "execution_time_ms": 24.284}
+   q2_work_mem_64MB         filas=1000  work_mem=64MB  plan={"nodos": ["Limit", "Sort", "Seq Scan"], "indices_usados": [], "usa_indice": false, "ordenamientos": [{"Sort Method": "top-N heapsort", "Sort Space Used": 271, "Sort Space Type": "Memory"}], "temp_written_blocks": 0, "execution_time_ms": 23.129}
+   -> results/f3/g2/queries_postgres.json
+
+### 3.a Bajar motores
+$ scripts/down_profile.sh
+ Container bench_postgres Stopping 
+ Container bench_postgres Stopped 
+ Container bench_postgres Removing 
+ Container bench_postgres Removed 
+ Network benchjson_default Removing 
+ Network benchjson_default Removed 
+Listo.
+
+### 3.b Comparar documentos en tres direcciones
+$ python3 scripts/verify_gate.py compare --gate g2
+== compare g2: iguales en los tres = 10000 de 10000 (mongo=10000, postgres=10000)
+   faltan_en={'fuente': 0, 'mongo': 0, 'postgres': 0}  distintos={'mongo': 0, 'postgres': 0}
+   esquema fuente (orden estricto): 10000 validados, 0 inválidos
+   esquema mongo (sin orden): 10000 validados, 0 inválidos
+   esquema postgres (sin orden): 10000 validados, 0 inválidos
+   mismo orden de claves que la fuente: {'mongo': 10000, 'postgres': 0}
+   RESULTADO: OK  ->  results/f3/g2/compare.json
+
+### 3.c Equivalencia de Q1 y Q2 (F4)
+$ python3 scripts/check_equivalence.py compare --gate g2
+== equivalencia g2: referencia Q1=240 grupos · Q2 filtro=3506 filas · frontera={'fila_k': '567.24', 'fila_k_mas_1': '567.2', 'empate': False} · repetidos en el top=7
+   OK    mongo:q1_default                   grupos=240/240 faltan=0 sobran=0 count≠=0 maxrel(total)=9.879e-17 maxrel(avg)=1.549e-16
+   OK    postgres:q1_default                grupos=240/240 faltan=0 sobran=0 count≠=0 maxrel(total)=0.000e+00 maxrel(avg)=2.633e-19
+   OK    mongo:q2_allowDiskUse_false        filas=1000 conjunto_igual=True faltan=0 sobran=0 customer≠=0 maxrel(vector)=1.061e-16
+   OK    mongo:q2_allowDiskUse_true         filas=1000 conjunto_igual=True faltan=0 sobran=0 customer≠=0 maxrel(vector)=1.061e-16
+   OK    postgres:q2_work_mem_4MB           filas=1000 conjunto_igual=True faltan=0 sobran=0 customer≠=0 maxrel(vector)=0.000e+00
+   OK    postgres:q2_work_mem_64MB          filas=1000 conjunto_igual=True faltan=0 sobran=0 customer≠=0 maxrel(vector)=0.000e+00
+   variantes de Q2 con el mismo resultado: {'mongo': True, 'postgres': True}
+   RESULTADO: OK  ->  results/f3/g2/equivalence.json
+
+### 3.d Extrapolación del tiempo de carga a 500 000 (estimación, no medición)
+   mongo: carga: medido 1.563s, arranque 0.265s → ~65.2s  indices: medido 1.552s, arranque 1.287s → ~20.2s  | total ~85.4s
+   postgres: carga: medido 1.642s, arranque 0.894s → ~38.3s  indices: medido 0.423s, arranque 0.298s → ~9.2s  analyze: medido 0.442s, arranque 0.298s → ~7.5s  | total ~55.0s
+   -> results/f3/g2/load_extrapolation.json
+
+== g2 terminó: todos los pasos con exit 0. Evidencia en results/f3/g2/ y results/explains/g2/

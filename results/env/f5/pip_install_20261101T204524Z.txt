@@ -1,0 +1,26 @@
+== F5.1 entorno Python — 20261101T204524Z
+Python 3.14.4
+$ python3 -m venv .venv
+venv creado
+$ .venv/bin/pip install pymongo "psycopg[binary]"
+Collecting pymongo
+Collecting psycopg[binary]
+Collecting dnspython<3.0.0,>=2.7.0 (from pymongo)
+Collecting psycopg-binary==3.3.6 (from psycopg[binary])
+Installing collected packages: psycopg-binary, psycopg, dnspython, pymongo
+
+Successfully installed dnspython-2.9.1 psycopg-3.3.6 psycopg-binary-3.3.6 pymongo-4.19.0
+exit=0
+
+$ .venv/bin/pip freeze
+dnspython==2.9.1
+psycopg==3.3.6
+psycopg-binary==3.3.6
+pymongo==4.19.0
+
+$ wheels instaladas (tags)
+  dnspython-2.9.1.dist-info: Tag: py3-none-any
+  pip-25.1.1.dist-info: Tag: py3-none-any
+  psycopg-3.3.6.dist-info: Tag: py3-none-any
+  psycopg_binary-3.3.6.dist-info: Tag: cp314-cp314-manylinux_2_17_x86_64
+  pymongo-4.19.0.dist-info: Tag: cp314-cp314-manylinux_2_17_x86_64

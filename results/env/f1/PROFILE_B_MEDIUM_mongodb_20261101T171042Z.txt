@@ -1,0 +1,37 @@
+== Verificación de límites reales — F1
+fecha_utc        : 20261101T171042Z
+perfil           : PROFILE_B_MEDIUM
+motor            : mongodb
+contenedor       : bench_mongo
+imagen (etiqueta): mongo:8.2
+imagen (digest)  : mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+imagen (id)      : mongo:8.2|sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+version motor    : 8.2.12
+storage engine   : wiredTiger
+docker inspect   : NanoCpus=2000000000 CpuQuota=0 CpuPeriod=0 Memory=2147483648 MemorySwap=2147483648 MemorySwappiness=<no value> OOMKilled=false
+
+-- cgroup v2 leído DENTRO del contenedor --
+  OK    cpu.max          esperado=200000 100000          obtenido=200000 100000
+  OK    memory.max       esperado=2147483648             obtenido=2147483648
+  OK    memory.swap.max  esperado=0                      obtenido=0
+
+-- mem_swappiness (ver SPEC A7) --
+  docker inspect MemorySwappiness = <nil>
+  NOTA: /sys/fs/cgroup/memory.swappiness no existe en este contenedor.
+        cgroup v2 no expone un knob de swappiness por cgroup (era de v1).
+        La garantia efectiva de 'sin swap' es memory.swap.max=0, verificado arriba.
+        No se marca como fallo: se declara en la seccion 1 del reporte.
+
+-- archivos de métricas que alimentarán el CSV --
+  OK    presente        /sys/fs/cgroup/cpu.stat
+  OK    presente        /sys/fs/cgroup/memory.stat
+  OK    presente        /sys/fs/cgroup/memory.peak
+  OK    presente        /sys/fs/cgroup/memory.events
+  OK    presente        /sys/fs/cgroup/memory.swap.max
+
+-- contexto de la VM en el momento de la verificación --
+  loadavg : 0.42 0.12 0.17 1/661 9355
+  memoria : total=7331MB used=2071MB buff/cache=1339MB disp=5259MB
+  swap    : total=2048MB used=0MB
+
+RESULTADO: TODOS LOS LIMITES COINCIDEN

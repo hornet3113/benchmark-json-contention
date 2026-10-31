@@ -1,0 +1,32 @@
+== Topología de CPU de la VM — 20261101T204105Z
+$ lscpu -e
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+  0    0      0    0 0:0:0:0          yes
+  1    0      0    0 0:0:0:0          yes
+  2    0      0    1 1:1:1:0          yes
+  3    0      0    1 1:1:1:0          yes
+  4    0      0    2 2:2:2:0          yes
+  5    0      0    2 2:2:2:0          yes
+  6    0      0    3 3:3:3:0          yes
+  7    0      0    3 3:3:3:0          yes
+  8    0      0    4 4:4:4:0          yes
+  9    0      0    4 4:4:4:0          yes
+ 10    0      0    5 5:5:5:0          yes
+ 11    0      0    5 5:5:5:0          yes
+
+$ thread_siblings_list por CPU lógica
+  cpu0: hermanos=0-1 core_id=0
+  cpu1: hermanos=0-1 core_id=0
+  cpu2: hermanos=2-3 core_id=1
+  cpu3: hermanos=2-3 core_id=1
+  cpu4: hermanos=4-5 core_id=2
+  cpu5: hermanos=4-5 core_id=2
+  cpu6: hermanos=6-7 core_id=3
+  cpu7: hermanos=6-7 core_id=3
+  cpu8: hermanos=8-9 core_id=4
+  cpu9: hermanos=8-9 core_id=4
+  cpu10: hermanos=10-11 core_id=5
+  cpu11: hermanos=10-11 core_id=5
+
+$ docker info (NCPU)
+NCPU=12

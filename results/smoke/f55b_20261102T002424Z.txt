@@ -1,0 +1,42 @@
+== F5.5b 50 procesos frente a 10×5 hilos — 20261102T002424Z — loadavg 0.23 2.42 3.93
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## mongodb · run 1 · A1 (50 procesos) — 00:24:25 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.483333 p50/p95/p99=21839.892098000004/33315.06576395/34519.810260989994 ms throttled=478.327259 s rss=921.29296875 MiB spill=False (177.41 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## mongodb · run 2 · B (10 procesos) — 00:27:43 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.133333 p50/p95/p99=21714.226576/24194.057859999997/30582.5431403 ms throttled=478.617459 s rss=948.2109375 MiB spill=False (174.56 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## mongodb · run 3 · A2 (50 procesos) — 00:30:57 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.291667 p50/p95/p99=23160.194861/31916.494543299996/33405.08173905999 ms throttled=478.02507 s rss=958.359375 MiB spill=False (175.99 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## Validación del CSV y comparación
+VÁLIDO: results/smoke/measurements_smoke.csv
+AVISO: el criterio v3 está PROPUESTO, sin fijar. El resultado no cuenta como evaluación.
+== postgresql: no se corrió en esta tanda (se omite)
+== mongodb: NO COINCIDEN
+   A1 50×1  p50=21840 ms  p95=33315 ms  qps=2.4833  completadas=298  fotos=13  motor mediana/min=50/48  faltan media/max=0.231/2  conexiones=[153, 153]  cortados=0  runner=1992 MiB
+   B  10×5  p50=21714 ms  p95=24194 ms  qps=2.1333  completadas=256  fotos=13  motor mediana/min=50/48  faltan media/max=-0.154/0  conexiones=[153, 153]  cortados=0  runner=464 MiB
+   A2 50×1  p50=23160 ms  p95=31916 ms  qps=2.2917  completadas=275  fotos=13  motor mediana/min=50/48  faltan media/max=0.231/2  conexiones=[153, 153]  cortados=0  runner=1990 MiB
+   fotos_suficientes: True
+   mediana_motor_>=49_en_las_3: True
+   faltan_B_<=_A+1: True
+   faltan_limite: 1.231
+   p50_B_dentro_de_A: True
+   p50_rango_A_ampliado: [19655.903, 25476.214]
+   p95_B_dentro_de_A: False
+   p95_rango_A_ampliado: [28724.845, 36646.572]
+   qps_B_dentro_de_A: True
+   qps_rango_A_ampliado: [2.062, 2.732]
+-> results/smoke/comparacion_modos.json · NO coinciden: revisar antes de seguir
+
+Listo. Avísale a Claude (registro: results/smoke/f55b_20261102T002424Z.txt).

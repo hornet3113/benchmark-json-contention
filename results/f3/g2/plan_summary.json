@@ -1,0 +1,130 @@
+{
+  "gate": "g2",
+  "fecha_utc": "2026-11-01T20:25:02Z",
+  "fuente": "results/explains/g2",
+  "planes": {
+    "mongo_q1_default": {
+      "etapas_plan": [
+        "PROJECTION_DEFAULT",
+        "COLLSCAN"
+      ],
+      "etapas_pipeline": [
+        "$cursor",
+        "$unwind",
+        "$match",
+        "$group"
+      ],
+      "indices_usados": [],
+      "usa_indice": false,
+      "usedDisk": false,
+      "totalDocsExamined": 10000,
+      "totalKeysExamined": 0
+    },
+    "mongo_q2_allowDiskUse_false": {
+      "etapas_plan": [
+        "PROJECTION_DEFAULT",
+        "SORT",
+        "FETCH",
+        "IXSCAN"
+      ],
+      "etapas_pipeline": [],
+      "indices_usados": [
+        "idx_orders_timestamp"
+      ],
+      "usa_indice": true,
+      "usedDisk": false,
+      "totalDocsExamined": 4960,
+      "totalKeysExamined": 4960
+    },
+    "mongo_q2_allowDiskUse_true": {
+      "etapas_plan": [
+        "PROJECTION_DEFAULT",
+        "SORT",
+        "FETCH",
+        "IXSCAN"
+      ],
+      "etapas_pipeline": [],
+      "indices_usados": [
+        "idx_orders_timestamp"
+      ],
+      "usa_indice": true,
+      "usedDisk": false,
+      "totalDocsExamined": 4960,
+      "totalKeysExamined": 4960
+    },
+    "postgres_q1_default": {
+      "nodos": [
+        "Aggregate",
+        "Incremental Sort",
+        "Nested Loop",
+        "Gather Merge",
+        "Sort",
+        "Seq Scan",
+        "Function Scan"
+      ],
+      "indices_usados": [],
+      "usa_indice": false,
+      "ordenamientos": [
+        {
+          "Sort Method": "external merge",
+          "Sort Space Used": 7616,
+          "Sort Space Type": "Disk"
+        },
+        {
+          "Sort Method": "external merge",
+          "Sort Space Used": 5664,
+          "Sort Space Type": "Disk"
+        }
+      ],
+      "temp_written_blocks": 1662,
+      "temp_written_mib": 13.0,
+      "temp_por_nodo": [
+        {
+          "nodo": "Sort",
+          "temp_written_blocks_propios": 1662
+        }
+      ],
+      "execution_time_ms": 156.404
+    },
+    "postgres_q2_work_mem_4MB": {
+      "nodos": [
+        "Limit",
+        "Sort",
+        "Seq Scan"
+      ],
+      "indices_usados": [],
+      "usa_indice": false,
+      "ordenamientos": [
+        {
+          "Sort Method": "top-N heapsort",
+          "Sort Space Used": 271,
+          "Sort Space Type": "Memory"
+        }
+      ],
+      "temp_written_blocks": 0,
+      "temp_written_mib": 0.0,
+      "temp_por_nodo": [],
+      "execution_time_ms": 24.284
+    },
+    "postgres_q2_work_mem_64MB": {
+      "nodos": [
+        "Limit",
+        "Sort",
+        "Seq Scan"
+      ],
+      "indices_usados": [],
+      "usa_indice": false,
+      "ordenamientos": [
+        {
+          "Sort Method": "top-N heapsort",
+          "Sort Space Used": 271,
+          "Sort Space Type": "Memory"
+        }
+      ],
+      "temp_written_blocks": 0,
+      "temp_written_mib": 0.0,
+      "temp_por_nodo": [],
+      "execution_time_ms": 23.129
+    }
+  }
+}

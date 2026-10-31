@@ -1,0 +1,23 @@
+{
+  "fase": "F1",
+  "fecha_utc": "20261101T171042Z",
+  "profile": "PROFILE_B_MEDIUM",
+  "engine": "mongodb",
+  "container": "bench_mongo",
+  "image_tag": "mongo:8.2",
+  "image_repo_digest": "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+  "engine_version": "8.2.12",
+  "storage_engine": "wiredTiger",
+  "esperado": {
+    "cpu_max": "200000 100000",
+    "memory_max": "2147483648",
+    "memory_swap_max": "0"
+  },
+  "obtenido": {
+    "cpu_max": "200000 100000",
+    "memory_max": "2147483648",
+    "memory_swap_max": "0"
+  },
+  "docker_inspect": "NanoCpus=2000000000 CpuQuota=0 CpuPeriod=0 Memory=2147483648 MemorySwap=2147483648 MemorySwappiness=<no value> OOMKilled=false",
+  "coinciden": true
+}

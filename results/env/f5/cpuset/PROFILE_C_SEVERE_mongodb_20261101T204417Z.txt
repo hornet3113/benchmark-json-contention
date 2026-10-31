@@ -1,0 +1,39 @@
+== Verificación de límites reales — F1
+fecha_utc        : 20261101T204417Z
+perfil           : PROFILE_C_SEVERE  (etiqueta del contenedor: PROFILE_C_SEVERE)
+motor            : mongodb
+contenedor       : bench_mongo
+imagen (ref.)    : mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+imagen (digest)  : mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+imagen (id)      : sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3
+version motor    : 8.2.12
+storage engine   : wiredTiger
+docker inspect   : NanoCpus=1000000000 CpuQuota=0 CpuPeriod=0 CpusetCpus=0-7 Memory=1073741824 MemorySwap=1073741824 MemorySwappiness=null OOMKilled=false
+
+-- cgroup v2 leído DENTRO del contenedor --
+  OK    cpu.max          esperado=100000 100000          obtenido=100000 100000
+  OK    memory.max       esperado=1073741824             obtenido=1073741824
+  OK    memory.swap.max  esperado=0                      obtenido=0
+  OK    cpuset.cpus.eff  esperado=0-7                    obtenido=0-7
+
+-- mem_swappiness (ver SPEC A7, V8) --
+  docker inspect MemorySwappiness = null
+  NOTA: /sys/fs/cgroup/memory.swappiness no existe en este contenedor.
+        cgroup v2 no expone un knob de swappiness por cgroup (era de v1).
+        La garantia efectiva de 'sin swap' es memory.swap.max=0, verificado arriba.
+        No se marca como fallo: se declara en la seccion 1 del reporte.
+
+-- archivos de métricas que alimentarán el CSV --
+  OK    presente        /sys/fs/cgroup/cpu.stat
+  OK    presente        /sys/fs/cgroup/memory.stat
+  OK    presente        /sys/fs/cgroup/memory.peak
+  OK    presente        /sys/fs/cgroup/memory.events
+  OK    presente        /sys/fs/cgroup/memory.swap.max
+
+-- contexto de la VM en el momento de la verificación (capture_env.py) --
+  kernel  : 6.6.87.2-microsoft-standard-WSL2  nproc=12
+  loadavg : 1.88 0.80 0.68 1/691 27249
+  memoria : total=7331MB disp=5109MB buff/cache=2842MB
+  swap    : total=2048MB used=0MB
+
+RESULTADO: TODOS LOS LIMITES COINCIDEN

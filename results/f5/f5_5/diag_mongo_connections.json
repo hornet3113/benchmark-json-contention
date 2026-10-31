@@ -1,0 +1,138 @@
+{
+ "descripcion": "diagnóstico del conteo de conexiones y operaciones de Mongo con 50 workers (10×5), PROFILE_A",
+ "procesos_x_hilos": [
+  10,
+  5
+ ],
+ "consultas": {
+  "ok": 99,
+  "timeout": 0,
+  "error": 0
+ },
+ "snapshots": [
+  {
+   "momento": "inicio",
+   "serverStatus.connections": {
+    "current": 153,
+    "active": 102,
+    "available": 52275,
+    "totalCreated": 160
+   },
+   "ops_activas_en_bench.orders": 105,
+   "por_tipo_op_comando": {
+    "type=op op=command cmd=currentOp": 1,
+    "type=op op=command cmd=aggregate": 50,
+    "type=op op=command cmd=hello": 51,
+    "type=op op=none cmd=-": 3
+   },
+   "clientes_distintos_en_esas_ops": 103,
+   "ops_por_cliente": {
+    "1": 102,
+    "3": 1
+   },
+   "todas_las_conexiones_por_comando": {
+    "active=True cmd=currentOp": 1,
+    "active=True cmd=aggregate": 50,
+    "active=True cmd=hello": 51,
+    "active=True cmd=-": 2
+   },
+   "ejemplos": [
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "admin.$cmd.aggregate",
+     "desc": "conn160",
+     "client": "172.22.0.1:57714",
+     "active": true,
+     "planSummary": null,
+     "connectionId": 160,
+     "threaded": true
+    },
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "bench.orders",
+     "desc": "conn156",
+     "client": "172.22.0.1:57240",
+     "active": true,
+     "planSummary": "IXSCAN { timestamp: 1 }",
+     "connectionId": 156,
+     "threaded": true
+    },
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "bench.orders",
+     "desc": "conn155",
+     "client": "172.22.0.1:57238",
+     "active": true,
+     "planSummary": "IXSCAN { timestamp: 1 }",
+     "connectionId": 155,
+     "threaded": true
+    }
+   ]
+  },
+  {
+   "momento": "fin",
+   "serverStatus.connections": {
+    "current": 153,
+    "active": 102,
+    "available": 52275,
+    "totalCreated": 160
+   },
+   "ops_activas_en_bench.orders": 104,
+   "por_tipo_op_comando": {
+    "type=op op=command cmd=currentOp": 1,
+    "type=op op=command cmd=aggregate": 49,
+    "type=op op=command cmd=hello": 51,
+    "type=op op=none cmd=-": 3
+   },
+   "clientes_distintos_en_esas_ops": 102,
+   "ops_por_cliente": {
+    "1": 101,
+    "3": 1
+   },
+   "todas_las_conexiones_por_comando": {
+    "active=True cmd=currentOp": 1,
+    "active=True cmd=aggregate": 49,
+    "active=True cmd=hello": 51,
+    "active=True cmd=-": 2
+   },
+   "ejemplos": [
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "admin.$cmd.aggregate",
+     "desc": "conn160",
+     "client": "172.22.0.1:57714",
+     "active": true,
+     "planSummary": null,
+     "connectionId": 160,
+     "threaded": true
+    },
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "bench.orders",
+     "desc": "conn156",
+     "client": "172.22.0.1:57240",
+     "active": true,
+     "planSummary": "IXSCAN { timestamp: 1 }",
+     "connectionId": 156,
+     "threaded": true
+    },
+    {
+     "type": "op",
+     "op": "command",
+     "ns": "bench.orders",
+     "desc": "conn155",
+     "client": "172.22.0.1:57238",
+     "active": true,
+     "planSummary": "IXSCAN { timestamp: 1 }",
+     "connectionId": 155,
+     "threaded": true
+    }
+   ]
+  }
+ ]
+}

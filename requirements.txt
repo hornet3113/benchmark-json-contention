@@ -1,0 +1,11 @@
+# requirements.txt — entorno del runner (F5.1, 2026-11-01). Versiones EXACTAS.
+# Instalado con: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# Python 3.14.4 (Ubuntu 26.04). Paquetes compilados cp314 verificados en
+# results/env/f5/pip_install_20261101T204524Z.txt.
+#
+# Solo los drivers oficiales de cada motor (SPEC §6). Los percentiles usan la
+# biblioteca estándar (F5-b): no hay numpy.
+pymongo==4.19.0
+dnspython==2.9.1
+psycopg==3.3.6
+psycopg-binary==3.3.6

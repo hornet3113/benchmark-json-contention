@@ -1,0 +1,65 @@
+== V8 — mem_swappiness bajo cgroups v2 — 20261101T171426Z
+docker: client 29.4.1 / server 29.4.1  compose: 5.1.3  cgroup: 2  kernel: 6.6.87.2-microsoft-standard-WSL2
+
+## 1. Avisos en los 6 'docker compose up' ya capturados
+$ grep -iE 'warn|discard' results/env/f1/up_*.txt
+grep exit=1 (1 = ninguna coincidencia)
+
+## 2. Levantar bench_mongo (PROFILE_A)
+== Perfil: PROFILE_A_BASELINE  |  Motor: mongo
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_mongo Creating 
+ Container bench_mongo Created 
+ Container bench_mongo Starting 
+ Container bench_mongo Started 
+== Esperando healthcheck de bench_mongo .... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline mongo
+up exit=0
+
+## 3. Comandos pedidos
+$ docker inspect bench_mongo --format '{{.HostConfig.MemorySwappiness}}'
+<nil>
+exit=0
+$ docker exec bench_mongo ls /sys/fs/cgroup/ | grep -i swappi
+exit=1 (1 = ninguna coincidencia)
+
+## 4. Contexto: archivos memory.* que SÍ expone el cgroup v2 del contenedor
+memory.current memory.events memory.events.local memory.high memory.low memory.max memory.min memory.numa_stat memory.oom.group memory.peak memory.pressure memory.reclaim memory.stat memory.swap.current memory.swap.events memory.swap.high memory.swap.max memory.swap.peak 
+
+## 5. ¿Compose entrega el valor a Docker? (compose resuelto)
+$ docker compose config | grep -iE 'swappi|mem_limit|memswap|cpus'
+    cpus: 4
+    mem_limit: "4294967296"
+    memswap_limit: "4294967296"
+grep exit=0
+
+## 6. Prueba directa sin Compose: docker create --memory-swappiness=0
+$ docker create --name v8_probe --memory=64m --memory-swap=64m --memory-swappiness=0 --entrypoint sleep mongo:8.2 30
+WARNING: Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+ef664397bb99c63977716cd843fb32f8dc0852a6e6a3cd25b7d86f71e4e1aeeb
+create exit=0
+$ docker inspect v8_probe --format '{{.HostConfig.MemorySwappiness}}'   (antes de arrancar)
+<nil>
+$ docker start v8_probe
+v8_probe
+start exit=0
+$ docker inspect v8_probe --format '{{.HostConfig.MemorySwappiness}}'   (arrancado)
+<nil>
+$ docker exec v8_probe ls /sys/fs/cgroup/ | grep -i swappi
+exit=1 (1 = ninguna coincidencia)
+$ docker exec v8_probe cat /sys/fs/cgroup/memory.swap.max
+0
+(v8_probe eliminado)
+
+## 7. Bajar
+ Container bench_mongo Stopping 
+ Container bench_mongo Stopped 
+ Container bench_mongo Removing 
+ Container bench_mongo Removed 
+ Network benchjson_default Removing 
+ Network benchjson_default Removed 
+Listo.
+down exit=0

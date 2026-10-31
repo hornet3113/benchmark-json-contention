@@ -1,0 +1,34 @@
+== Sonda OOM — F1 — 20261101T171903Z
+perfil     : PROFILE_C_SEVERE  (cpus=1.0 mem=1024m memswap=1024m)
+imagen     : mongo:8.2
+asignacion : 2G  (head -c 2G /dev/zero | tail)
+VM antes   : used=1972MB disp=5358MB swap_used=0MB
+
+-- salida del contenedor (leída desde dentro del cgroup) --
+rc_asignador=137
+--- memory.max
+Killed
+1073741824
+--- memory.swap.max
+0
+--- memory.peak
+1073741824
+--- memory.events
+low 0
+high 0
+max 251
+oom 10
+oom_kill 1
+oom_group_kill 0
+
+-- docker inspect --
+  State.ExitCode  = 137
+  State.OOMKilled = true
+  HostConfig      = NanoCpus=1000000000 Memory=1073741824 MemorySwap=1073741824
+
+VM despues : used=1971MB disp=5360MB swap_used=0MB
+
+RESULTADO: OOM OBSERVADO (exit=137, oom_kill=1, OOMKilled=true)
+
+Evidencia archivada en:
+  /home/alix_anahi/benchmark-json-contention/results/env/f1/OOM_PROFILE_C_SEVERE_20261101T171903Z.txt

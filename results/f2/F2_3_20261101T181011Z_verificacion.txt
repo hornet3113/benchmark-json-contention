@@ -1,0 +1,34 @@
+== F2.3 — verificación independiente del archivo de 500 000 — 20261101T181328Z
+
+## 1. Determinismo a escala: segunda generación completa en otro proceso
+registros        : 500000  (501751458 bytes, 206.58 s)
+sha256           : 0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414
+contrato         : OK  (inválidos=0, order_id repetidos=0)
+$ sha256sum
+  0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414  data/orders_500000_seed42.jsonl
+  0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414  <tmp>/orders_500000_run2.jsonl
+$ cmp
+  idénticos
+  (copia temporal borrada)
+
+## 2. Tamaño y prefijo
+$ wc -l / bytes
+  500000 data/orders_500000_seed42.jsonl
+  501751458 bytes
+  sha256 declarado en results/dataset_stats.json: 0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414
+  cmp 1000  vs head -n 1000  del de 500000: idénticos
+  cmp 10000 vs head -n 10000 del de 500000: idénticos
+
+## 3. Recálculo independiente desde disco (sin usar Stats ni validate_record)
+  registros                 : 500000
+  order_id distintos        : 500000  (repetidos: 0)  no canónicos: 0
+  timestamp fuera de formato: 0   final_total no numérico: 0   final_total que no cuadra: 0
+  líneas con caracteres que rompen COPY: 0
+  ítems por registro        : 2.9991   [2.9, 3.1] OK
+  completed                 : 69.9714 %   70 ±1     OK
+  timestamp >= 2026         : 50.0414 %   50 ±1     OK
+  ítems con price > 50      : 44.8679 %   44.94 ±1  OK
+  grupos país × categoría   : 240 de 240
+  filas del filtro Q2       : 175049
+  Q2 fila 1000 / 1001       : 1351.37 / 1351.29  -> empate: False
+  Q2 valores repetidos dentro del Top-1000: 20

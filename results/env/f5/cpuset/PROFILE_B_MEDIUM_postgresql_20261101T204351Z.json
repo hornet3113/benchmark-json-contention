@@ -1,0 +1,78 @@
+{
+  "fase": "F1",
+  "fecha_utc": "20261101T204351Z",
+  "profile": "PROFILE_B_MEDIUM",
+  "esperado": {
+    "cpu.max": "200000 100000",
+    "memory.max": "2147483648",
+    "memory.swap.max": "0",
+    "cpuset.cpus.effective": "0-7"
+  },
+  "coinciden": true,
+  "schema": "capture_env/1",
+  "captured_at_utc": "2026-11-01T20:43:52Z",
+  "engine": "postgresql",
+  "container": "bench_postgres",
+  "profile_label": "PROFILE_B_MEDIUM",
+  "image": {
+    "tag": "postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81",
+    "id": "sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81",
+    "repo_digests": [
+      "postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81"
+    ]
+  },
+  "engine_version": "18.6 (Debian 18.6-1.pgdg13+2)",
+  "storage_engine": "n/a",
+  "cgroup": {
+    "limits": {
+      "cpu.max": "200000 100000",
+      "memory.max": "2147483648",
+      "memory.swap.max": "0",
+      "cpuset.cpus.effective": "0-7"
+    },
+    "metric_files": {
+      "cpu.stat": true,
+      "memory.stat": true,
+      "memory.peak": true,
+      "memory.events": true,
+      "memory.swap.max": true
+    },
+    "memory_swappiness": {
+      "present": false,
+      "value": null
+    }
+  },
+  "docker_inspect": {
+    "NanoCpus": 2000000000,
+    "CpuQuota": 0,
+    "CpuPeriod": 0,
+    "Memory": 2147483648,
+    "MemorySwap": 2147483648,
+    "MemorySwappiness": null,
+    "CpusetCpus": "0-7",
+    "OOMKilled": false
+  },
+  "host": {
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "nproc": 12,
+    "loadavg": {
+      "raw": "1.40 0.61 0.61 1/649 26902",
+      "1m": 1.4,
+      "5m": 0.61,
+      "15m": 0.61
+    },
+    "memory": {
+      "MemTotal_kb": 7507156,
+      "MemFree_kb": 2601828,
+      "MemAvailable_kb": 5310248,
+      "Buffers_kb": 46200,
+      "Cached_kb": 2636252,
+      "SReclaimable_kb": 242492,
+      "SwapTotal_kb": 2097152,
+      "SwapFree_kb": 2096372,
+      "buff_cache_kb": 2924944,
+      "swap_used_kb": 780
+    }
+  },
+  "errores": []
+}

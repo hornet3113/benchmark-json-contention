@@ -1,0 +1,17 @@
+{
+  "gate": "g3",
+  "engine": "postgres",
+  "repeticiones": 5,
+  "muestras_s": {
+    "psql": [
+      0.305,
+      0.297,
+      0.308,
+      0.292,
+      0.293
+    ]
+  },
+  "mediana_s": {
+    "psql": 0.297
+  }
+}

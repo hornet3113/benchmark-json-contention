@@ -1,0 +1,15 @@
+$ scripts/up_profile.sh a_baseline postgres   (20261101T164629Z)
+== Perfil: PROFILE_A_BASELINE  |  Motor: postgres
+   CPUs=4.0  mem=4096m  memswap=4096m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Volume benchjson_pg_data Creating 
+ Volume benchjson_pg_data Created 
+ Container bench_postgres Creating 
+ Container bench_postgres Created 
+ Container bench_postgres Starting 
+ Container bench_postgres Started 
+== Esperando healthcheck de bench_postgres ... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh a_baseline postgres
+exit=0

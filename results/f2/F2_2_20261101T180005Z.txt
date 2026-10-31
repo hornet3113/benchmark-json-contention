@@ -1,0 +1,62 @@
+== F2.2 — generador: CLI, streaming, determinismo y prefijo — 20261101T180005Z
+python 3.14.4 · 6.6.87.2-microsoft-standard-WSL2
+
+## 1. --size 1000
+$ python3 generator/synthetic_data_generator.py --size 1000
+registros        : 1000  (1013389 bytes, 0.35 s)
+sha256           : fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c
+contrato         : OK  (inválidos=0, order_id repetidos=0)
+ítems/registro   : 3.075  · price>50 46.6341 %  · completed 75.2 %  · ts>=2026 48.3 %
+filas filtro Q2  : 363  · empate en la fila 1000: no aplica
+datos            : /home/alix_anahi/benchmark-json-contention/data/orders_1000_seed42.jsonl
+estadísticas     : /home/alix_anahi/benchmark-json-contention/results/f2/dataset_stats_1000_seed42.json
+exit=0
+
+## 2. --size 1000 otra vez, en otro proceso y a otra ruta (determinismo de punta a punta)
+exit=0
+
+## 3. --size 10000
+$ python3 generator/synthetic_data_generator.py --size 10000
+registros        : 10000  (10043066 bytes, 3.48 s)
+sha256           : 66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111
+contrato         : OK  (inválidos=0, order_id repetidos=0)
+ítems/registro   : 3.0038  · price>50 44.7 %  · completed 70.07 %  · ts>=2026 49.6 %
+filas filtro Q2  : 3506  · empate en la fila 1000: False
+datos            : /home/alix_anahi/benchmark-json-contention/data/orders_10000_seed42.jsonl
+estadísticas     : /home/alix_anahi/benchmark-json-contention/results/f2/dataset_stats_10000_seed42.json
+exit=0
+
+## 4. Comprobaciones con herramientas del sistema (independientes del generador)
+$ wc -l
+      1000 data/orders_1000_seed42.jsonl
+     10000 data/orders_10000_seed42.jsonl
+     11000 total
+$ sha256sum
+  fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c  data/orders_1000_seed42.jsonl
+  fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c  <tmp>/orders_1000_run2.jsonl
+  head -n 1000 de 10000: fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c
+$ cmp archivo_1000 run2
+  idénticos
+$ cmp archivo_1000 <(head -n 1000 archivo_10000)
+  idénticos: el de 1000 es el inicio exacto del de 10000
+  sha256 declarado en stats_1000: fd0b00daa2607ef4af49635354f7ff892640227fe0aedc7021d9fe85158eb64c
+
+## 5. Revalidación del archivo de 1000 LEÍDO DE DISCO (PLAN F2: esquema sobre muestra de 1000)
+  registros leídos=1000  inválidos=0  final_total no numérico=0  profundidades=[3]
+
+## 6. Estadísticas de 10000 (extracto)
+  registros: 10000
+  registros_invalidos: 0
+  order_id_repetidos: 0
+  anidamiento_niveles: {'3': 10000}
+  pct_completed: 70.07
+  pct_timestamp_ge_2026: 49.6
+  timestamp_min: 2025-01-01T00:07:24Z
+  timestamp_max: 2026-12-31T23:38:33Z
+  final_total_min: 2.74
+  final_total_max: 1852.94
+  bytes: 10043066
+  segundos: 3.48
+  items: {'total': 30038, 'media_por_registro': 3.0038, 'distribucion': {'1': 1954, '2': 2444, '3': 1987, '4': 1666, '5': 1123, '6': 826}, 'pct_price_gt_50': 44.7}
+  q1: {'distintos': 240, 'posibles': 240, 'items_min_por_grupo': 95, 'items_max_por_grupo': 164}
+  q2: {'filtro': "payment.status = 'completed' AND timestamp >= '2026-01-01T00:00:00Z'", 'filas': 3506, 'pct': 35.06, 'frontera_top_k': {'k': 1000, 'aplica': True, 'final_total_fila_k': 567.24, 'final_total_fila_k_mas_1': 567.2, 'empate_en_la_frontera': False}}

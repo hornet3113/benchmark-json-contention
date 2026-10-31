@@ -1,0 +1,241 @@
+{
+  "explainVersion": "1",
+  "queryPlanner": {
+    "namespace": "bench.orders",
+    "parsedQuery": {
+      "$and": [
+        {
+          "payment.status": {
+            "$eq": "completed"
+          }
+        },
+        {
+          "timestamp": {
+            "$gte": "2026-01-01T00:00:00Z"
+          }
+        }
+      ]
+    },
+    "indexFilterSet": false,
+    "queryHash": "C3F9DF7C",
+    "planCacheShapeHash": "C3F9DF7C",
+    "planCacheKey": "C20300F7",
+    "optimizationTimeMillis": 0,
+    "optimizedPipeline": true,
+    "maxIndexedOrSolutionsReached": false,
+    "maxIndexedAndSolutionsReached": false,
+    "maxScansToExplodeReached": false,
+    "prunedSimilarIndexes": false,
+    "winningPlan": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "transformBy": {
+        "_id": true,
+        "order_id": true,
+        "customer": {
+          "id": true
+        },
+        "payment": {
+          "final_total": true
+        }
+      },
+      "inputStage": {
+        "stage": "SORT",
+        "sortPattern": {
+          "payment.final_total": -1
+        },
+        "memLimit": 104857600,
+        "limitAmount": 1000,
+        "type": "simple",
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "payment.status": {
+              "$eq": "completed"
+            }
+          },
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "timestamp": 1
+            },
+            "indexName": "idx_orders_timestamp",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "timestamp": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "timestamp": [
+                "[\"2026-01-01T00:00:00Z\", {})"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "rejectedPlans": []
+  },
+  "executionStats": {
+    "executionSuccess": true,
+    "nReturned": 1000,
+    "executionTimeMillis": 19,
+    "totalKeysExamined": 4960,
+    "totalDocsExamined": 4960,
+    "executionStages": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "nReturned": 1000,
+      "executionTimeMillisEstimate": 11,
+      "works": 5962,
+      "advanced": 1000,
+      "needTime": 4961,
+      "needYield": 0,
+      "saveState": 0,
+      "restoreState": 0,
+      "isEOF": 1,
+      "transformBy": {
+        "_id": true,
+        "order_id": true,
+        "customer": {
+          "id": true
+        },
+        "payment": {
+          "final_total": true
+        }
+      },
+      "inputStage": {
+        "stage": "SORT",
+        "nReturned": 1000,
+        "executionTimeMillisEstimate": 11,
+        "works": 5962,
+        "advanced": 1000,
+        "needTime": 4961,
+        "needYield": 0,
+        "saveState": 0,
+        "restoreState": 0,
+        "isEOF": 1,
+        "sortPattern": {
+          "payment.final_total": -1
+        },
+        "memLimit": 104857600,
+        "limitAmount": 1000,
+        "type": "simple",
+        "totalDataSizeSorted": 1335794,
+        "usedDisk": false,
+        "spills": 0,
+        "spilledRecords": 0,
+        "spilledBytes": 0,
+        "spilledDataStorageSize": 0,
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "payment.status": {
+              "$eq": "completed"
+            }
+          },
+          "nReturned": 3506,
+          "executionTimeMillisEstimate": 3,
+          "works": 4961,
+          "advanced": 3506,
+          "needTime": 1454,
+          "needYield": 0,
+          "saveState": 0,
+          "restoreState": 0,
+          "isEOF": 1,
+          "docsExamined": 4960,
+          "alreadyHasObj": 0,
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nReturned": 4960,
+            "executionTimeMillisEstimate": 0,
+            "works": 4961,
+            "advanced": 4960,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 0,
+            "restoreState": 0,
+            "isEOF": 1,
+            "keyPattern": {
+              "timestamp": 1
+            },
+            "indexName": "idx_orders_timestamp",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "timestamp": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "timestamp": [
+                "[\"2026-01-01T00:00:00Z\", {})"
+              ]
+            },
+            "keysExamined": 4960,
+            "seeks": 1,
+            "dupsTested": 0,
+            "dupsDropped": 0
+          }
+        }
+      }
+    }
+  },
+  "queryShapeHash": "08584F5CDA46B95D83C679030AAB17F4521B378B4D28141FF2FAD360B8B143C4",
+  "command": {
+    "aggregate": "orders",
+    "pipeline": [
+      {
+        "$match": {
+          "payment.status": "completed",
+          "timestamp": {
+            "$gte": "2026-01-01T00:00:00Z"
+          }
+        }
+      },
+      {
+        "$sort": {
+          "payment.final_total": -1
+        }
+      },
+      {
+        "$limit": 1000
+      },
+      {
+        "$project": {
+          "order_id": 1,
+          "customer.id": 1,
+          "payment.final_total": 1
+        }
+      }
+    ],
+    "allowDiskUse": false,
+    "cursor": {},
+    "$db": "bench"
+  },
+  "serverInfo": {
+    "host": "7e1dee0c9f07",
+    "port": 27017,
+    "version": "8.2.12",
+    "gitVersion": "0f912e80210b8fdfdcec618b14b6c0fced055cb8"
+  },
+  "serverParameters": {
+    "internalQueryFacetBufferSizeBytes": 104857600,
+    "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+    "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+    "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+    "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+    "internalQueryProhibitBlockingMergeOnMongoS": 0,
+    "internalQueryMaxAddToSetBytes": 104857600,
+    "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+    "internalQueryFrameworkControl": "trySbeRestricted",
+    "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+  },
+  "ok": 1
+}

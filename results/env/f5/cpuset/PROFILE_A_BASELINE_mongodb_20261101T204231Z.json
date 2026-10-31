@@ -1,0 +1,78 @@
+{
+  "fase": "F1",
+  "fecha_utc": "20261101T204231Z",
+  "profile": "PROFILE_A_BASELINE",
+  "esperado": {
+    "cpu.max": "400000 100000",
+    "memory.max": "4294967296",
+    "memory.swap.max": "0",
+    "cpuset.cpus.effective": "0-7"
+  },
+  "coinciden": true,
+  "schema": "capture_env/1",
+  "captured_at_utc": "2026-11-01T20:42:34Z",
+  "engine": "mongodb",
+  "container": "bench_mongo",
+  "profile_label": "PROFILE_A_BASELINE",
+  "image": {
+    "tag": "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+    "id": "sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3",
+    "repo_digests": [
+      "mongo@sha256:e0ce8c35124d4a9f9785532d1f268f39e9728ffa1cb38f46fa482436424c4bd3"
+    ]
+  },
+  "engine_version": "8.2.12",
+  "storage_engine": "wiredTiger",
+  "cgroup": {
+    "limits": {
+      "cpu.max": "400000 100000",
+      "memory.max": "4294967296",
+      "memory.swap.max": "0",
+      "cpuset.cpus.effective": "0-7"
+    },
+    "metric_files": {
+      "cpu.stat": true,
+      "memory.stat": true,
+      "memory.peak": true,
+      "memory.events": true,
+      "memory.swap.max": true
+    },
+    "memory_swappiness": {
+      "present": false,
+      "value": null
+    }
+  },
+  "docker_inspect": {
+    "NanoCpus": 4000000000,
+    "CpuQuota": 0,
+    "CpuPeriod": 0,
+    "Memory": 4294967296,
+    "MemorySwap": 4294967296,
+    "MemorySwappiness": null,
+    "CpusetCpus": "0-7",
+    "OOMKilled": false
+  },
+  "host": {
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "nproc": 12,
+    "loadavg": {
+      "raw": "0.44 0.29 0.52 1/679 25913",
+      "1m": 0.44,
+      "5m": 0.29,
+      "15m": 0.52
+    },
+    "memory": {
+      "MemTotal_kb": 7507156,
+      "MemFree_kb": 2658212,
+      "MemAvailable_kb": 5227336,
+      "Buffers_kb": 13164,
+      "Cached_kb": 2515600,
+      "SReclaimable_kb": 241344,
+      "SwapTotal_kb": 2097152,
+      "SwapFree_kb": 2096372,
+      "buff_cache_kb": 2770108,
+      "swap_used_kb": 780
+    }
+  },
+  "errores": []
+}

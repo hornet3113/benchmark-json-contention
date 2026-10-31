@@ -1,0 +1,11 @@
+== Perfil: PROFILE_C_SEVERE  |  Motor: postgres
+   CPUs=1.0  mem=1024m  memswap=1024m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_postgres Creating 
+ Container bench_postgres Created 
+ Container bench_postgres Starting 
+ Container bench_postgres Started 
+== Esperando healthcheck de bench_postgres ... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh c_severe postgres

@@ -1,0 +1,66 @@
+== F5.5b 50 procesos frente a 10×5 hilos — 20261101T215814Z — loadavg 0.14 0.84 3.84
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## postgresql · run 1 · A1 (50 procesos) — 21:58:17 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.225000 p50/p95/p99=24710.411817/31073.362599099997/33055.22473996 ms throttled=432.044118 s rss=126.89453125 MiB spill=False (181.62 s)
+   crudo: results/smoke/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## postgresql · run 2 · B (10 procesos) — 22:01:35 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.983333 p50/p95/p99=26156.117210999997/29155.998652050002/32735.63668802 ms throttled=433.886816 s rss=127.21875 MiB spill=False (170.18 s)
+   crudo: results/smoke/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## postgresql · run 3 · A2 (50 procesos) — 22:04:40 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.991667 p50/p95/p99=27577.806542/33966.8772432/36130.0741286 ms throttled=435.592331 s rss=129.23828125 MiB spill=False (182.78 s)
+   crudo: results/smoke/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## mongodb · run 1 · A1 (50 procesos) — 22:08:03 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.500000 p50/p95/p99=22118.986214500004/33689.568246200004/35177.91641445 ms throttled=478.845554 s rss=954.50390625 MiB spill=False (193.12 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## mongodb · run 2 · B (10 procesos) — 22:11:48 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.216667 p50/p95/p99=23605.225148499998/30894.653830249998/32476.06472945 ms throttled=477.832223 s rss=956.3046875 MiB spill=False (172.5 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r2.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## mongodb · run 3 · A2 (50 procesos) — 22:15:00 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.283333 p50/p95/p99=23300.169197/32902.056603699995/34876.16522681 ms throttled=477.626872 s rss=959.38671875 MiB spill=False (180.3 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r3.json  · CSV: results/smoke/measurements_smoke.csv
+########## exit 0
+
+########## Validación del CSV y comparación
+VÁLIDO: results/smoke/measurements_smoke.csv
+== postgresql: COINCIDEN
+   A1 50×1  p50=24710 ms  p95=31073 ms  qps=2.2250  completadas=267  clientes=50/50  activas=[50, 50]  workers_paralelos=[7, 7]  runner=2125 MiB
+   B  10×5  p50=26156 ms  p95=29156 ms  qps=1.9833  completadas=238  clientes=50/50  activas=[50, 50]  workers_paralelos=[7, 7]  runner=476 MiB
+   A2 50×1  p50=27578 ms  p95=33967 ms  qps=1.9917  completadas=239  clientes=50/50  activas=[50, 50]  workers_paralelos=[7, 7]  runner=2122 MiB
+   clientes_50_en_las_3: True
+   p50_B_dentro_de_A: True
+   p50_rango_A_ampliado: [22239.371, 30335.587]
+   p95_B_dentro_de_A: True
+   p95_rango_A_ampliado: [27966.026, 37363.565]
+   qps_B_dentro_de_A: True
+   qps_rango_A_ampliado: [1.792, 2.448]
+== mongodb: NO COINCIDEN
+   A1 50×1  p50=22119 ms  p95=33690 ms  qps=2.5000  completadas=300  clientes=152/152  activas=[104, 105]  workers_paralelos=[None, None]  runner=1988 MiB
+   B  10×5  p50=23605 ms  p95=30895 ms  qps=2.2167  completadas=266  clientes=152/152  activas=[102, 104]  workers_paralelos=[None, None]  runner=459 MiB
+   A2 50×1  p50=23300 ms  p95=32902 ms  qps=2.2833  completadas=274  clientes=152/152  activas=[105, 102]  workers_paralelos=[None, None]  runner=1991 MiB
+   clientes_50_en_las_3: False
+   p50_B_dentro_de_A: True
+   p50_rango_A_ampliado: [19907.088, 25630.186]
+   p95_B_dentro_de_A: True
+   p95_rango_A_ampliado: [29611.851, 37058.525]
+   qps_B_dentro_de_A: True
+   qps_rango_A_ampliado: [2.055, 2.75]
+-> results/smoke/comparacion_modos.json · NO coinciden: revisar antes de seguir
+
+Listo. Avísale a Claude (registro: results/smoke/f55b_20261101T215814Z.txt).

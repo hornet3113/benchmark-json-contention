@@ -1,0 +1,112 @@
+{
+  "criterio": {
+    "tolerancia_latencias": 0.1,
+    "clientes_activos_minimos": 48,
+    "de": 50,
+    "motivo": "≥ 48 de 50 clientes con consulta activa en cada borde. Fijado por Alix el 2026-11-01 antes de repetir Mongo: una foto instantánea de un bucle cerrado puede atrapar a un worker entre consultas; no se cambia porque el resultado no alcanzara la vara original (50)."
+  },
+  "motores": {
+    "mongodb": {
+      "corridas": {
+        "A1": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 21612.853364000002,
+          "p95": 24067.831116,
+          "qps": 2.1333333333333333,
+          "completadas": 256,
+          "clientes_inicio": 50,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            50,
+            50
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 1989
+        },
+        "B": {
+          "procesos_x_hilos": [
+            10,
+            5
+          ],
+          "status": "ok",
+          "p50": 23381.993683,
+          "p95": 32427.9419581,
+          "qps": 2.325,
+          "completadas": 279,
+          "clientes_inicio": 47,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            47,
+            50
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 460
+        },
+        "A2": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 23110.501519499998,
+          "p95": 31184.47003965,
+          "qps": 2.2333333333333334,
+          "completadas": 268,
+          "clientes_inicio": 50,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            50,
+            50
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 1988
+        }
+      },
+      "comprobaciones": {
+        "clientes_activos_>=48_en_las_3": false,
+        "p50_B_dentro_de_A": true,
+        "p50_rango_A_ampliado": [
+          19451.568,
+          25421.552
+        ],
+        "p95_B_dentro_de_A": true,
+        "p95_rango_A_ampliado": [
+          21661.048,
+          34302.917
+        ],
+        "qps_B_dentro_de_A": true,
+        "qps_rango_A_ampliado": [
+          1.92,
+          2.457
+        ]
+      },
+      "coinciden": false
+    }
+  },
+  "coinciden_en_los_dos": false
+}

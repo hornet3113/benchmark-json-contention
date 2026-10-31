@@ -1,0 +1,22 @@
+== F5.3 adaptadores contra la evidencia de G3 — 20261101T205749Z
+pymongo 4.19.0 · psycopg 3.3.6
+
+### mongodb (PROFILE_A)
+   motor arriba
+   OK    Q1           filas=240/240 {'igual_a_G3': True}  sesión={'aggregate_kwargs': {'maxTimeMS': 300000}}  (10350.1 ms, luego 7123.9 ms)
+   OK    Q2_MEM_LOW   filas=1000/1000 {'mismo_conjunto_que_G3': True, 'mismo_vector_final_total': True}  sesión={'aggregate_kwargs': {'maxTimeMS': 300000, 'allowDiskUse': False}}  (2216.5 ms, luego 2997.6 ms)
+   OK    Q2_MEM_HIGH  filas=1000/1000 {'mismo_conjunto_que_G3': True, 'mismo_vector_final_total': True}  sesión={'aggregate_kwargs': {'maxTimeMS': 300000, 'allowDiskUse': True}}  (2164.5 ms, luego 1711.8 ms)
+   OK    timeout 1 ms en Q1: QueryTimeout=True, conexión viva=True — operation exceeded time limit, full error: {'ok': 0.0, 'errmsg': 'operation exceeded time limit', 'code': 50, 
+   RESULTADO: OK -> results/f5/f5_3/adapters_mongodb.json
+   exit=0
+
+### postgresql (PROFILE_A)
+   motor arriba
+   OK    Q1           filas=240/240 {'igual_a_G3': True}  sesión={'statements': ["SET statement_timeout = '300000ms'"], 'SHOW work_mem': '4MB', 'SHOW statement_timeout': '5min'}  (47255.7 ms, luego 32862.0 ms)
+   OK    Q2_MEM_LOW   filas=1000/1000 {'mismo_conjunto_que_G3': True, 'mismo_vector_final_total': True}  sesión={'statements': ["SET statement_timeout = '300000ms'", "SET work_mem = '4MB'"], 'SHOW work_mem': '4MB', 'SHOW statement_timeout': '5min'}  (1902.0 ms, luego 2488.1 ms)
+   OK    Q2_MEM_HIGH  filas=1000/1000 {'mismo_conjunto_que_G3': True, 'mismo_vector_final_total': True}  sesión={'statements': ["SET statement_timeout = '300000ms'", "SET work_mem = '64MB'"], 'SHOW work_mem': '64MB', 'SHOW statement_timeout': '5min'}  (2262.3 ms, luego 2609.9 ms)
+   OK    timeout 1 ms en Q1: QueryTimeout=True, conexión viva=True — canceling statement due to statement timeout
+   RESULTADO: OK -> results/f5/f5_3/adapters_postgresql.json
+   exit=0
+
+down exit=0

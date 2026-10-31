@@ -1,0 +1,200 @@
+{
+  "explainVersion": "1",
+  "stages": [
+    {
+      "$cursor": {
+        "queryPlanner": {
+          "namespace": "bench.orders",
+          "parsedQuery": {},
+          "indexFilterSet": false,
+          "queryHash": "5F2000E5",
+          "planCacheShapeHash": "5F2000E5",
+          "planCacheKey": "ACB11F08",
+          "optimizationTimeMillis": 0,
+          "maxIndexedOrSolutionsReached": false,
+          "maxIndexedAndSolutionsReached": false,
+          "maxScansToExplodeReached": false,
+          "prunedSimilarIndexes": false,
+          "winningPlan": {
+            "isCached": false,
+            "stage": "PROJECTION_DEFAULT",
+            "transformBy": {
+              "customer.geo.country": 1,
+              "items": 1,
+              "_id": 0
+            },
+            "inputStage": {
+              "stage": "COLLSCAN",
+              "direction": "forward"
+            }
+          },
+          "rejectedPlans": []
+        },
+        "executionStats": {
+          "executionSuccess": true,
+          "nReturned": 10000,
+          "executionTimeMillis": 67,
+          "totalKeysExamined": 0,
+          "totalDocsExamined": 10000,
+          "executionStages": {
+            "isCached": false,
+            "stage": "PROJECTION_DEFAULT",
+            "nReturned": 10000,
+            "executionTimeMillisEstimate": 2,
+            "works": 10001,
+            "advanced": 10000,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 12,
+            "restoreState": 11,
+            "isEOF": 1,
+            "transformBy": {
+              "customer.geo.country": 1,
+              "items": 1,
+              "_id": 0
+            },
+            "inputStage": {
+              "stage": "COLLSCAN",
+              "nReturned": 10000,
+              "executionTimeMillisEstimate": 2,
+              "works": 10001,
+              "advanced": 10000,
+              "needTime": 0,
+              "needYield": 0,
+              "saveState": 12,
+              "restoreState": 11,
+              "isEOF": 1,
+              "direction": "forward",
+              "docsExamined": 10000
+            }
+          }
+        }
+      },
+      "nReturned": 10000,
+      "executionTimeMillisEstimate": 25
+    },
+    {
+      "$unwind": {
+        "path": "$items"
+      },
+      "nReturned": 30038,
+      "executionTimeMillisEstimate": 35
+    },
+    {
+      "$match": {
+        "items.price": {
+          "$gt": 50
+        }
+      },
+      "nReturned": 13427,
+      "executionTimeMillisEstimate": 45
+    },
+    {
+      "$group": {
+        "_id": {
+          "country": "$customer.geo.country",
+          "category": "$items.category"
+        },
+        "total_revenue": {
+          "$sum": {
+            "$multiply": [
+              "$items.qty",
+              "$items.price"
+            ]
+          }
+        },
+        "avg_revenue": {
+          "$avg": {
+            "$multiply": [
+              "$items.qty",
+              "$items.price"
+            ]
+          }
+        },
+        "count": {
+          "$sum": {
+            "$const": 1
+          }
+        },
+        "$willBeMerged": false
+      },
+      "maxAccumulatorMemoryUsageBytes": {
+        "total_revenue": 42240,
+        "avg_revenue": 36480,
+        "count": 42240
+      },
+      "totalOutputDataSizeBytes": 129120,
+      "usedDisk": false,
+      "spills": 0,
+      "spilledDataStorageSize": 0,
+      "spilledBytes": 0,
+      "spilledRecords": 0,
+      "nReturned": 240,
+      "executionTimeMillisEstimate": 60
+    }
+  ],
+  "queryShapeHash": "FCDE9D4EAC113A736D624A6EBA4B4DD2854DCB0E142BF7CBB253C29E780213F0",
+  "serverInfo": {
+    "host": "7e1dee0c9f07",
+    "port": 27017,
+    "version": "8.2.12",
+    "gitVersion": "0f912e80210b8fdfdcec618b14b6c0fced055cb8"
+  },
+  "serverParameters": {
+    "internalQueryFacetBufferSizeBytes": 104857600,
+    "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+    "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+    "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+    "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+    "internalQueryProhibitBlockingMergeOnMongoS": 0,
+    "internalQueryMaxAddToSetBytes": 104857600,
+    "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+    "internalQueryFrameworkControl": "trySbeRestricted",
+    "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+  },
+  "command": {
+    "aggregate": "orders",
+    "pipeline": [
+      {
+        "$unwind": "$items"
+      },
+      {
+        "$match": {
+          "items.price": {
+            "$gt": 50
+          }
+        }
+      },
+      {
+        "$group": {
+          "_id": {
+            "country": "$customer.geo.country",
+            "category": "$items.category"
+          },
+          "total_revenue": {
+            "$sum": {
+              "$multiply": [
+                "$items.qty",
+                "$items.price"
+              ]
+            }
+          },
+          "avg_revenue": {
+            "$avg": {
+              "$multiply": [
+                "$items.qty",
+                "$items.price"
+              ]
+            }
+          },
+          "count": {
+            "$sum": 1
+          }
+        }
+      }
+    ],
+    "cursor": {},
+    "$db": "bench"
+  },
+  "ok": 1
+}

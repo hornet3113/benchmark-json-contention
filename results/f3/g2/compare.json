@@ -1,0 +1,44 @@
+{
+  "gate": "g2",
+  "fecha_utc": "2026-11-01T18:59:41Z",
+  "archivo_fuente": "data/orders_10000_seed42.jsonl",
+  "validacion_esquema_100pct": {
+    "fuente (orden estricto)": {
+      "validados": 10000,
+      "invalidos": 0,
+      "ejemplos": []
+    },
+    "mongo (sin orden)": {
+      "validados": 10000,
+      "invalidos": 0,
+      "ejemplos": []
+    },
+    "postgres (sin orden)": {
+      "validados": 10000,
+      "invalidos": 0,
+      "ejemplos": []
+    }
+  },
+  "comparacion_tres_direcciones": {
+    "fuente": 10000,
+    "mongo": 10000,
+    "postgres": 10000,
+    "iguales_en_los_tres": 10000,
+    "faltan_en": {
+      "fuente": 0,
+      "mongo": 0,
+      "postgres": 0
+    },
+    "distintos": {
+      "mongo": 0,
+      "postgres": 0
+    },
+    "ejemplos": [],
+    "ok": true
+  },
+  "documentos_con_mismo_orden_de_claves_que_la_fuente": {
+    "mongo": 10000,
+    "postgres": 0
+  },
+  "ok": true
+}

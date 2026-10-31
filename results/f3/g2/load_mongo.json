@@ -1,0 +1,11 @@
+{
+  "gate": "g2",
+  "engine": "mongo",
+  "fecha_utc": "2026-11-01T18:58:34Z",
+  "archivo": "data/orders_10000_seed42.jsonl",
+  "sha256": "66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111",
+  "esperado": 10000,
+  "conteo": 10000,
+  "segundos": {"carga": 1.563, "indices": 1.552, "analyze": 0.0},
+  "ok": true
+}

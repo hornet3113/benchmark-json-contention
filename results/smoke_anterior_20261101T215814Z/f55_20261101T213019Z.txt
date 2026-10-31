@@ -1,0 +1,51 @@
+== F5.5 prueba de humo — 20261101T213019Z — 6.6.87.2-microsoft-standard-WSL2 — loadavg 0.04 0.10 0.34
+host: bateria estado=2 (2=corriente) carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## 1. mongodb PROFILE_C Q2_MEM_LOW c=1 — 21:30:21 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 5, 'measure_s': 20, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=14.709129 s rss=528.609375 MiB spill=False (45.66 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/smoke/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## 1 terminó con exit 0
+
+########## 2. postgresql PROFILE_C Q2_MEM_LOW c=1 — 21:31:56 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 5, 'measure_s': 20, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.600000 p50/p95/p99=1698.062966/1809.0146202500002/1811.27967205 ms throttled=62.665778 s rss=15.14453125 MiB spill=False (31.08 s)
+   - baja densidad muestral: 12 completadas en la ventana (A4)
+   crudo: results/smoke/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## 2 terminó con exit 0
+
+########## 3. postgresql PROFILE_A Q1 c=50 (carga máxima) — 21:32:44 UTC
+== postgresql_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 10, 'measure_s': 300, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=spill qps=0.013333 p50/p95/p99=232177.07238700002/273509.47546384996/279171.80143517 ms throttled=1001.078101 s rss=1963.06640625 MiB spill=True (342.34 s)
+   - baja densidad muestral: 4 completadas en la ventana (A4)
+   - 46 consulta(s) fallidas o con timeout dentro de la ventana
+   crudo: results/smoke/raw/postgresql_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## 3 terminó con exit 0
+   monitor: results/smoke/monitor_3.csv
+
+########## 4. mongodb PROFILE_A Q1 c=50 (carga máxima) — 21:38:47 UTC
+== mongodb_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 10, 'measure_s': 60, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=235.701318 s rss=878.74609375 MiB spill=False (102.17 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+########## 4 terminó con exit 0
+   monitor: results/smoke/monitor_4.csv
+
+########## Validación del CSV de humo
+VÁLIDO: results/smoke/measurements_smoke.csv
+
+########## Resumen
+   paso 1: exit 0
+   paso 2: exit 0
+   paso 3: exit 0
+   paso 4: exit 0
+   paso v: exit 0
+
+timestamp_epoch,engine,profile,query_id,concurrency,run_number,throughput_qps,latency_p50_ms,latency_p95_ms,latency_p99_ms,cpu_throttled_seconds,max_rss_mb,disk_spill,status
+1793568653,mongodb,PROFILE_C_SEVERE,Q2_MEM_LOW,1,1,0.000000,,,,14.709,528.609,false,error
+1793568735,postgresql,PROFILE_C_SEVERE,Q2_MEM_LOW,1,1,0.600000,1698.063,1809.015,1811.280,62.666,15.145,false,ok
+1793568794,postgresql,PROFILE_A_BASELINE,Q1,50,1,0.013333,232177.072,273509.475,279171.801,1001.078,1963.066,true,spill
+1793569163,mongodb,PROFILE_A_BASELINE,Q1,50,1,0.000000,,,,235.701,878.746,false,error
+
+Listo. Avísale a Claude: lo leerá todo de results/smoke/ (registro: results/smoke/f55_20261101T213019Z.txt).

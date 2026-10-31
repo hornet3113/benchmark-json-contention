@@ -1,0 +1,11 @@
+{
+  "gate": "g2",
+  "engine": "postgres",
+  "fecha_utc": "2026-11-01T18:59:21Z",
+  "archivo": "data/orders_10000_seed42.jsonl",
+  "sha256": "66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111",
+  "esperado": 10000,
+  "conteo": 10000,
+  "segundos": {"carga": 1.642, "indices": 0.423, "analyze": 0.442},
+  "ok": true
+}

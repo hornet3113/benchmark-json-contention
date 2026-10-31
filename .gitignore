@@ -1,0 +1,19 @@
+# Datos que no se versionan por tamaño. Los dos se regeneran:
+# - el dataset de 500 000 con generator/synthetic_data_generator.py --size 500000
+#   (SHA-256 en results/dataset_stats.json);
+# - los exports con scripts/verify_gate.py.
+# Las latencias crudas (results/raw/), los logs y abortadas.jsonl SÍ se
+# versionan: son evidencia (SPEC §7, puntos 14 y 15).
+data/orders_500000_seed42.jsonl
+data/exports/
+# Escrituras a medias del generador o del runner; no son evidencia.
+*.jsonl.tmp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Entorno local
+.env

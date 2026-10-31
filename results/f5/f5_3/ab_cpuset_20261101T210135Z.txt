@@ -1,0 +1,7 @@
+== A/B del cpuset: Q2_MEM_LOW en Postgres, PROFILE_A (cpu.max 4 CPUs), alternando — 20261101T210135Z
+   Sin modificar archivos: ENGINE_CPUSET se sobrescribe solo para levantar el contenedor.
+   cpuset=0-7 (efectivo 0-7): mediana 1487 ms (min 1159, max 2235) · EXPLAIN 1575 ms · throttled 2325 ms · loadavg 2.88
+   cpuset=0-11 (efectivo 0-11): mediana 1617 ms (min 1159, max 1994) · EXPLAIN 1159 ms · throttled 1886 ms · loadavg 4.07
+   cpuset=0-7 (efectivo 0-7): mediana 1501 ms (min 1214, max 2033) · EXPLAIN 1205 ms · throttled 2641 ms · loadavg 3.97
+   cpuset=0-11 (efectivo 0-11): mediana 1635 ms (min 1254, max 1957) · EXPLAIN 1577 ms · throttled 1778 ms · loadavg 3.57
+   (contenedor bajado; el archivo images.env sigue con ENGINE_CPUSET=0-7)

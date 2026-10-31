@@ -1,0 +1,12 @@
+{'momento': 'inicio', 'duracion_ms': 67.797, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 103.107, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 76.516, 'motor': 49, 'cliente_seguro': 49, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 3}
+{'momento': 'serie', 'duracion_ms': 29.437, 'motor': 46, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 4, 'terminan_<=250ms_despues': 8}
+{'momento': 'serie', 'duracion_ms': 41.633, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 26.074, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 62.566, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 17.938, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 81.3, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'serie', 'duracion_ms': 76.99, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+{'momento': 'fin', 'duracion_ms': 91.45, 'motor': 50, 'cliente_seguro': 50, 'cliente_en_t0': 50, 'faltan': 0, 'terminan_<=250ms_despues': 0}
+resumen {'fotos': 11, 'fotos_validas': 11, 'mediana_motor': 50, 'min_motor': 46, 'media_faltan': 0.364, 'max_faltan': 4} errores serie [] cortados [] getmore vistos [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

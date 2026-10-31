@@ -1,0 +1,121 @@
+{
+  "gate": "g1",
+  "engine": "postgres",
+  "fecha_utc": "2026-11-01T18:34:51Z",
+  "esperado": 1000,
+  "conteo": 1000,
+  "export": {
+    "archivo": "data/exports/g1_postgres.jsonl",
+    "lineas": 1000,
+    "sha256": "5e9096f11bc61387d4a86690cf6a0fc1f3cf40093b911f19bb4e569d80011c46"
+  },
+  "tipos_documento": [
+    {
+      "order_id": "string",
+      "timestamp": "string",
+      "final_total": "number",
+      "n": 1000
+    }
+  ],
+  "tipos_items": [
+    {
+      "price": "number",
+      "qty": "number",
+      "n": 3075
+    }
+  ],
+  "order_id_repetidos": 0,
+  "id_igual_a_order_id": {
+    "filas": 1000,
+    "id_distinto_de_order_id": 0,
+    "order_id_repetidos": 0
+  },
+  "indices": [
+    {
+      "indexname": "idx_orders_timestamp",
+      "indexdef": "CREATE INDEX idx_orders_timestamp ON public.orders USING btree (((data ->> 'timestamp'::text)))",
+      "bytes": 57344
+    },
+    {
+      "indexname": "orders_pkey",
+      "indexdef": "CREATE UNIQUE INDEX orders_pkey ON public.orders USING btree (id)",
+      "bytes": 57344
+    }
+  ],
+  "r03_tabla": "                                         Table \"public.orders\"\n Column | Type  | Collation | Nullable | Default | Storage  | Compression | Stats target | Description \n--------+-------+-----------+----------+---------+----------+-------------+--------------+-------------\n id     | uuid  |           | not null |         | plain    |             |              | \n data   | jsonb |           |          |         | extended |             |              | \nIndexes:\n    \"orders_pkey\" PRIMARY KEY, btree (id)\n    \"idx_orders_timestamp\" btree ((data ->> 'timestamp'::text))\nNot-null constraints:\n    \"orders_id_not_null\" NOT NULL \"id\"\nAccess method: heap\n\n",
+  "r15_indices_con_final_total": [],
+  "comprobaciones": {
+    "conteo_esperado": true,
+    "export_completo": true,
+    "sin_order_id_repetidos": true,
+    "r15_sin_indice_final_total": true,
+    "id_igual_a_order_id": true
+  },
+  "ok": true,
+  "entorno": {
+    "schema": "capture_env/1",
+    "captured_at_utc": "2026-11-01T18:34:49Z",
+    "engine": "postgresql",
+    "container": "bench_postgres",
+    "profile_label": "PROFILE_A_BASELINE",
+    "image": {
+      "tag": "postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81",
+      "id": "sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81",
+      "repo_digests": [
+        "postgres@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81"
+      ]
+    },
+    "engine_version": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "storage_engine": "n/a",
+    "cgroup": {
+      "limits": {
+        "cpu.max": "400000 100000",
+        "memory.max": "4294967296",
+        "memory.swap.max": "0"
+      },
+      "metric_files": {
+        "cpu.stat": true,
+        "memory.stat": true,
+        "memory.peak": true,
+        "memory.events": true,
+        "memory.swap.max": true
+      },
+      "memory_swappiness": {
+        "present": false,
+        "value": null
+      }
+    },
+    "docker_inspect": {
+      "NanoCpus": 4000000000,
+      "CpuQuota": 0,
+      "CpuPeriod": 0,
+      "Memory": 4294967296,
+      "MemorySwap": 4294967296,
+      "MemorySwappiness": null,
+      "OOMKilled": false
+    },
+    "host": {
+      "kernel": "6.6.87.2-microsoft-standard-WSL2",
+      "nproc": 12,
+      "loadavg": {
+        "raw": "1.44 0.59 0.42 1/635 18771",
+        "1m": 1.44,
+        "5m": 0.59,
+        "15m": 0.42
+      },
+      "memory": {
+        "MemTotal_kb": 7507156,
+        "MemFree_kb": 3419312,
+        "MemAvailable_kb": 5343032,
+        "Buffers_kb": 40248,
+        "Cached_kb": 1859936,
+        "SReclaimable_kb": 244332,
+        "SwapTotal_kb": 2097152,
+        "SwapFree_kb": 2097152,
+        "buff_cache_kb": 2144516,
+        "swap_used_kb": 0
+      }
+    },
+    "errores": []
+  }
+}

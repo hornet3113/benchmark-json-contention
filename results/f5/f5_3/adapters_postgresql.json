@@ -1,0 +1,73 @@
+{
+  "engine": "postgresql",
+  "fecha_utc": "2026-11-01T20:58:44Z",
+  "referencia": "results/f3/g3/queries_postgres.json",
+  "queries": {
+    "Q1": {
+      "archivo_query": "queries/postgres/q1_unwind_group.sql",
+      "sesion": {
+        "statements": [
+          "SET statement_timeout = '300000ms'"
+        ],
+        "SHOW work_mem": "4MB",
+        "SHOW statement_timeout": "5min"
+      },
+      "filas": 240,
+      "filas_G3": 240,
+      "igual_a_G3": true,
+      "latencia_1a_ms": 47255.7,
+      "latencia_2a_ms": 32862.0,
+      "ok": true
+    },
+    "Q2_MEM_LOW": {
+      "archivo_query": "queries/postgres/q2_sort_topk.sql",
+      "sesion": {
+        "statements": [
+          "SET statement_timeout = '300000ms'",
+          "SET work_mem = '4MB'"
+        ],
+        "SHOW work_mem": "4MB",
+        "SHOW statement_timeout": "5min"
+      },
+      "filas": 1000,
+      "filas_G3": 1000,
+      "mismo_conjunto_que_G3": true,
+      "mismo_vector_final_total": true,
+      "latencia_1a_ms": 1902.0,
+      "latencia_2a_ms": 2488.1,
+      "ok": true
+    },
+    "Q2_MEM_HIGH": {
+      "archivo_query": "queries/postgres/q2_sort_topk.sql",
+      "sesion": {
+        "statements": [
+          "SET statement_timeout = '300000ms'",
+          "SET work_mem = '64MB'"
+        ],
+        "SHOW work_mem": "64MB",
+        "SHOW statement_timeout": "5min"
+      },
+      "filas": 1000,
+      "filas_G3": 1000,
+      "mismo_conjunto_que_G3": true,
+      "mismo_vector_final_total": true,
+      "latencia_1a_ms": 2262.3,
+      "latencia_2a_ms": 2609.9,
+      "ok": true
+    }
+  },
+  "timeout": {
+    "timeout_s": 0.001,
+    "sesion": {
+      "statements": [
+        "SET statement_timeout = '1ms'"
+      ],
+      "SHOW work_mem": "4MB",
+      "SHOW statement_timeout": "1ms"
+    },
+    "lanzo_QueryTimeout": true,
+    "mensaje": "canceling statement due to statement timeout",
+    "conexion_sigue_viva": true
+  },
+  "ok": true
+}

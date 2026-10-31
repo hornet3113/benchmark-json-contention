@@ -1,0 +1,213 @@
+{
+  "criterio": {
+    "tolerancia_latencias": 0.1,
+    "clientes_activos_minimos": 48,
+    "de": 50,
+    "motivo": "≥ 48 de 50 clientes con consulta activa en cada borde. Fijado por Alix el 2026-11-01 antes de repetir Mongo: una foto instantánea de un bucle cerrado puede atrapar a un worker entre consultas; no se cambia porque el resultado no alcanzara la vara original (50)."
+  },
+  "motores": {
+    "postgresql": {
+      "corridas": {
+        "A1": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 24710.411817,
+          "p95": 31073.362599099997,
+          "qps": 2.225,
+          "completadas": 267,
+          "clientes_inicio": 50,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            50,
+            50
+          ],
+          "conexiones": [
+            50,
+            50
+          ],
+          "workers_paralelos": [
+            7,
+            7
+          ],
+          "runner_rss_max_mib": 2125
+        },
+        "B": {
+          "procesos_x_hilos": [
+            10,
+            5
+          ],
+          "status": "ok",
+          "p50": 26156.117210999997,
+          "p95": 29155.998652050002,
+          "qps": 1.9833333333333334,
+          "completadas": 238,
+          "clientes_inicio": 50,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            50,
+            50
+          ],
+          "conexiones": [
+            50,
+            50
+          ],
+          "workers_paralelos": [
+            7,
+            7
+          ],
+          "runner_rss_max_mib": 476
+        },
+        "A2": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 27577.806542,
+          "p95": 33966.8772432,
+          "qps": 1.9916666666666667,
+          "completadas": 239,
+          "clientes_inicio": 50,
+          "clientes_fin": 50,
+          "consultas_activas": [
+            50,
+            50
+          ],
+          "conexiones": [
+            50,
+            50
+          ],
+          "workers_paralelos": [
+            7,
+            7
+          ],
+          "runner_rss_max_mib": 2122
+        }
+      },
+      "comprobaciones": {
+        "clientes_activos_>=48_en_las_3": true,
+        "p50_B_dentro_de_A": true,
+        "p50_rango_A_ampliado": [
+          22239.371,
+          30335.587
+        ],
+        "p95_B_dentro_de_A": true,
+        "p95_rango_A_ampliado": [
+          27966.026,
+          37363.565
+        ],
+        "qps_B_dentro_de_A": true,
+        "qps_rango_A_ampliado": [
+          1.792,
+          2.448
+        ]
+      },
+      "coinciden": true
+    },
+    "mongodb": {
+      "corridas": {
+        "A1": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 22118.986214500004,
+          "p95": 33689.568246200004,
+          "qps": 2.5,
+          "completadas": 300,
+          "clientes_inicio": null,
+          "clientes_fin": null,
+          "consultas_activas": [
+            104,
+            105
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 1988
+        },
+        "B": {
+          "procesos_x_hilos": [
+            10,
+            5
+          ],
+          "status": "ok",
+          "p50": 23605.225148499998,
+          "p95": 30894.653830249998,
+          "qps": 2.216666666666667,
+          "completadas": 266,
+          "clientes_inicio": null,
+          "clientes_fin": null,
+          "consultas_activas": [
+            102,
+            104
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 459
+        },
+        "A2": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 23300.169197,
+          "p95": 32902.056603699995,
+          "qps": 2.283333333333333,
+          "completadas": 274,
+          "clientes_inicio": null,
+          "clientes_fin": null,
+          "consultas_activas": [
+            105,
+            102
+          ],
+          "conexiones": [
+            153,
+            153
+          ],
+          "workers_paralelos": [
+            null,
+            null
+          ],
+          "runner_rss_max_mib": 1991
+        }
+      },
+      "comprobaciones": {
+        "clientes_activos_>=48_en_las_3": false,
+        "p50_B_dentro_de_A": true,
+        "p50_rango_A_ampliado": [
+          19907.088,
+          25630.186
+        ],
+        "p95_B_dentro_de_A": true,
+        "p95_rango_A_ampliado": [
+          29611.851,
+          37058.525
+        ],
+        "qps_B_dentro_de_A": true,
+        "qps_rango_A_ampliado": [
+          2.055,
+          2.75
+        ]
+      },
+      "coinciden": false
+    }
+  },
+  "coinciden_en_los_dos": false
+}

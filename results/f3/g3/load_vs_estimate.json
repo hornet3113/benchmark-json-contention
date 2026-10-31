@@ -1,0 +1,41 @@
+{
+  "mongo": {
+    "carga": {
+      "medido_s": 68.877,
+      "estimado_g2_s": 65.2,
+      "medido_entre_estimado": 1.06
+    },
+    "indices": {
+      "medido_s": 5.01,
+      "estimado_g2_s": 20.2,
+      "medido_entre_estimado": 0.25
+    },
+    "total": {
+      "medido_s": 73.9,
+      "estimado_g2_s": 85.4,
+      "medido_entre_estimado": 0.87
+    }
+  },
+  "postgres": {
+    "carga": {
+      "medido_s": 42.16,
+      "estimado_g2_s": 38.3,
+      "medido_entre_estimado": 1.1
+    },
+    "indices": {
+      "medido_s": 7.404,
+      "estimado_g2_s": 9.2,
+      "medido_entre_estimado": 0.8
+    },
+    "analyze": {
+      "medido_s": 6.094,
+      "estimado_g2_s": 7.5,
+      "medido_entre_estimado": 0.81
+    },
+    "total": {
+      "medido_s": 55.7,
+      "estimado_g2_s": 55.0,
+      "medido_entre_estimado": 1.01
+    }
+  }
+}

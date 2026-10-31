@@ -1,0 +1,70 @@
+{
+  "schema": "dataset_stats/1",
+  "generado_utc": "2026-11-01T18:00:06Z",
+  "archivo": "data/orders_10000_seed42.jsonl",
+  "tamano_pedido": 10000,
+  "semilla": 42,
+  "sha256": "66ca4f7b167a9f7616aa161b7cde167e059c299e1ed4a2ab2fffc7e47c9c4111",
+  "bytes": 10043066,
+  "segundos": 3.48,
+  "contrato_ok": true,
+  "generador": {
+    "python": "3.14.4",
+    "sha256_fuentes": {
+      "__init__.py": "3c8d5a6029e405868aaadb670cf55b7a75bcd7979929598150e7fec7f4010d5c",
+      "distributions.py": "2513e46ac186114f833c01ba65894c5575d787ef35b2c743a67038a442816ad9",
+      "schema.py": "a0bdda436e39c1b65b769a7501455c8fb6a7232cdf8af775d666275e9d8511b7",
+      "synthetic_data_generator.py": "63c7cba325d542eef695437a924101a3f3b3c84aa7dd66780ef572369742d129"
+    }
+  },
+  "registros": 10000,
+  "registros_invalidos": 0,
+  "ejemplos_de_errores": [],
+  "order_id_repetidos": 0,
+  "anidamiento_niveles": {
+    "3": 10000
+  },
+  "items": {
+    "total": 30038,
+    "media_por_registro": 3.0038,
+    "distribucion": {
+      "1": 1954,
+      "2": 2444,
+      "3": 1987,
+      "4": 1666,
+      "5": 1123,
+      "6": 826
+    },
+    "pct_price_gt_50": 44.7
+  },
+  "payment_status": {
+    "completed": 7007,
+    "failed": 1004,
+    "pending": 1213,
+    "refunded": 776
+  },
+  "pct_completed": 70.07,
+  "pct_timestamp_ge_2026": 49.6,
+  "timestamp_min": "2025-01-01T00:07:24Z",
+  "timestamp_max": "2026-12-31T23:38:33Z",
+  "final_total_min": 2.74,
+  "final_total_max": 1852.94,
+  "q1_grupos_pais_categoria": {
+    "distintos": 240,
+    "posibles": 240,
+    "items_min_por_grupo": 95,
+    "items_max_por_grupo": 164
+  },
+  "q2": {
+    "filtro": "payment.status = 'completed' AND timestamp >= '2026-01-01T00:00:00Z'",
+    "filas": 3506,
+    "pct": 35.06,
+    "frontera_top_k": {
+      "k": 1000,
+      "aplica": true,
+      "final_total_fila_k": 567.24,
+      "final_total_fila_k_mas_1": 567.2,
+      "empate_en_la_frontera": false
+    }
+  }
+}

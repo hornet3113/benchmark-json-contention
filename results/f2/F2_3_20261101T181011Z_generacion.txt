@@ -1,0 +1,14 @@
+== F2.3 — generación de 500 000 — 20261101T181011Z
+python 3.14.4 · loadavg antes: 0.31 0.16 0.15 1/626 16887
+$ python3 generator/synthetic_data_generator.py --size 500000
+registros        : 500000  (501751458 bytes, 172.35 s)
+sha256           : 0cd7fadb084627679ab2437921ef1889a012e1fa5b0898d2624760be41060414
+contrato         : OK  (inválidos=0, order_id repetidos=0)
+ítems/registro   : 2.9991  · price>50 44.8679 %  · completed 69.9714 %  · ts>=2026 50.0414 %
+filas filtro Q2  : 175049  · empate en la fila 1000: False
+datos            : /home/alix_anahi/benchmark-json-contention/data/orders_500000_seed42.jsonl
+estadísticas     : /home/alix_anahi/benchmark-json-contention/results/dataset_stats.json
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:52.57
+	Maximum resident set size (kbytes): 78952
+	Exit status: 0
+exit=0

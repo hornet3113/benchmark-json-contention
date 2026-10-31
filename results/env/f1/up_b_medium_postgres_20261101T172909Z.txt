@@ -1,0 +1,12 @@
+$ scripts/up_profile.sh b_medium postgres   (20261101T172909Z)
+== Perfil: PROFILE_B_MEDIUM  |  Motor: postgres
+   CPUs=2.0  mem=2048m  memswap=2048m  swappiness=0
+ Network benchjson_default Creating 
+ Network benchjson_default Created 
+ Container bench_postgres Creating 
+ Container bench_postgres Created 
+ Container bench_postgres Starting 
+ Container bench_postgres Started 
+== Esperando healthcheck de bench_postgres ... -> healthy
+
+Siguiente paso:  scripts/verify_limits.sh b_medium postgres

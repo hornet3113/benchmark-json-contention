@@ -1,0 +1,516 @@
+{
+  "criterio": {
+    "version": 3,
+    "estado": "PROPUESTO, sin fijar",
+    "fijado_por": null,
+    "fecha": null,
+    "motivo": "La v2 (≥ 48 en cada borde) no cumplió con Mongo (47 al inicio de B), pero una sola foto por borde, sin su instante, no distingue entre 'el motor no ve al cliente' y 'la foto cayó mientras una respuesta iba de camino'. La v3 mide con fotos cronometradas y compara B con A. El resultado de la v2 se conserva como incumplido.",
+    "mediana_motor_minima": 49,
+    "de": 50,
+    "fotos_minimas": 10,
+    "faltan_extra_max": 1.0,
+    "tolerancia_latencias": 0.1
+  },
+  "motores": {
+    "mongodb": {
+      "corridas": {
+        "A1": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 21839.892098000004,
+          "p95": 33315.06576395,
+          "qps": 2.4833333333333334,
+          "completadas": 298,
+          "workers_terminados_al_final": 0,
+          "fotos": {
+            "fotos": 13,
+            "fotos_validas": 13,
+            "mediana_motor": 50,
+            "min_motor": 48,
+            "media_faltan": 0.231,
+            "max_faltan": 2
+          },
+          "conexiones": [
+            153,
+            153
+          ],
+          "runner_rss_max_mib": 1992
+        },
+        "B": {
+          "procesos_x_hilos": [
+            10,
+            5
+          ],
+          "status": "ok",
+          "p50": 21714.226576,
+          "p95": 24194.057859999997,
+          "qps": 2.1333333333333333,
+          "completadas": 256,
+          "workers_terminados_al_final": 0,
+          "fotos": {
+            "fotos": 13,
+            "fotos_validas": 13,
+            "mediana_motor": 50,
+            "min_motor": 48,
+            "media_faltan": -0.154,
+            "max_faltan": 0
+          },
+          "conexiones": [
+            153,
+            153
+          ],
+          "runner_rss_max_mib": 464
+        },
+        "A2": {
+          "procesos_x_hilos": [
+            50,
+            1
+          ],
+          "status": "ok",
+          "p50": 23160.194861,
+          "p95": 31916.494543299996,
+          "qps": 2.2916666666666665,
+          "completadas": 275,
+          "workers_terminados_al_final": 0,
+          "fotos": {
+            "fotos": 13,
+            "fotos_validas": 13,
+            "mediana_motor": 50,
+            "min_motor": 48,
+            "media_faltan": 0.231,
+            "max_faltan": 2
+          },
+          "conexiones": [
+            153,
+            153
+          ],
+          "runner_rss_max_mib": 1990
+        }
+      },
+      "comprobaciones": {
+        "fotos_suficientes": true,
+        "mediana_motor_>=49_en_las_3": true,
+        "faltan_B_<=_A+1": true,
+        "faltan_limite": 1.231,
+        "p50_B_dentro_de_A": true,
+        "p50_rango_A_ampliado": [
+          19655.903,
+          25476.214
+        ],
+        "p95_B_dentro_de_A": false,
+        "p95_rango_A_ampliado": [
+          28724.845,
+          36646.572
+        ],
+        "qps_B_dentro_de_A": true,
+        "qps_rango_A_ampliado": [
+          2.062,
+          2.732
+        ]
+      },
+      "coinciden": false,
+      "fotos_cruzadas": {
+        "A1": [
+          {
+            "momento": "inicio",
+            "t0_ns": 59916103000560,
+            "duracion_ms": 95.036,
+            "motor": 50,
+            "cliente_seguro": 49,
+            "cliente_en_t0": 50,
+            "faltan": -1,
+            "terminan_<=250ms_despues": 1
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59926233438807,
+            "duracion_ms": 179.146,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59936420134842,
+            "duracion_ms": 4.586,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 1
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59946432989407,
+            "duracion_ms": 206.814,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59956690662595,
+            "duracion_ms": 29.815,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59966727765436,
+            "duracion_ms": 77.096,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59976811789766,
+            "duracion_ms": 24.125,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59986896388751,
+            "duracion_ms": 8.369,
+            "motor": 49,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 1,
+            "terminan_<=250ms_despues": 1
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 59996910232229,
+            "duracion_ms": 3.135,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60006994986481,
+            "duracion_ms": 33.83,
+            "motor": 49,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 1,
+            "terminan_<=250ms_despues": 1
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60017087618282,
+            "duracion_ms": 37.059,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60027132618491,
+            "duracion_ms": 80.49,
+            "motor": 48,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 2,
+            "terminan_<=250ms_despues": 2
+          },
+          {
+            "momento": "fin",
+            "t0_ns": 60036008872070,
+            "duracion_ms": 80.835,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          }
+        ],
+        "B": [
+          {
+            "momento": "inicio",
+            "t0_ns": 60108225366255,
+            "duracion_ms": 75.341,
+            "motor": 49,
+            "cliente_seguro": 49,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60118328308668,
+            "duracion_ms": 158.971,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60128498282021,
+            "duracion_ms": 32.907,
+            "motor": 50,
+            "cliente_seguro": 49,
+            "cliente_en_t0": 50,
+            "faltan": -1,
+            "terminan_<=250ms_despues": 3
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60138585210120,
+            "duracion_ms": 27.419,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60148619961955,
+            "duracion_ms": 92.89,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 2
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60158720461953,
+            "duracion_ms": 68.544,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60168796715614,
+            "duracion_ms": 28.893,
+            "motor": 48,
+            "cliente_seguro": 48,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60178842751892,
+            "duracion_ms": 61.139,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60188910619663,
+            "duracion_ms": 101.222,
+            "motor": 50,
+            "cliente_seguro": 49,
+            "cliente_en_t0": 50,
+            "faltan": -1,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60199019194110,
+            "duracion_ms": 95.787,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60209124813193,
+            "duracion_ms": 4.553,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60219185845275,
+            "duracion_ms": 97.761,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "fin",
+            "t0_ns": 60228185203730,
+            "duracion_ms": 14.65,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          }
+        ],
+        "A2": [
+          {
+            "momento": "inicio",
+            "t0_ns": 60307120904349,
+            "duracion_ms": 66.839,
+            "motor": 48,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 2,
+            "terminan_<=250ms_despues": 3
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60317382958628,
+            "duracion_ms": 12.141,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60327403021019,
+            "duracion_ms": 17.765,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 1
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60337483020832,
+            "duracion_ms": 36.592,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60347527084488,
+            "duracion_ms": 55.585,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60357627019953,
+            "duracion_ms": 75.586,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60367713163034,
+            "duracion_ms": 5.028,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60377815029802,
+            "duracion_ms": 10.57,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60387879459039,
+            "duracion_ms": 16.023,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60397902506110,
+            "duracion_ms": 5.279,
+            "motor": 49,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 1,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60407991574325,
+            "duracion_ms": 99.363,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "serie",
+            "t0_ns": 60418111296531,
+            "duracion_ms": 87.438,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 0
+          },
+          {
+            "momento": "fin",
+            "t0_ns": 60427015394496,
+            "duracion_ms": 81.887,
+            "motor": 50,
+            "cliente_seguro": 50,
+            "cliente_en_t0": 50,
+            "faltan": 0,
+            "terminan_<=250ms_despues": 1
+          }
+        ]
+      }
+    }
+  },
+  "coinciden_en_los_motores_corridos": false
+}
