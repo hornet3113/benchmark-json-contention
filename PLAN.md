@@ -262,12 +262,12 @@ Cerrada por Alix con la opción (b), después de revisar las corridas de humo. P
 - **Resultado real del benchmark:** ¿ocurre spill u OOM al correr Q1 y Q2 del manual? Es una pregunta abierta cuya respuesta puede ser que no. Ver SPEC A12: el top-K sort de ambos motores puede evitar el volcado por completo con `LIMIT 1000`.
 
 **Criterios de aceptación — capacidad de detección (sondas).**
-- [ ] `up == 1` para cAdvisor y node_exporter en Prometheus.
-- [ ] **Sonda de throttling:** en PROFILE_C, `cpu_throttled_seconds` > 0 con una carga de CPU sostenida. Esta sí debe ocurrir necesariamente: con `cpu.max` fijado y trabajo que excede la cuota, el CFS throttling es mecánico. Si sale 0, el límite no se está aplicando y todo el experimento es inválido.
-- [ ] **Sonda de spill en Postgres:** una consulta de ordenamiento **sin `LIMIT`** sobre el conjunto filtrado, con `work_mem='4MB'`, incrementa `pg_stat_database.temp_bytes` y muestra ordenamiento externo en el `EXPLAIN ANALYZE`. Demuestra que el detector funciona.
-- [ ] **Sonda de spill en MongoDB:** un `$sort` sin `$limit` con `allowDiskUse:true` incrementa los contadores de spill y marca `usedDisk` en el `explain`.
-- [ ] **Sonda de OOM:** un contenedor o una carga deliberada que exceda `memory.max` en PROFILE_C produce `oom_kill > 0` en `memory.events`, y el runner lo clasifica como `status=oom`.
-- [ ] El `cpu_throttled_seconds` leído del cgroup y el derivado de Prometheus difieren menos de 5 % (control cruzado de las dos fuentes).
+- [x] `up == 1` para cAdvisor y node_exporter en Prometheus. — `results/f6/f6_1/check_monitoring_reposo_20261102T032714Z.json`; tras la corrección de node_exporter, `results/f6/f6_3/check_monitoring_cadvisor_2cpu_*.json`; bajo carga, `results/f6/f6_4/humo_f64/check_f64.json` (`up` mínimo 1)
+- [x] **Sonda de throttling:** en PROFILE_C, `cpu_throttled_seconds` > 0 con una carga de CPU sostenida. Esta sí debe ocurrir necesariamente: con `cpu.max` fijado y trabajo que excede la cuota, el CFS throttling es mecánico. Si sale 0, el límite no se está aplicando y todo el experimento es inválido. — `results/f6/probes/throttling_profile_c_{postgresql,mongodb}_*.json` (143 s y 222 s en 120 s)
+- [x] **Sonda de spill en Postgres:** una consulta de ordenamiento **sin `LIMIT`** sobre el conjunto filtrado, con `work_mem='4MB'`, incrementa `pg_stat_database.temp_bytes` y muestra ordenamiento externo en el `EXPLAIN ANALYZE`. Demuestra que el detector funciona. — `results/f6/probes/spill_postgres_c_severe_20261102T044223Z.json` (+32.7 MB, `external merge`; el control con Q2 tal cual no vuelca)
+- [x] **Sonda de spill en MongoDB:** un `$sort` sin `$limit` con `allowDiskUse:true` incrementa los contadores de spill y marca `usedDisk` en el `explain`. — `results/f6/probes/spill_mongo_c_severe_20261102T044309Z.json` (+212 MB, `usedDisk: true`; sin `$limit` ni `$project`, porque con el `$project` no llega a 100 MB; control sin volcado)
+- [x] **Sonda de OOM:** un contenedor o una carga deliberada que exceda `memory.max` en PROFILE_C produce `oom_kill > 0` en `memory.events`, y el runner lo clasifica como `status=oom`. — `results/f6/probes/oom_engine_{postgresql,mongodb}_*.json` (dentro del contenedor del motor, por el clasificador del runner)
+- [x] El `cpu_throttled_seconds` leído del cgroup y el derivado de Prometheus difieren menos de 5 % (control cruzado de las dos fuentes). — sondas: 0.14 % y 0.20 %; F6.2: 0.11 % y 0.03 %; humo de F6.4: 0.04–0.58 %
 
 **Criterios de aceptación — medición real.**
 - [ ] El runner registra `disk_spill` y `status` por lo que **observa**, sin valores por defecto optimistas ni pesimistas.
@@ -275,6 +275,19 @@ Cerrada por Alix con la opción (b), después de revisar las corridas de humo. P
 - [ ] Si ninguna celda produce spill, se registra además la vía alternativa de presión de memoria (concurrencia 50 × `work_mem` en Postgres, dimensionamiento del caché de WiredTiger en Mongo) para la sección 6 del reporte.
 
 **Nota.** Las sondas demuestran que el experimento **puede** observar los fenómenos que afirma medir. Lo que observe después en la matriz es el hallazgo, y va tal cual.
+
+
+### Estado de F6 al 2026-11-02: CERRADA
+
+Cierre aprobado por Alix tal como se propuso en `docs/F6_TELEMETRIA.md` ("Cierre de F6"), donde están las decisiones F6-a…F6-h, las ambigüedades F6-A1…A4 y el registro completo.
+
+- **Monitoreo:** Prometheus v3.15.1, cAdvisor v0.60.6 (ghcr.io) y node_exporter v1.12.1, fijados por digest, en un proyecto de compose aparte (`benchmon`), en las CPUs 8–11. Adaptado a Docker Desktop/WSL2: cAdvisor lee los cgroups crudos `/docker/<id>` (sin etiqueta `name`), `jitter_factor=0` para tener 1 s real, y node_exporter solo con los colectores usados (el de `filesystem` causó un OOM real en F6.3).
+- **Definiciones (F6.2):** `container_memory_rss` = `anon`, comprobado con el contenedor congelado; throttling cgroup/Prometheus al 0.03–0.11 % con carga.
+- **Runner:** comprobación previa y recuperación (F6-A4); exportación de las series crudas por repetición a `telemetry/<run_id>.json`; `serie_cgroup_1s` en el crudo; un cgroup ilegible → `RunAborted`; un fallo de telemetría no detiene la matriz (F6-A1).
+- **Humo de F6.4 (Alix):** 4 repeticiones, telemetría completa y sin huecos, la serie de 1 s igual a `max_rss_mb`, throttling columna/Prometheus al 0.04–0.58 %.
+- **Pruebas:** 248/248 (`results/f6/f6_5/tests_cierre_20261102T105619Z.txt`).
+- **Medición real:** las tres casillas quedan para F8.
+- **Al reporte:** el throttling se acumula por CPU; `max_rss_mb` frente a `working_set` (M3, SPEC A11); el throttling de Mongo en reposo (C ≈ 27 s y B ≈ 3.6 s por cada 300 s); `OOMKilled=True` no significa que el motor cayó.
 
 ---
 
@@ -288,9 +301,10 @@ Cerrada por Alix con la opción (b), después de revisar las corridas de humo. P
 - [ ] 3 filas en el CSV con `run_number` 1, 2, 3.
 - [ ] `validate_csv.py` pasa: encabezado exacto, tipos correctos, dominios cerrados, sin celdas vacías salvo las permitidas.
 - [ ] Coeficiente de variación del throughput entre las 3 repeticiones **< 15 %**. Si es mayor, el entorno tiene ruido (otros procesos del host, térmico) y hay que estabilizarlo antes de gastar 19 h en la matriz.
+- [ ] **Sin tendencia monótona entre las 3 repeticiones** (pedido por Alix al cerrar F6). Además del CV, revisar si throughput y latencias suben o bajan en orden (r1 < r2 < r3 o r1 > r2 > r3). El CV no detecta una degradación progresiva: 100-110-120 da un CV del 9 % y pasa. Origen: en F6.3, la sonda de spill de Mongo se degradó de 31 a 62 y a 161 s en tres corridas seguidas. Si hay tendencia, se busca la causa (caché, memoria de la VM, térmico) antes de F8, aunque el CV pase.
 - [ ] Planes de ejecución capturados para esa celda (R-31).
 - [ ] Tiempo real medido de una celda → estimación fundamentada del costo total de F8.
-- [ ] **Primera consulta en frío frente al calentamiento** (pedido por Alix al cerrar F5): medir cuánto tarda la primera consulta en frío en PROFILE_C y compararla con los 60 s de calentamiento del manual. Si no cabe, las celdas de ese perfil salen con P95 y P99 contaminados por la consulta en frío. Es una **limitación del protocolo que se declara en el reporte**, no un error del runner. Origen: F5.5b, donde el calentamiento de humo (30.3 s) quedó al filo de la primera consulta (27–35 s) y partió el p95 en dos.
+- [ ] **Primera consulta en frío frente al calentamiento** (pedido por Alix al cerrar F5; **ampliado a los tres perfiles** el 2026-11-01, al aprobar F6): medir cuánto tarda la primera consulta en frío en **PROFILE_A, PROFILE_B y PROFILE_C** y compararla con los 60 s de calentamiento del manual. Motivo de la ampliación: en el humo de F5.5 la primera tanda de Q1 de Mongo con c=50 tardó ~74 s ya en PROFILE_A, el perfil con más recursos. Si no cabe, las celdas de ese perfil salen con P95 y P99 contaminados por la consulta en frío. Es una **limitación del protocolo que se declara en el reporte**, no un error del runner. Origen: F5.5b, donde el calentamiento de humo (30.3 s) quedó al filo de la primera consulta (27–35 s) y partió el p95 en dos.
 
 **Esta es la última puerta antes del gasto grande.**
 

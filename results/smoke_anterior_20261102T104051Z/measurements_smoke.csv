@@ -1,0 +1,4 @@
+timestamp_epoch,engine,profile,query_id,concurrency,run_number,throughput_qps,latency_p50_ms,latency_p95_ms,latency_p99_ms,cpu_throttled_seconds,max_rss_mb,disk_spill,status
+1793579120,mongodb,PROFILE_A_BASELINE,Q2_MEM_LOW,50,1,2.483333,21839.892,33315.066,34519.810,478.327,921.293,false,ok
+1793579312,mongodb,PROFILE_A_BASELINE,Q2_MEM_LOW,50,2,2.133333,21714.227,24194.058,30582.543,478.617,948.211,false,ok
+1793579511,mongodb,PROFILE_A_BASELINE,Q2_MEM_LOW,50,3,2.291667,23160.195,31916.495,33405.082,478.025,958.359,false,ok

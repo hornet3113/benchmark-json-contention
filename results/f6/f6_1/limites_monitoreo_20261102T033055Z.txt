@@ -1,0 +1,4 @@
+== límites reales del monitoreo, leídos del cgroup desde fuera — 20261102T033055Z
+benchmon_prometheus  image=prom/prometheus@sha256:fa3302279710be2f21a8301ec17a8b4f2301f…  cpuset.cpus=8-11  cpu.max=100000 100000  memory.max=536870912  memory.swap.max=0
+benchmon_cadvisor  image=ghcr.io/google/cadvisor@sha256:b8e7d1093144fd088f425ff003d75…  cpuset.cpus=8-11  cpu.max=100000 100000  memory.max=268435456  memory.swap.max=0
+benchmon_node_exporter  image=prom/node-exporter@sha256:1b4e4438faca4dd7e001dd445d161a4a20…  cpuset.cpus=8-11  cpu.max=50000 100000  memory.max=67108864  memory.swap.max=0

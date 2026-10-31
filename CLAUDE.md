@@ -50,6 +50,7 @@ Regla de precedencia: ante conflicto, `playbook.pdf` define **qué se mide**;
 | `docs/F1_INFRAESTRUCTURA.md` | Procedimiento, criterios y registro de ejecución de F1 (cerrada) |
 | `docs/F2_GENERADOR.md`, `docs/F3_CARGA.md` | Plan y registro de F2 y de F3/F4 (cerradas) |
 | `docs/F5_RUNNER.md` | Plan, decisiones F5-a…F5-i, registro de humo y cierre de F5 |
+| `docs/F6_TELEMETRIA.md` | Plan, decisiones F6-a…F6-h, ambigüedades F6-A1…A4, registro y cierre de F6 |
 
 Estos documentos son el estado acumulado del proyecto. **No los rehagas ni los
 reinterpretes desde cero**: léelos, y si algo te parece equivocado, dilo en vez
@@ -67,7 +68,7 @@ de cambiarlo por tu cuenta.
 - Limitaciones del entorno virtualizado: `SPEC.md` §6, L1–L7. Van declaradas en
   la sección 1 del reporte, no escondidas.
 
-## Estado actual (2026-11-01)
+## Estado actual (2026-11-02)
 
 | Fase | Estado |
 |---|---|
@@ -77,7 +78,9 @@ de cambiarlo por tu cuenta.
 | F3 — Carga escalonada (G1/G2/G3) | **CERRADA (2026-11-01)** con evidencia en `results/f3/` |
 | F4 — Queries y equivalencia | **CERRADA (2026-11-01)**: ejecutada en G2, re-verificada en G3 |
 | F5 — Runner de benchmark | **CERRADA (2026-11-01)** con evidencia en `results/f5/`, `results/smoke*/` y `results/env/f5/` |
-| F6–F9 | No iniciadas |
+| F6 — Telemetría, spill y OOM | **CERRADA (2026-11-02)** con evidencia en `results/f6/` |
+| F7 — Celda piloto | **En curso** (empezando: plan) |
+| F8–F9 | No iniciadas |
 
 Resultado de F1, en breve: MongoDB **8.2.12** (wiredTiger) y PostgreSQL
 **18.6**; límites reales iguales al manual en 3 perfiles × 2 motores;
@@ -107,14 +110,37 @@ del calentamiento de humo (30.3 s), y la discrepancia se invirtió entre
 tandas. También incumplido: "celda de humo en < 1 min" en Mongo (95 s).
 Detalle en `PLAN.md` F5 y en el cierre de `docs/F5_RUNNER.md`.
 
+Resultado de F6, en breve:
+- **Monitoreo:** Prometheus, cAdvisor y node_exporter fijados por digest, en
+  `monitoring/` (proyecto de compose aparte, `benchmon`, en las CPUs 8–11).
+  Cuesta < 0.1 núcleos bajo carga.
+- **Definiciones:** `container_memory_rss` = `anon` (comprobado con el contenedor
+  congelado), y el throttling coincide entre cgroup y Prometheus al < 1 %.
+- **Sondas:** las cuatro (throttling, spill en Postgres, spill en Mongo, OOM)
+  detectadas por los mismos detectores y el mismo clasificador del runner.
+- **Runner:** comprobación previa con recuperación (F6-A4); exportación por
+  repetición a `telemetry/<run_id>.json`; `serie_cgroup_1s` en el crudo. Un
+  fallo de telemetría no detiene la matriz (F6-A1).
+- **Al reporte:**
+  - el throttling se acumula por CPU y puede superar la ventana;
+  - `max_rss_mb` excluye los `shared_buffers` de Postgres (M3 con `working_set`, SPEC A11);
+  - Mongo tiene throttling en reposo (C ≈ 27 s y B ≈ 3.6 s por 300 s).
+
+Detalle en `PLAN.md` F6 y en el cierre de `docs/F6_TELEMETRIA.md`.
+
 **Estado de los motores:** los volúmenes ya contienen los 500 000 documentos
 con sus índices. **No volver a ejecutar `load_dataset.sh` ni `run_gate.sh`**
 sin motivo: recrean la colección y la tabla.
 
 ### Lo siguiente, concretamente
 
-F6 — telemetría, spill y OOM (Prometheus, cAdvisor, node_exporter y sondas).
-Presentar el plan antes de escribir código o de descargar imágenes.
+F7 — celda piloto (Mongo y Postgres × PROFILE_C × Q2_MEM_LOW × c=1, tiempos
+reales, 3 repeticiones). Presentar el plan antes de correr nada; las corridas
+reales necesitan sudo y las corre Alix. Criterios de PLAN F7, que incluyen:
+- CV < 15 % **y sin tendencia monótona** entre r1, r2 y r3;
+- la primera consulta en frío frente a los 60 s, en los tres perfiles.
+
+Antes de correr, el monitoreo debe estar arriba (`scripts/up_monitoring.sh`).
 
 ### Herramientas que ya existen (F1)
 
@@ -140,8 +166,19 @@ Presentar el plan antes de escribir código o de descargar imágenes.
   `scripts/validate_csv.py` y `scripts/checks/` (monitor del host, comparación
   de modos, diagnósticos). Cada `results/smoke_anterior_<sello>` lleva el sello
   de la corrida que la movió, no el de su contenido (mapa en `docs/F5_RUNNER.md`).
-- Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (213 al cierre
-  de F5; con el `python3` del sistema se omiten 7 por falta de drivers).
+- F6 — Monitoreo y telemetría:
+  - `scripts/up_monitoring.sh` y `down_monitoring.sh` (monitoreo; el runner
+    llama a `up_monitoring.sh` si la comprobación previa falla);
+  - `benchmark_runner/telemetry.py`;
+  - `scripts/checks/check_monitoring.py`, que exige `up`, la resolución de
+    1 s y ningún colector fallido.
+- F6 — Sondas, en `scripts/probes/`, sin filas en el CSV: `probe_common.py`,
+  `throttling_profile_c.py`, `throttling_baseline.py`, `spill_postgres.py`,
+  `spill_mongo.py` y `oom_engine.py`.
+- F6 — Verificaciones: `check_definitions.py`, `check_frozen.py`,
+  `check_telemetry_live.py` y `check_smoke_f64.py`; humo: `scripts/smoke_f64.sh`.
+- Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (248 al cierre
+  de F6; con el `python3` del sistema se omiten las que necesitan drivers).
   `pytest` no está instalado; las pruebas se escriben compatibles con los dos.
   Drivers fijados en `requirements.txt`, instalados en `.venv`.
 
@@ -167,6 +204,13 @@ Presentar el plan antes de escribir código o de descargar imágenes.
 - **A12**: se aceptan los resultados reales aunque no aparezcan spill ni OOM.
 - **D-WSL1**: la VM se conserva en 7.159 GiB; sin `.wslconfig`. PROFILE_A se
   declara baseline con holgura limitada.
+- **F6**:
+  - las columnas salen del cgroup y Prometheus solo da curvas;
+  - un fallo de telemetría **no** detiene la matriz (F6-A1) y se registra con
+    la memoria y el swap de la VM;
+  - la comprobación previa recupera el monitoreo una vez (F6-A4);
+  - solo aborta un cgroup ilegible;
+  - M3 se calcula con `working_set` o declara el sesgo (F6-A3).
 
 ### Pendientes abiertos
 
@@ -187,16 +231,37 @@ Presentar el plan antes de escribir código o de descargar imágenes.
   lo apruebe explícitamente.
 - **V2** — ruta de respaldo del flush: documentada, sin ejecutar.
 - **Primera consulta en frío frente al calentamiento (F7)** — casilla en PLAN
-  F7: medir la primera consulta en frío en PROFILE_C contra los 60 s del
-  manual. Si no cabe, P95/P99 de ese perfil quedan contaminados y se declara
-  como limitación del protocolo, no como error del runner. Ya se vio una
-  primera tanda de ~74 s en Q1 de Mongo con c=50 en PROFILE_A (humo F5.5).
+  F7: medir la primera consulta en frío en **los tres perfiles** (A, B y C)
+  contra los 60 s del manual (ampliado al aprobar F6). Si no cabe, P95/P99 de
+  ese perfil quedan contaminados y se declara como limitación del protocolo,
+  no como error del runner. Motivo: ya se vio una primera tanda de ~74 s en
+  Q1 de Mongo con c=50 en PROFILE_A (humo F5.5).
 - **Gracia + enfriamiento frente a la latencia (F7/F8)** — si una consulta
   dura más, el runner corta al worker y la consulta queda huérfana en el
   servidor hasta que se baja el contenedor. No afecta a la ventana (A4), pero
   hay que comprobarlo por celda.
+- **De F6 a F7:**
+  - medir con la ventana real de 300 s en PROFILE_A cuánta memoria le queda a
+    la VM (`MemAvailable`) y cuánta ocupa Prometheus (hasta 392 MiB con su
+    caché en reposo);
+  - en WSL2, `CLOCK_BOOTTIME` no ve la congelación de la VM (la detecta la
+    comparación entre el reloj de pared y el monotónico);
+  - sin investigar: la sonda de spill de Mongo se degradó (31 → 62 → 161 s), y
+    Mongo usa 0.3–0.4 núcleos en reposo.
 
 ## Trampas conocidas de este proyecto
+
+- **cAdvisor en Docker Desktop no tiene etiqueta `name`**: sin el socket de
+  containerd lee los cgroups crudos. Las series se filtran por
+  `id="/docker/<id completo>"`. Como cAdvisor pone su propia marca de tiempo,
+  Prometheus **no vence** las series de contenedores borrados (~5 min), y
+  `query_range` rellena los huecos con el último valor. Por eso la exportación
+  usa muestras crudas y filtra por el id de la repetición.
+- **`up==1` no basta**: un colector de node_exporter puede fallar en cada
+  scrape con `up=1`. En F6.3, el de `filesystem` (montajes 9p de WSL) terminó en
+  un OOM real. Hay que mirar también `node_scrape_collector_success`.
+- **`OOMKilled=True` con `Running=True`** es posible: Docker marca el contenedor
+  si el kernel mata **cualquier** proceso de su cgroup.
 
 - `final_total` **debe** ser número JSON, no string. Si fuera string, Mongo
   ordenaría lexicográficamente (`"9.5" > "100.0"`) y Postgres numéricamente: los

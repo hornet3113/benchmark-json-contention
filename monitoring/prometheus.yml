@@ -1,0 +1,31 @@
+# prometheus.yml — F6, requisito R-23 (playbook.pdf §7, p.3): scrape cada 1 s.
+#
+# Jerarquía de fuentes (SPEC §3, punto 3): las 14 columnas del CSV salen del
+# cgroup y de los motores, no de aquí. Prometheus guarda las series a 1 s para
+# las curvas del reporte (R-30) y para el control cruzado de F6.2/F6.3.
+#
+# Los nombres de los targets son los servicios de monitoring/docker-compose.monitoring.yml
+# (misma red de compose). Ningún target se publica fuera de esa red.
+
+global:
+  scrape_interval: 1s
+  # Prometheus exige timeout <= intervalo. Si cAdvisor tardara más de 1 s en
+  # responder, la muestra se pierde y up=0 en ese instante: queda visible, no se tapa.
+  scrape_timeout: 1s
+  evaluation_interval: 1s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Métricas por contenedor: container_cpu_cfs_throttled_seconds_total,
+  # container_memory_rss, ... (R-24).
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  # Métricas del host (la VM de WSL2): I/O, disco, memoria y swap (playbook §7).
+  - job_name: node
+    static_configs:
+      - targets: ["node-exporter:9100"]

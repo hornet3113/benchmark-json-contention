@@ -1,0 +1,115 @@
+{
+ "descripcion": "telemetry.py contra el Prometheus real (F6.4); no es una medición",
+ "sello": "20261102T103356Z",
+ "container_id": "ce2895abb24d5df9629253d80ca63486abbcb3d4bfaee2c5d52ad52bc963af5c",
+ "sano": {
+  "primera": {
+   "t_wall": 1793615645.0970833,
+   "up": {
+    "prometheus": 1.0,
+    "cadvisor": 1.0,
+    "node": 1.0
+   },
+   "colectores_con_fallos": [],
+   "ok": true
+  },
+  "ok": true
+ },
+ "node_exporter_detenido": {
+  "primera": {
+   "t_wall": 1793615648.7303853,
+   "up": {
+    "prometheus": 1.0,
+    "cadvisor": 1.0,
+    "node": 0.0
+   },
+   "colectores_con_fallos": [],
+   "ok": false,
+   "motivo": "up{job=node}=0.0"
+  },
+  "ok": true,
+  "memoria_vm_al_fallar": {
+   "t_wall": 1793615648.7401085,
+   "MemTotal_kib": 7507156,
+   "MemAvailable_kib": 5261508,
+   "SwapTotal_kib": 2097152,
+   "SwapFree_kib": 1766484,
+   "Committed_AS_kib": 4890044,
+   "pswpin": 27081,
+   "pswpout": 92000,
+   "oom_kill": 4,
+   "pressure_memory": [
+    "some avg10=0.00 avg60=0.00 avg300=0.00 total=110638945",
+    "full avg10=0.00 avg60=0.00 avg300=0.00 total=20688270"
+   ]
+  },
+  "recuperacion": {
+   "exit": 0,
+   "salida": "== Esperando up==1 en prometheus, cadvisor y node . -> 3/3\n Container benchmon_prometheus Running \n Container benchmon_cadvisor Running \n Container benchmon_node_exporter Starting \n Container benchmon_node_exporter Started \n"
+  },
+  "segunda": {
+   "t_wall": 1793615651.107911,
+   "up": {
+    "prometheus": 1.0,
+    "cadvisor": 1.0,
+    "node": 1.0
+   },
+   "colectores_con_fallos": [],
+   "ok": true
+  },
+  "memoria_vm_tras_recuperar": {
+   "t_wall": 1793615651.1142979,
+   "MemTotal_kib": 7507156,
+   "MemAvailable_kib": 5254164,
+   "SwapTotal_kib": 2097152,
+   "SwapFree_kib": 1766484,
+   "Committed_AS_kib": 5018304,
+   "pswpin": 27081,
+   "pswpout": 92000,
+   "oom_kill": 4,
+   "pressure_memory": [
+    "some avg10=0.00 avg60=0.00 avg300=0.00 total=110638945",
+    "full avg10=0.00 avg60=0.00 avg300=0.00 total=20688270"
+   ]
+  },
+  "recuperada": true,
+  "segundos": 2.4
+ },
+ "exportacion_resumen": {
+  "estado": "completa",
+  "motivo": null,
+  "ventana_wall_s": [
+   1793615656.1153193,
+   1793615716.1100414
+  ],
+  "huecos_en_ventana": {},
+  "segundos_sin_muestra_max": 0.0
+ },
+ "muestras_por_serie": {
+  "container_cpu_cfs_throttled_seconds_total": 70,
+  "container_cpu_cfs_throttled_periods_total": 70,
+  "container_cpu_cfs_periods_total": 70,
+  "container_cpu_usage_seconds_total": 70,
+  "container_memory_rss": 70,
+  "container_memory_working_set_bytes": 70,
+  "container_memory_usage_bytes": 70,
+  "node_memory_MemAvailable_bytes": 70,
+  "node_memory_SwapFree_bytes": 70,
+  "node_vmstat_pswpin": 70,
+  "node_vmstat_pswpout": 70,
+  "node_disk_read_bytes_total": 420,
+  "node_disk_written_bytes_total": 420,
+  "node_pressure_memory_waiting_seconds_total": 70,
+  "node_pressure_memory_stalled_seconds_total": 70,
+  "node_load1": 70,
+  "up": 210
+ },
+ "comprobaciones": {
+  "1_sano_ok_sin_recuperar": true,
+  "2_detecta_el_fallo": true,
+  "2_registra_memoria_al_fallar": true,
+  "2_recupera_una_vez": true,
+  "3_exportacion_completa": true,
+  "3_series_de_las_figuras": true
+ }
+}

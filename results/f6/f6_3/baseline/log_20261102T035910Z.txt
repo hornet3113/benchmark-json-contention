@@ -1,0 +1,9 @@
+== línea base de throttling en reposo — 20261102T035910Z — calentamiento 60 s, ventana 300 s
+   postgres PROFILE_A_BASELINE  ventana:    0.000 s throttling (0.0 s/min, 0 s con throttling, 0.0404 núcleos)  calentamiento: 0.000 s
+   mongo    PROFILE_A_BASELINE  ventana:    0.215 s throttling (0.043 s/min, 1 s con throttling, 0.3878 núcleos)  calentamiento: 0.000 s
+   postgres PROFILE_B_MEDIUM    ventana:    0.000 s throttling (0.0 s/min, 0 s con throttling, 0.0385 núcleos)  calentamiento: 0.000 s
+   mongo    PROFILE_B_MEDIUM    ventana:    3.647 s throttling (0.7295 s/min, 22 s con throttling, 0.4224 núcleos)  calentamiento: 0.008 s
+   postgres PROFILE_C_SEVERE    ventana:    0.387 s throttling (0.0773 s/min, 40 s con throttling, 0.0494 núcleos)  calentamiento: 0.002 s
+   mongo    PROFILE_C_SEVERE    ventana:   26.666 s throttling (5.3331 s/min, 123 s con throttling, 0.3212 núcleos)  calentamiento: 6.521 s
+-> results/f6/f6_3/baseline/resumen_20261102T035910Z.json
+exit=0

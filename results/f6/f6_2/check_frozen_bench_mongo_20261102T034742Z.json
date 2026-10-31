@@ -1,0 +1,31 @@
+{
+ "descripcion": "rss/working_set de cAdvisor frente al cgroup con el contenedor congelado (F6.2)",
+ "contenedor": "bench_mongo",
+ "sello": "20261102T034742Z",
+ "segundos": 20.096,
+ "cgroup.freeze": "1",
+ "lecturas_propias": 100,
+ "anon_valores_distintos_congelado": [
+  112349184
+ ],
+ "rss_prometheus": {
+  "muestras": 20,
+  "valores_distintos": [
+   112349184
+  ]
+ },
+ "working_set_valores_propios": [
+  221413376
+ ],
+ "working_set_prometheus": {
+  "muestras": 20,
+  "valores_distintos": [
+   221413376
+  ]
+ },
+ "comprobaciones": {
+  "congelado": true,
+  "rss_igual_a_anon_en_todas": true,
+  "working_set_igual_en_todas": true
+ }
+}

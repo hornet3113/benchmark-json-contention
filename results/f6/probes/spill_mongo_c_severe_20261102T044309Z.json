@@ -1,0 +1,764 @@
+{
+ "descripcion": "sonda de spill en MongoDB (F6.3); NO es una medición ni una fila del CSV",
+ "perfil": "PROFILE_C_SEVERE",
+ "sello": "20261102T044309Z",
+ "repeticiones": 3,
+ "allowDiskUse": true,
+ "pipeline_control": [
+  {
+   "$match": {
+    "payment.status": "completed",
+    "timestamp": {
+     "$gte": "2026-01-01T00:00:00Z"
+    }
+   }
+  },
+  {
+   "$sort": {
+    "payment.final_total": -1
+   }
+  },
+  {
+   "$limit": 1000
+  },
+  {
+   "$project": {
+    "order_id": 1,
+    "customer.id": 1,
+    "payment.final_total": 1
+   }
+  }
+ ],
+ "pipeline_sonda": [
+  {
+   "$match": {
+    "payment.status": "completed",
+    "timestamp": {
+     "$gte": "2026-01-01T00:00:00Z"
+    }
+   }
+  },
+  {
+   "$sort": {
+    "payment.final_total": -1
+   }
+  }
+ ],
+ "limites_cgroup": {
+  "cpu.max": "100000 100000",
+  "memory.max": "1073741824"
+ },
+ "control": {
+  "documentos_devueltos": [
+   1000,
+   1000,
+   1000
+  ],
+  "latencias_ms": [
+   29708.0,
+   25052.1,
+   21916.4
+  ],
+  "contadores_spill_vistos": [
+   "indexBulkBuilder.bytesSpilled",
+   "indexBulkBuilder.bytesSpilledUncompressed",
+   "indexBulkBuilder.spilledRanges",
+   "metrics.query.bucketAuto.spilledBytes",
+   "metrics.query.bucketAuto.spilledDataStorageSize",
+   "metrics.query.bucketAuto.spilledRecords",
+   "metrics.query.bucketAuto.spills",
+   "metrics.query.graphLookup.spilledBytes",
+   "metrics.query.graphLookup.spilledDataStorageSize",
+   "metrics.query.graphLookup.spilledRecords",
+   "metrics.query.graphLookup.spills",
+   "metrics.query.group.spilledBytes",
+   "metrics.query.group.spilledDataStorageSize",
+   "metrics.query.group.spilledRecords",
+   "metrics.query.group.spills",
+   "metrics.query.lookup.hashLookupSpillToDisk",
+   "metrics.query.lookup.hashLookupSpillToDiskBytes",
+   "metrics.query.lookup.hashLookupSpilledBytes",
+   "metrics.query.lookup.hashLookupSpilledDataStorageSize",
+   "metrics.query.lookup.hashLookupSpilledRecords",
+   "metrics.query.lookup.hashLookupSpills",
+   "metrics.query.setWindowFields.spilledBytes",
+   "metrics.query.setWindowFields.spilledDataStorageSize",
+   "metrics.query.setWindowFields.spilledRecords",
+   "metrics.query.setWindowFields.spills",
+   "metrics.query.sort.spillToDisk",
+   "metrics.query.sort.spillToDiskBytes",
+   "metrics.query.textOr.spilledBytes",
+   "metrics.query.textOr.spilledDataStorageSize",
+   "metrics.query.textOr.spilledRecords",
+   "metrics.query.textOr.spills",
+   "spillWiredTiger.block-manager.blocks read",
+   "spillWiredTiger.block-manager.blocks written",
+   "spillWiredTiger.block-manager.bytes read",
+   "spillWiredTiger.block-manager.bytes written",
+   "spillWiredTiger.cache.application thread time evicting (usecs)",
+   "spillWiredTiger.cache.application threads eviction requested with cache fill ratio < 25%",
+   "spillWiredTiger.cache.application threads eviction requested with cache fill ratio >= 75%",
+   "spillWiredTiger.cache.application threads page write from cache to disk count",
+   "spillWiredTiger.cache.application threads page write from cache to disk time (usecs)",
+   "spillWiredTiger.cache.bytes allocated for updates",
+   "spillWiredTiger.cache.bytes currently in the cache",
+   "spillWiredTiger.cache.bytes read into cache",
+   "spillWiredTiger.cache.bytes written from cache",
+   "spillWiredTiger.cache.eviction currently operating in aggressive mode",
+   "spillWiredTiger.cache.eviction empty score",
+   "spillWiredTiger.cache.eviction state",
+   "spillWiredTiger.cache.eviction walk target strategy clean pages",
+   "spillWiredTiger.cache.eviction walk target strategy dirty pages",
+   "spillWiredTiger.cache.eviction walk target strategy pages with updates",
+   "spillWiredTiger.cache.forced eviction - pages evicted that were clean count",
+   "spillWiredTiger.cache.forced eviction - pages evicted that were dirty count",
+   "spillWiredTiger.cache.forced eviction - pages selected count",
+   "spillWiredTiger.cache.forced eviction - pages selected unable to be evicted count",
+   "spillWiredTiger.cache.hazard pointer blocked page eviction",
+   "spillWiredTiger.cache.maximum bytes configured",
+   "spillWiredTiger.cache.maximum page size seen at eviction",
+   "spillWiredTiger.cache.number of times dirty trigger was reached",
+   "spillWiredTiger.cache.number of times eviction trigger was reached",
+   "spillWiredTiger.cache.number of times updates trigger was reached",
+   "spillWiredTiger.cache.page evict attempts by application threads",
+   "spillWiredTiger.cache.page evict failures by application threads",
+   "spillWiredTiger.cache.pages queued for eviction",
+   "spillWiredTiger.cache.pages queued for urgent eviction",
+   "spillWiredTiger.cache.tracked dirty bytes in the cache",
+   "spillWiredTiger.session.open session count",
+   "spillWiredTiger.storageSize"
+  ],
+  "spill_delta": {},
+  "fila_del_clasificador_NO_ES_DEL_CSV": {
+   "timestamp_epoch": 1793594600,
+   "engine": "mongodb",
+   "profile": "PROFILE_C_SEVERE",
+   "query_id": "SONDA_SPILL_CONTROL_Q2",
+   "concurrency": 1,
+   "run_number": 1,
+   "throughput_qps": 0.03860952065412629,
+   "latency_p50_ms": 25052.134896,
+   "latency_p95_ms": 29242.4522049,
+   "latency_p99_ms": 29614.924854579996,
+   "cpu_throttled_seconds": 53.7939,
+   "max_rss_mb": 548.42578125,
+   "disk_spill": false,
+   "status": "ok"
+  },
+  "motivos": [
+   "baja densidad muestral: 3 completadas en la ventana (A4)"
+  ],
+  "estado_contenedor": {
+   "Status": "running",
+   "Running": true,
+   "OOMKilled": false,
+   "ExitCode": 0,
+   "Error": ""
+  },
+  "explain": {
+   "marcas_de_disco": [
+    {
+     "ruta": "executionStats.executionStages.inputStage.usedDisk",
+     "valor": false
+    },
+    {
+     "ruta": "executionStats.executionStages.inputStage.spills",
+     "valor": 0
+    },
+    {
+     "ruta": "executionStats.executionStages.inputStage.spilledRecords",
+     "valor": 0
+    },
+    {
+     "ruta": "executionStats.executionStages.inputStage.spilledBytes",
+     "valor": 0
+    },
+    {
+     "ruta": "executionStats.executionStages.inputStage.spilledDataStorageSize",
+     "valor": 0
+    }
+   ],
+   "usa_disco": false,
+   "plan_completo": {
+    "explainVersion": "1",
+    "queryPlanner": {
+     "namespace": "bench.orders",
+     "parsedQuery": {
+      "$and": [
+       {
+        "payment.status": {
+         "$eq": "completed"
+        }
+       },
+       {
+        "timestamp": {
+         "$gte": "2026-01-01T00:00:00Z"
+        }
+       }
+      ]
+     },
+     "indexFilterSet": false,
+     "queryHash": "C3F9DF7C",
+     "planCacheShapeHash": "C3F9DF7C",
+     "planCacheKey": "C20300F7",
+     "optimizationTimeMillis": 0,
+     "optimizedPipeline": true,
+     "maxIndexedOrSolutionsReached": false,
+     "maxIndexedAndSolutionsReached": false,
+     "maxScansToExplodeReached": false,
+     "prunedSimilarIndexes": false,
+     "winningPlan": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "transformBy": {
+       "_id": true,
+       "order_id": true,
+       "customer": {
+        "id": true
+       },
+       "payment": {
+        "final_total": true
+       }
+      },
+      "inputStage": {
+       "stage": "SORT",
+       "sortPattern": {
+        "payment.final_total": -1
+       },
+       "memLimit": 104857600,
+       "limitAmount": 1000,
+       "type": "simple",
+       "inputStage": {
+        "stage": "FETCH",
+        "filter": {
+         "payment.status": {
+          "$eq": "completed"
+         }
+        },
+        "inputStage": {
+         "stage": "IXSCAN",
+         "keyPattern": {
+          "timestamp": 1
+         },
+         "indexName": "idx_orders_timestamp",
+         "isMultiKey": false,
+         "multiKeyPaths": {
+          "timestamp": []
+         },
+         "isUnique": false,
+         "isSparse": false,
+         "isPartial": false,
+         "indexVersion": 2,
+         "direction": "forward",
+         "indexBounds": {
+          "timestamp": [
+           "[\"2026-01-01T00:00:00Z\", {})"
+          ]
+         }
+        }
+       }
+      }
+     },
+     "rejectedPlans": []
+    },
+    "executionStats": {
+     "executionSuccess": true,
+     "nReturned": 1000,
+     "executionTimeMillis": 27697,
+     "totalKeysExamined": 250207,
+     "totalDocsExamined": 250207,
+     "executionStages": {
+      "isCached": false,
+      "stage": "PROJECTION_DEFAULT",
+      "nReturned": 1000,
+      "executionTimeMillisEstimate": 27216,
+      "works": 251209,
+      "advanced": 1000,
+      "needTime": 250208,
+      "needYield": 0,
+      "saveState": 1147,
+      "restoreState": 1147,
+      "isEOF": 1,
+      "transformBy": {
+       "_id": true,
+       "order_id": true,
+       "customer": {
+        "id": true
+       },
+       "payment": {
+        "final_total": true
+       }
+      },
+      "inputStage": {
+       "stage": "SORT",
+       "nReturned": 1000,
+       "executionTimeMillisEstimate": 27176,
+       "works": 251209,
+       "advanced": 1000,
+       "needTime": 250208,
+       "needYield": 0,
+       "saveState": 1147,
+       "restoreState": 1147,
+       "isEOF": 1,
+       "sortPattern": {
+        "payment.final_total": -1
+       },
+       "memLimit": 104857600,
+       "limitAmount": 1000,
+       "type": "simple",
+       "totalDataSizeSorted": 1475490,
+       "usedDisk": false,
+       "spills": 0,
+       "spilledRecords": 0,
+       "spilledBytes": 0,
+       "spilledDataStorageSize": 0,
+       "inputStage": {
+        "stage": "FETCH",
+        "filter": {
+         "payment.status": {
+          "$eq": "completed"
+         }
+        },
+        "nReturned": 175049,
+        "executionTimeMillisEstimate": 26727,
+        "works": 250208,
+        "advanced": 175049,
+        "needTime": 75158,
+        "needYield": 0,
+        "saveState": 1147,
+        "restoreState": 1147,
+        "isEOF": 1,
+        "docsExamined": 250207,
+        "alreadyHasObj": 0,
+        "inputStage": {
+         "stage": "IXSCAN",
+         "nReturned": 250207,
+         "executionTimeMillisEstimate": 822,
+         "works": 250208,
+         "advanced": 250207,
+         "needTime": 0,
+         "needYield": 0,
+         "saveState": 1147,
+         "restoreState": 1147,
+         "isEOF": 1,
+         "keyPattern": {
+          "timestamp": 1
+         },
+         "indexName": "idx_orders_timestamp",
+         "isMultiKey": false,
+         "multiKeyPaths": {
+          "timestamp": []
+         },
+         "isUnique": false,
+         "isSparse": false,
+         "isPartial": false,
+         "indexVersion": 2,
+         "direction": "forward",
+         "indexBounds": {
+          "timestamp": [
+           "[\"2026-01-01T00:00:00Z\", {})"
+          ]
+         },
+         "keysExamined": 250207,
+         "seeks": 1,
+         "dupsTested": 0,
+         "dupsDropped": 0
+        }
+       }
+      }
+     }
+    },
+    "queryShapeHash": "88B8416C7C79A48FE2414005AA99B6899EEA955A8EB5D9B0ED08F4AB70DEC2D3",
+    "command": {
+     "aggregate": "orders",
+     "pipeline": [
+      {
+       "$match": {
+        "payment.status": "completed",
+        "timestamp": {
+         "$gte": "2026-01-01T00:00:00Z"
+        }
+       }
+      },
+      {
+       "$sort": {
+        "payment.final_total": -1
+       }
+      },
+      {
+       "$limit": 1000
+      },
+      {
+       "$project": {
+        "order_id": 1,
+        "customer.id": 1,
+        "payment.final_total": 1
+       }
+      }
+     ],
+     "cursor": {},
+     "allowDiskUse": true,
+     "$db": "bench"
+    },
+    "serverInfo": {
+     "host": "80db9a9a7d0c",
+     "port": 27017,
+     "version": "8.2.12",
+     "gitVersion": "0f912e80210b8fdfdcec618b14b6c0fced055cb8"
+    },
+    "serverParameters": {
+     "internalQueryFacetBufferSizeBytes": 104857600,
+     "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+     "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+     "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+     "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+     "internalQueryProhibitBlockingMergeOnMongoS": 0,
+     "internalQueryMaxAddToSetBytes": 104857600,
+     "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+     "internalQueryFrameworkControl": "trySbeRestricted",
+     "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+    },
+    "ok": 1.0
+   }
+  }
+ },
+ "sonda": {
+  "documentos_devueltos": [
+   175049,
+   175049,
+   175049
+  ],
+  "latencias_ms": [
+   30623.9,
+   62125.8,
+   161048.8
+  ],
+  "contadores_spill_vistos": [
+   "indexBulkBuilder.bytesSpilled",
+   "indexBulkBuilder.bytesSpilledUncompressed",
+   "indexBulkBuilder.spilledRanges",
+   "metrics.query.bucketAuto.spilledBytes",
+   "metrics.query.bucketAuto.spilledDataStorageSize",
+   "metrics.query.bucketAuto.spilledRecords",
+   "metrics.query.bucketAuto.spills",
+   "metrics.query.graphLookup.spilledBytes",
+   "metrics.query.graphLookup.spilledDataStorageSize",
+   "metrics.query.graphLookup.spilledRecords",
+   "metrics.query.graphLookup.spills",
+   "metrics.query.group.spilledBytes",
+   "metrics.query.group.spilledDataStorageSize",
+   "metrics.query.group.spilledRecords",
+   "metrics.query.group.spills",
+   "metrics.query.lookup.hashLookupSpillToDisk",
+   "metrics.query.lookup.hashLookupSpillToDiskBytes",
+   "metrics.query.lookup.hashLookupSpilledBytes",
+   "metrics.query.lookup.hashLookupSpilledDataStorageSize",
+   "metrics.query.lookup.hashLookupSpilledRecords",
+   "metrics.query.lookup.hashLookupSpills",
+   "metrics.query.setWindowFields.spilledBytes",
+   "metrics.query.setWindowFields.spilledDataStorageSize",
+   "metrics.query.setWindowFields.spilledRecords",
+   "metrics.query.setWindowFields.spills",
+   "metrics.query.sort.spillToDisk",
+   "metrics.query.sort.spillToDiskBytes",
+   "metrics.query.textOr.spilledBytes",
+   "metrics.query.textOr.spilledDataStorageSize",
+   "metrics.query.textOr.spilledRecords",
+   "metrics.query.textOr.spills",
+   "spillWiredTiger.block-manager.blocks read",
+   "spillWiredTiger.block-manager.blocks written",
+   "spillWiredTiger.block-manager.bytes read",
+   "spillWiredTiger.block-manager.bytes written",
+   "spillWiredTiger.cache.application thread time evicting (usecs)",
+   "spillWiredTiger.cache.application threads eviction requested with cache fill ratio < 25%",
+   "spillWiredTiger.cache.application threads eviction requested with cache fill ratio >= 75%",
+   "spillWiredTiger.cache.application threads page write from cache to disk count",
+   "spillWiredTiger.cache.application threads page write from cache to disk time (usecs)",
+   "spillWiredTiger.cache.bytes allocated for updates",
+   "spillWiredTiger.cache.bytes currently in the cache",
+   "spillWiredTiger.cache.bytes read into cache",
+   "spillWiredTiger.cache.bytes written from cache",
+   "spillWiredTiger.cache.eviction currently operating in aggressive mode",
+   "spillWiredTiger.cache.eviction empty score",
+   "spillWiredTiger.cache.eviction state",
+   "spillWiredTiger.cache.eviction walk target strategy clean pages",
+   "spillWiredTiger.cache.eviction walk target strategy dirty pages",
+   "spillWiredTiger.cache.eviction walk target strategy pages with updates",
+   "spillWiredTiger.cache.forced eviction - pages evicted that were clean count",
+   "spillWiredTiger.cache.forced eviction - pages evicted that were dirty count",
+   "spillWiredTiger.cache.forced eviction - pages selected count",
+   "spillWiredTiger.cache.forced eviction - pages selected unable to be evicted count",
+   "spillWiredTiger.cache.hazard pointer blocked page eviction",
+   "spillWiredTiger.cache.maximum bytes configured",
+   "spillWiredTiger.cache.maximum page size seen at eviction",
+   "spillWiredTiger.cache.number of times dirty trigger was reached",
+   "spillWiredTiger.cache.number of times eviction trigger was reached",
+   "spillWiredTiger.cache.number of times updates trigger was reached",
+   "spillWiredTiger.cache.page evict attempts by application threads",
+   "spillWiredTiger.cache.page evict failures by application threads",
+   "spillWiredTiger.cache.pages queued for eviction",
+   "spillWiredTiger.cache.pages queued for urgent eviction",
+   "spillWiredTiger.cache.tracked dirty bytes in the cache",
+   "spillWiredTiger.session.open session count",
+   "spillWiredTiger.storageSize"
+  ],
+  "spill_delta": {
+   "metrics.query.sort.spillToDisk": 8874,
+   "metrics.query.sort.spillToDiskBytes": 211906251
+  },
+  "fila_del_clasificador_NO_ES_DEL_CSV": {
+   "timestamp_epoch": 1793594678,
+   "engine": "mongodb",
+   "profile": "PROFILE_C_SEVERE",
+   "query_id": "SONDA_SPILL_Q2_SIN_LIMIT_NI_PROJECT",
+   "concurrency": 1,
+   "run_number": 1,
+   "throughput_qps": 0.011773488866079096,
+   "latency_p50_ms": 62125.753646,
+   "latency_p95_ms": 151156.49357989998,
+   "latency_p99_ms": 159070.33712958,
+   "cpu_throttled_seconds": 222.701927,
+   "max_rss_mb": 671.71875,
+   "disk_spill": true,
+   "status": "spill"
+  },
+  "motivos": [
+   "baja densidad muestral: 3 completadas en la ventana (A4)"
+  ],
+  "estado_contenedor": {
+   "Status": "running",
+   "Running": true,
+   "OOMKilled": false,
+   "ExitCode": 0,
+   "Error": ""
+  },
+  "explain": {
+   "marcas_de_disco": [
+    {
+     "ruta": "executionStats.executionStages.usedDisk",
+     "valor": true
+    },
+    {
+     "ruta": "executionStats.executionStages.spills",
+     "valor": 2
+    },
+    {
+     "ruta": "executionStats.executionStages.spilledRecords",
+     "valor": 175049
+    },
+    {
+     "ruta": "executionStats.executionStages.spilledBytes",
+     "valor": 195436190
+    },
+    {
+     "ruta": "executionStats.executionStages.spilledDataStorageSize",
+     "valor": 70635417
+    }
+   ],
+   "usa_disco": true,
+   "plan_completo": {
+    "explainVersion": "1",
+    "queryPlanner": {
+     "namespace": "bench.orders",
+     "parsedQuery": {
+      "$and": [
+       {
+        "payment.status": {
+         "$eq": "completed"
+        }
+       },
+       {
+        "timestamp": {
+         "$gte": "2026-01-01T00:00:00Z"
+        }
+       }
+      ]
+     },
+     "indexFilterSet": false,
+     "queryHash": "1D9B1104",
+     "planCacheShapeHash": "1D9B1104",
+     "planCacheKey": "62E1AEA9",
+     "optimizationTimeMillis": 0,
+     "optimizedPipeline": true,
+     "maxIndexedOrSolutionsReached": false,
+     "maxIndexedAndSolutionsReached": false,
+     "maxScansToExplodeReached": false,
+     "prunedSimilarIndexes": false,
+     "winningPlan": {
+      "isCached": false,
+      "stage": "SORT",
+      "sortPattern": {
+       "payment.final_total": -1
+      },
+      "memLimit": 104857600,
+      "type": "simple",
+      "inputStage": {
+       "stage": "FETCH",
+       "filter": {
+        "payment.status": {
+         "$eq": "completed"
+        }
+       },
+       "inputStage": {
+        "stage": "IXSCAN",
+        "keyPattern": {
+         "timestamp": 1
+        },
+        "indexName": "idx_orders_timestamp",
+        "isMultiKey": false,
+        "multiKeyPaths": {
+         "timestamp": []
+        },
+        "isUnique": false,
+        "isSparse": false,
+        "isPartial": false,
+        "indexVersion": 2,
+        "direction": "forward",
+        "indexBounds": {
+         "timestamp": [
+          "[\"2026-01-01T00:00:00Z\", {})"
+         ]
+        }
+       }
+      }
+     },
+     "rejectedPlans": []
+    },
+    "executionStats": {
+     "executionSuccess": true,
+     "nReturned": 175049,
+     "executionTimeMillis": 30335,
+     "totalKeysExamined": 250207,
+     "totalDocsExamined": 250207,
+     "executionStages": {
+      "isCached": false,
+      "stage": "SORT",
+      "nReturned": 175049,
+      "executionTimeMillisEstimate": 29885,
+      "works": 425258,
+      "advanced": 175049,
+      "needTime": 250208,
+      "needYield": 0,
+      "saveState": 1184,
+      "restoreState": 1184,
+      "isEOF": 1,
+      "sortPattern": {
+       "payment.final_total": -1
+      },
+      "memLimit": 104857600,
+      "type": "simple",
+      "totalDataSizeSorted": 199462317,
+      "usedDisk": true,
+      "spills": 2,
+      "spilledRecords": 175049,
+      "spilledBytes": 195436190,
+      "spilledDataStorageSize": 70635417,
+      "inputStage": {
+       "stage": "FETCH",
+       "filter": {
+        "payment.status": {
+         "$eq": "completed"
+        }
+       },
+       "nReturned": 175049,
+       "executionTimeMillisEstimate": 27676,
+       "works": 250208,
+       "advanced": 175049,
+       "needTime": 75158,
+       "needYield": 0,
+       "saveState": 1184,
+       "restoreState": 1184,
+       "isEOF": 1,
+       "docsExamined": 250207,
+       "alreadyHasObj": 0,
+       "inputStage": {
+        "stage": "IXSCAN",
+        "nReturned": 250207,
+        "executionTimeMillisEstimate": 876,
+        "works": 250208,
+        "advanced": 250207,
+        "needTime": 0,
+        "needYield": 0,
+        "saveState": 1184,
+        "restoreState": 1184,
+        "isEOF": 1,
+        "keyPattern": {
+         "timestamp": 1
+        },
+        "indexName": "idx_orders_timestamp",
+        "isMultiKey": false,
+        "multiKeyPaths": {
+         "timestamp": []
+        },
+        "isUnique": false,
+        "isSparse": false,
+        "isPartial": false,
+        "indexVersion": 2,
+        "direction": "forward",
+        "indexBounds": {
+         "timestamp": [
+          "[\"2026-01-01T00:00:00Z\", {})"
+         ]
+        },
+        "keysExamined": 250207,
+        "seeks": 1,
+        "dupsTested": 0,
+        "dupsDropped": 0
+       }
+      }
+     }
+    },
+    "queryShapeHash": "2D475FF6BFCA8095A5FFE6C025C825C85C30E847DA7086586BE34C109394729E",
+    "command": {
+     "aggregate": "orders",
+     "pipeline": [
+      {
+       "$match": {
+        "payment.status": "completed",
+        "timestamp": {
+         "$gte": "2026-01-01T00:00:00Z"
+        }
+       }
+      },
+      {
+       "$sort": {
+        "payment.final_total": -1
+       }
+      }
+     ],
+     "cursor": {},
+     "allowDiskUse": true,
+     "$db": "bench"
+    },
+    "serverInfo": {
+     "host": "80db9a9a7d0c",
+     "port": 27017,
+     "version": "8.2.12",
+     "gitVersion": "0f912e80210b8fdfdcec618b14b6c0fced055cb8"
+    },
+    "serverParameters": {
+     "internalQueryFacetBufferSizeBytes": 104857600,
+     "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+     "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+     "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+     "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+     "internalQueryProhibitBlockingMergeOnMongoS": 0,
+     "internalQueryMaxAddToSetBytes": 104857600,
+     "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+     "internalQueryFrameworkControl": "trySbeRestricted",
+     "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+    },
+    "ok": 1.0
+   }
+  }
+ },
+ "comprobaciones": {
+  "sonda_contador_spill_>0": true,
+  "control_sin_volcado": true,
+  "sonda_explain_usa_disco": true,
+  "control_explain_sin_disco": true,
+  "sonda_status_spill": true,
+  "sonda_disk_spill_true": true,
+  "control_status_ok": true
+ }
+}

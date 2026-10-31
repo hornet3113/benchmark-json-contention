@@ -14,6 +14,12 @@ Qué se usa para cada columna del CSV:
                           en MiB (2^20). No se usa memory.peak: incluye caché de archivos y
                           cuenta desde el arranque del contenedor (también el calentamiento).
   OOM                   = Δ oom_kill de memory.events
+
+Serie de 1 s (F6, pedido de Alix): el muestreador guarda TODAS sus lecturas en
+results/raw/ (SAMPLE_COLUMNS), no solo el máximo. Es la curva de RSS del reporte
+si Prometheus falta. Lleva además `shmem` y `file` (F6-A3: los shared_buffers de
+Postgres son shmem, no anon), `inactive_file` (para working_set, M3) y los
+acumulados de throttling y de uso de CPU.
 """
 
 from __future__ import annotations
@@ -59,6 +65,18 @@ class Cgroup:
     def anon_bytes(self) -> int:
         return self.flat("memory.stat")["anon"]
 
+    def sample(self) -> tuple[int, ...]:
+        """Una fila de la serie de 1 s, en el orden de SAMPLE_COLUMNS (sin la marca de tiempo)."""
+        mem, cpu = self.flat("memory.stat"), self.flat("cpu.stat")
+        return (mem["anon"], mem["shmem"], mem["file"], mem["inactive_file"], int(self.read("memory.current").strip()),
+                cpu["throttled_usec"], cpu["usage_usec"])
+
+
+# Columnas de la serie de 1 s en results/raw/ ("serie_cgroup_1s"). Bytes y microsegundos.
+# working_set = memory_current − inactive_file (= container_memory_working_set_bytes, F6.2): lo usa M3 (SPEC A11).
+SAMPLE_COLUMNS = ("monotonic_ns", "anon", "shmem", "file", "inactive_file", "memory_current",
+                  "throttled_usec", "usage_usec")
+
 
 def delta(start: dict, end: dict, key: str) -> int | None:
     if start.get(key) is None or end.get(key) is None:
@@ -67,19 +85,22 @@ def delta(start: dict, end: dict, key: str) -> int | None:
 
 
 class AnonSampler(threading.Thread):
-    """Muestrea `anon` cada `interval` segundos hasta stop(). Guarda todas las muestras."""
+    """Muestrea el cgroup cada `interval` segundos hasta stop(). Guarda todas las muestras.
+
+    Cada muestra es una fila de SAMPLE_COLUMNS; `anon` (índice 1) es lo que define max_rss_mb.
+    """
 
     def __init__(self, cgroup: Cgroup, interval: float):
         super().__init__(daemon=True)
         self.cgroup, self.interval = cgroup, interval
-        self.samples: list[tuple[int, int]] = []     # (monotonic_ns, bytes)
+        self.samples: list[tuple[int, ...]] = []     # filas de SAMPLE_COLUMNS
         self.errors: list[str] = []
         self._stop = threading.Event()
 
     def run(self) -> None:
         while True:
             try:
-                self.samples.append((time.monotonic_ns(), self.cgroup.anon_bytes()))
+                self.samples.append((time.monotonic_ns(), *self.cgroup.sample()))
             except OSError as exc:        # el contenedor murió (p. ej. OOM): se registra y se sigue
                 self.errors.append(str(exc))
             if self._stop.wait(self.interval):
@@ -91,4 +112,4 @@ class AnonSampler(threading.Thread):
 
     @property
     def max_mib(self) -> float | None:
-        return max(b for _, b in self.samples) / 2**20 if self.samples else None
+        return max(s[1] for s in self.samples) / 2**20 if self.samples else None

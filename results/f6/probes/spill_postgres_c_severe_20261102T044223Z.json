@@ -1,0 +1,440 @@
+{
+ "descripcion": "sonda de spill en Postgres (F6.3); NO es una medición ni una fila del CSV",
+ "perfil": "PROFILE_C_SEVERE",
+ "sello": "20261102T044223Z",
+ "work_mem": "4MB",
+ "repeticiones": 3,
+ "consulta_control": "SELECT data->>'order_id' AS order_id,\n      data->'customer'->>'id' AS customer_id,\n      (data->'payment'->>'final_total')::numeric AS final_total\nFROM orders\nWHERE data->'payment'->>'status' = 'completed'\n  AND (data->>'timestamp')::timestamptz >= '2026-01-01 00:00:00Z'\nORDER BY (data->'payment'->>'final_total')::numeric DESC\nLIMIT 1000;\n",
+ "consulta_sonda": "SELECT data->>'order_id' AS order_id,\n      data->'customer'->>'id' AS customer_id,\n      (data->'payment'->>'final_total')::numeric AS final_total\nFROM orders\nWHERE data->'payment'->>'status' = 'completed'\n  AND (data->>'timestamp')::timestamptz >= '2026-01-01 00:00:00Z'\nORDER BY (data->'payment'->>'final_total')::numeric DESC;",
+ "limites_cgroup": {
+  "cpu.max": "100000 100000",
+  "memory.max": "1073741824"
+ },
+ "control": {
+  "filas_devueltas": [
+   1000,
+   1000,
+   1000
+  ],
+  "latencias_ms": [
+   5336.9,
+   2111.1,
+   1895.1
+  ],
+  "spill_inicio": {
+   "temp_files": 0,
+   "temp_bytes": 0
+  },
+  "spill_fin": {
+   "temp_files": 0,
+   "temp_bytes": 0
+  },
+  "spill_delta": {},
+  "fila_del_clasificador_NO_ES_DEL_CSV": {
+   "timestamp_epoch": 1793594553,
+   "engine": "postgresql",
+   "profile": "PROFILE_C_SEVERE",
+   "query_id": "SONDA_SPILL_CONTROL_Q2",
+   "concurrency": 1,
+   "run_number": 1,
+   "throughput_qps": 0.2632842465558023,
+   "latency_p50_ms": 2111.118307,
+   "latency_p95_ms": 5014.280239900001,
+   "latency_p99_ms": 5272.339078380001,
+   "cpu_throttled_seconds": 24.373082,
+   "max_rss_mb": 14.109375,
+   "disk_spill": false,
+   "status": "ok"
+  },
+  "motivos": [
+   "baja densidad muestral: 3 completadas en la ventana (A4)"
+  ],
+  "estado_contenedor": {
+   "Status": "running",
+   "Running": true,
+   "OOMKilled": false,
+   "ExitCode": 0,
+   "Error": ""
+  },
+  "explain": {
+   "ordenamientos": [
+    {
+     "Node Type": "Sort",
+     "Sort Method": "top-N heapsort",
+     "Sort Space Used": 273,
+     "Sort Space Type": "Memory",
+     "Workers": [
+      {
+       "Worker Number": 0,
+       "Sort Method": "top-N heapsort",
+       "Sort Space Used": 274,
+       "Sort Space Type": "Memory"
+      },
+      {
+       "Worker Number": 1,
+       "Sort Method": "top-N heapsort",
+       "Sort Space Used": 272,
+       "Sort Space Type": "Memory"
+      }
+     ]
+    }
+   ],
+   "temp_written_blocks_raiz": 0,
+   "plan_completo": {
+    "Plan": {
+     "Node Type": "Limit",
+     "Parallel Aware": false,
+     "Async Capable": false,
+     "Startup Cost": 96281.1,
+     "Total Cost": 96378.11,
+     "Plan Rows": 833,
+     "Plan Width": 96,
+     "Actual Startup Time": 1868.436,
+     "Actual Total Time": 1874.641,
+     "Actual Rows": 1000.0,
+     "Actual Loops": 1,
+     "Disabled": false,
+     "Shared Hit Blocks": 1766,
+     "Shared Read Blocks": 87842,
+     "Shared Dirtied Blocks": 0,
+     "Shared Written Blocks": 0,
+     "Local Hit Blocks": 0,
+     "Local Read Blocks": 0,
+     "Local Dirtied Blocks": 0,
+     "Local Written Blocks": 0,
+     "Temp Read Blocks": 0,
+     "Temp Written Blocks": 0,
+     "Plans": [
+      {
+       "Node Type": "Gather Merge",
+       "Parent Relationship": "Outer",
+       "Parallel Aware": false,
+       "Async Capable": false,
+       "Startup Cost": 96281.1,
+       "Total Cost": 96378.11,
+       "Plan Rows": 833,
+       "Plan Width": 96,
+       "Actual Startup Time": 1868.433,
+       "Actual Total Time": 1874.52,
+       "Actual Rows": 1000.0,
+       "Actual Loops": 1,
+       "Disabled": false,
+       "Workers Planned": 2,
+       "Workers Launched": 2,
+       "Shared Hit Blocks": 1766,
+       "Shared Read Blocks": 87842,
+       "Shared Dirtied Blocks": 0,
+       "Shared Written Blocks": 0,
+       "Local Hit Blocks": 0,
+       "Local Read Blocks": 0,
+       "Local Dirtied Blocks": 0,
+       "Local Written Blocks": 0,
+       "Temp Read Blocks": 0,
+       "Temp Written Blocks": 0,
+       "Plans": [
+        {
+         "Node Type": "Sort",
+         "Parent Relationship": "Outer",
+         "Parallel Aware": false,
+         "Async Capable": false,
+         "Startup Cost": 95281.07,
+         "Total Cost": 95281.94,
+         "Plan Rows": 347,
+         "Plan Width": 96,
+         "Actual Startup Time": 1860.677,
+         "Actual Total Time": 1860.804,
+         "Actual Rows": 786.0,
+         "Actual Loops": 3,
+         "Disabled": false,
+         "Sort Key": [
+          "((((data -> 'payment'::text) ->> 'final_total'::text))::numeric) DESC"
+         ],
+         "Sort Method": "top-N heapsort",
+         "Sort Space Used": 273,
+         "Sort Space Type": "Memory",
+         "Shared Hit Blocks": 1766,
+         "Shared Read Blocks": 87842,
+         "Shared Dirtied Blocks": 0,
+         "Shared Written Blocks": 0,
+         "Local Hit Blocks": 0,
+         "Local Read Blocks": 0,
+         "Local Dirtied Blocks": 0,
+         "Local Written Blocks": 0,
+         "Temp Read Blocks": 0,
+         "Temp Written Blocks": 0,
+         "Workers": [
+          {
+           "Worker Number": 0,
+           "Sort Method": "top-N heapsort",
+           "Sort Space Used": 274,
+           "Sort Space Type": "Memory"
+          },
+          {
+           "Worker Number": 1,
+           "Sort Method": "top-N heapsort",
+           "Sort Space Used": 272,
+           "Sort Space Type": "Memory"
+          }
+         ],
+         "Plans": [
+          {
+           "Node Type": "Seq Scan",
+           "Parent Relationship": "Outer",
+           "Parallel Aware": true,
+           "Async Capable": false,
+           "Relation Name": "orders",
+           "Alias": "orders",
+           "Startup Cost": 0.0,
+           "Total Cost": 95266.43,
+           "Plan Rows": 347,
+           "Plan Width": 96,
+           "Actual Startup Time": 0.342,
+           "Actual Total Time": 1791.635,
+           "Actual Rows": 58349.67,
+           "Actual Loops": 3,
+           "Disabled": false,
+           "Filter": "((((data -> 'payment'::text) ->> 'status'::text) = 'completed'::text) AND (((data ->> 'timestamp'::text))::timestamp with time zone >= '2026-01-01 00:00:00+00'::timestamp with time zone))",
+           "Rows Removed by Filter": 108317,
+           "Shared Hit Blocks": 1692,
+           "Shared Read Blocks": 87842,
+           "Shared Dirtied Blocks": 0,
+           "Shared Written Blocks": 0,
+           "Local Hit Blocks": 0,
+           "Local Read Blocks": 0,
+           "Local Dirtied Blocks": 0,
+           "Local Written Blocks": 0,
+           "Temp Read Blocks": 0,
+           "Temp Written Blocks": 0,
+           "Workers": []
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    "Planning": {
+     "Shared Hit Blocks": 0,
+     "Shared Read Blocks": 0,
+     "Shared Dirtied Blocks": 0,
+     "Shared Written Blocks": 0,
+     "Local Hit Blocks": 0,
+     "Local Read Blocks": 0,
+     "Local Dirtied Blocks": 0,
+     "Local Written Blocks": 0,
+     "Temp Read Blocks": 0,
+     "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.134,
+    "Triggers": [],
+    "Execution Time": 1874.761
+   }
+  }
+ },
+ "sonda": {
+  "filas_devueltas": [
+   175049,
+   175049,
+   175049
+  ],
+  "latencias_ms": [
+   2961.1,
+   3081.4,
+   2427.0
+  ],
+  "spill_inicio": {
+   "temp_files": 0,
+   "temp_bytes": 0
+  },
+  "spill_fin": {
+   "temp_files": 9,
+   "temp_bytes": 32718848
+  },
+  "spill_delta": {
+   "temp_files": 9,
+   "temp_bytes": 32718848
+  },
+  "fila_del_clasificador_NO_ES_DEL_CSV": {
+   "timestamp_epoch": 1793594564,
+   "engine": "postgresql",
+   "profile": "PROFILE_C_SEVERE",
+   "query_id": "SONDA_SPILL_Q2_SIN_LIMIT",
+   "concurrency": 1,
+   "run_number": 1,
+   "throughput_qps": 0.28642948713157085,
+   "latency_p50_ms": 2961.108397,
+   "latency_p95_ms": 3069.3793716999994,
+   "latency_p99_ms": 3079.0034583399997,
+   "cpu_throttled_seconds": 19.783159,
+   "max_rss_mb": 23.6328125,
+   "disk_spill": true,
+   "status": "spill"
+  },
+  "motivos": [
+   "baja densidad muestral: 3 completadas en la ventana (A4)"
+  ],
+  "estado_contenedor": {
+   "Status": "running",
+   "Running": true,
+   "OOMKilled": false,
+   "ExitCode": 0,
+   "Error": ""
+  },
+  "explain": {
+   "ordenamientos": [
+    {
+     "Node Type": "Sort",
+     "Sort Method": "external merge",
+     "Sort Space Used": 3584,
+     "Sort Space Type": "Disk",
+     "Workers": [
+      {
+       "Worker Number": 0,
+       "Sort Method": "external merge",
+       "Sort Space Used": 3608,
+       "Sort Space Type": "Disk"
+      },
+      {
+       "Worker Number": 1,
+       "Sort Method": "external merge",
+       "Sort Space Used": 3456,
+       "Sort Space Type": "Disk"
+      }
+     ]
+    }
+   ],
+   "temp_written_blocks_raiz": 1334,
+   "plan_completo": {
+    "Plan": {
+     "Node Type": "Gather Merge",
+     "Parallel Aware": false,
+     "Async Capable": false,
+     "Startup Cost": 96281.1,
+     "Total Cost": 96378.11,
+     "Plan Rows": 833,
+     "Plan Width": 96,
+     "Actual Startup Time": 2288.129,
+     "Actual Total Time": 2590.776,
+     "Actual Rows": 175049.0,
+     "Actual Loops": 1,
+     "Disabled": false,
+     "Workers Planned": 2,
+     "Workers Launched": 2,
+     "Shared Hit Blocks": 2048,
+     "Shared Read Blocks": 87560,
+     "Shared Dirtied Blocks": 0,
+     "Shared Written Blocks": 0,
+     "Local Hit Blocks": 0,
+     "Local Read Blocks": 0,
+     "Local Dirtied Blocks": 0,
+     "Local Written Blocks": 0,
+     "Temp Read Blocks": 1331,
+     "Temp Written Blocks": 1334,
+     "Plans": [
+      {
+       "Node Type": "Sort",
+       "Parent Relationship": "Outer",
+       "Parallel Aware": false,
+       "Async Capable": false,
+       "Startup Cost": 95281.07,
+       "Total Cost": 95281.94,
+       "Plan Rows": 347,
+       "Plan Width": 96,
+       "Actual Startup Time": 2213.577,
+       "Actual Total Time": 2229.828,
+       "Actual Rows": 58349.67,
+       "Actual Loops": 3,
+       "Disabled": false,
+       "Sort Key": [
+        "((((data -> 'payment'::text) ->> 'final_total'::text))::numeric) DESC"
+       ],
+       "Sort Method": "external merge",
+       "Sort Space Used": 3584,
+       "Sort Space Type": "Disk",
+       "Shared Hit Blocks": 2048,
+       "Shared Read Blocks": 87560,
+       "Shared Dirtied Blocks": 0,
+       "Shared Written Blocks": 0,
+       "Local Hit Blocks": 0,
+       "Local Read Blocks": 0,
+       "Local Dirtied Blocks": 0,
+       "Local Written Blocks": 0,
+       "Temp Read Blocks": 1331,
+       "Temp Written Blocks": 1334,
+       "Workers": [
+        {
+         "Worker Number": 0,
+         "Sort Method": "external merge",
+         "Sort Space Used": 3608,
+         "Sort Space Type": "Disk"
+        },
+        {
+         "Worker Number": 1,
+         "Sort Method": "external merge",
+         "Sort Space Used": 3456,
+         "Sort Space Type": "Disk"
+        }
+       ],
+       "Plans": [
+        {
+         "Node Type": "Seq Scan",
+         "Parent Relationship": "Outer",
+         "Parallel Aware": true,
+         "Async Capable": false,
+         "Relation Name": "orders",
+         "Alias": "orders",
+         "Startup Cost": 0.0,
+         "Total Cost": 95266.43,
+         "Plan Rows": 347,
+         "Plan Width": 96,
+         "Actual Startup Time": 0.379,
+         "Actual Total Time": 2046.846,
+         "Actual Rows": 58349.67,
+         "Actual Loops": 3,
+         "Disabled": false,
+         "Filter": "((((data -> 'payment'::text) ->> 'status'::text) = 'completed'::text) AND (((data ->> 'timestamp'::text))::timestamp with time zone >= '2026-01-01 00:00:00+00'::timestamp with time zone))",
+         "Rows Removed by Filter": 108317,
+         "Shared Hit Blocks": 1974,
+         "Shared Read Blocks": 87560,
+         "Shared Dirtied Blocks": 0,
+         "Shared Written Blocks": 0,
+         "Local Hit Blocks": 0,
+         "Local Read Blocks": 0,
+         "Local Dirtied Blocks": 0,
+         "Local Written Blocks": 0,
+         "Temp Read Blocks": 0,
+         "Temp Written Blocks": 0,
+         "Workers": []
+        }
+       ]
+      }
+     ]
+    },
+    "Planning": {
+     "Shared Hit Blocks": 0,
+     "Shared Read Blocks": 0,
+     "Shared Dirtied Blocks": 0,
+     "Shared Written Blocks": 0,
+     "Local Hit Blocks": 0,
+     "Local Read Blocks": 0,
+     "Local Dirtied Blocks": 0,
+     "Local Written Blocks": 0,
+     "Temp Read Blocks": 0,
+     "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.136,
+    "Triggers": [],
+    "Execution Time": 2607.422
+   }
+  }
+ },
+ "comprobaciones": {
+  "sonda_temp_bytes_>0": true,
+  "control_sin_volcado": true,
+  "sonda_explain_ordenamiento_externo": true,
+  "control_explain_sin_ordenamiento_externo": true,
+  "sonda_status_spill": true,
+  "sonda_disk_spill_true": true,
+  "control_status_ok": true
+ }
+}

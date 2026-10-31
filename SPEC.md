@@ -197,6 +197,12 @@ timestamp_epoch,engine,profile,query_id,concurrency,run_number,throughput_qps,la
 
 Nota de diseño: `oom_killed` es KPI (R-24) pero **no tiene columna**. Se codifica en `status=oom`, porque diapo 9/13 prohíbe agregar columnas. `disk_spill` sí tiene columna propia, así que una corrida puede terminar con `disk_spill=true` y `status=spill` a la vez; `status=ok` con `disk_spill=true` queda prohibido por el validador.
 
+**Notas de interpretación medidas en F6.2** (`docs/F6_TELEMETRIA.md`, aprobadas por Alix el 2026-11-02). No cambian ninguna columna:
+
+- **`cpu_throttled_seconds` puede ser mayor que la duración de la ventana.** El kernel suma el tiempo de throttling de **cada CPU** en la que el cgroup tenía hilos listos para correr; cAdvisor reporta la misma suma. Medido: 104.6 s en 91 s (Postgres) y 162 s en 91 s (Mongo), con 2 bucles contra 1 CPU de cuota. El eje de la figura de throttling (R-30) no debe acotarse a la ventana, y el reporte lo explica.
+- **`max_rss_mb` no cuenta lo mismo en los dos motores (F6-A3).** Es `anon` de `memory.stat`, que es exactamente `container_memory_rss` de cAdvisor (comprobado con el contenedor congelado). Pero los `shared_buffers` de Postgres son memoria compartida (`shmem`), no `anon`, mientras que el caché de WiredTiger de Mongo sí es `anon`. Con `max_rss_mb`, Postgres sale **artificialmente eficiente**. Se declara en la sección del reporte que interpreta la memoria; `results/raw/` guarda además `shmem`, `file` y `memory.current` cada 1 s (`serie_cgroup_1s`), y la exportación de Prometheus incluye `container_memory_working_set_bytes`.
+- **Throttling de fondo.** Parte del throttling de Mongo en PROFILE_C ocurre en reposo, sin benchmark (~4 s por minuto en F6.2). La línea base en reposo por perfil y motor se mide en F6.3 y se declara junto a la columna.
+
 ---
 
 ## 5. Ambigüedades del manual y resoluciones propuestas
@@ -439,6 +445,8 @@ Los KPIs `container_cpu_cfs_throttled_seconds_total` y `container_memory_rss_byt
 ### A11 — M3 (huella por 1 000 documentos) no tiene columna
 
 `M3` exige CPU/memoria por cada 1 000 documentos procesados, pero el CSV no tiene denominador. *Propuesta:* calcularlo en el reporte dividiendo entre los documentos realmente examinados, tomados de `executionStats.totalDocsExamined` y de las `rows` del `EXPLAIN ANALYZE` (sección 5 del reporte). No se agrega ninguna columna.
+
+**Memoria en M3 (Alix, 2026-11-02, F6-A3):** la memoria por 1 000 documentos se calcula con `working_set` (`memory.current − inactive_file`, igual a `container_memory_working_set_bytes`), que incluye los `shared_buffers` de Postgres, **o** se declara explícitamente el sesgo si se usa `max_rss_mb`: con `anon`, Postgres sale artificialmente eficiente frente a Mongo (ver la nota de `max_rss_mb` en §4).
 
 ### D-WSL1 — Memoria y swap de la VM de WSL2 ✅ DECIDIDA (2026-10-31)
 

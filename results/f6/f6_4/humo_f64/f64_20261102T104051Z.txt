@@ -1,0 +1,61 @@
+== F6.4 humo con telemetría — 20261102T104051Z — loadavg 2.22 2.82 2.20
+host: bateria estado=1 carga=77%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## postgresql · PROFILE_A_BASELINE · c=50 — 10:40:53 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.741667 p50/p95/p99=35126.597636/40306.283305799996/43345.45555100001 ms throttled=435.8081 s rss=126.79296875 MiB spill=False (172.16 s)
+   crudo: results/smoke/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+   telemetría: completa  (results/smoke/telemetry/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## mongodb · PROFILE_A_BASELINE · c=50 — 10:44:16 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.400000 p50/p95/p99=23298.902882000002/34047.81099689999/35288.31940239 ms throttled=478.42281 s rss=921.7890625 MiB spill=False (172.75 s)
+   crudo: results/smoke/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/smoke/measurements_smoke.csv
+   telemetría: completa  (results/smoke/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## postgresql · PROFILE_C_SEVERE · c=1 — 10:47:28 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.583333 p50/p95/p99=1610.1774005/1937.0854055999998/3820.77768842 ms throttled=337.89155 s rss=16.51171875 MiB spill=False (160.99 s)
+   crudo: results/smoke/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/smoke/measurements_smoke.csv
+   telemetría: completa  (results/smoke/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+########## exit 0
+
+########## mongodb · PROFILE_C_SEVERE · c=1 — 10:50:27 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 30, 'measure_s': 120, 'cooldown_s': 10}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.050000 p50/p95/p99=19758.825308/21242.227680250002/21450.87911845 ms throttled=76.444467 s rss=547.18359375 MiB spill=False (167.19 s)
+   - baja densidad muestral: 6 completadas en la ventana (A4)
+   crudo: results/smoke/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/smoke/measurements_smoke.csv
+   telemetría: completa  (results/smoke/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+########## exit 0
+
+########## Validación del CSV y comparación con Prometheus
+VÁLIDO: results/smoke/measurements_smoke.csv
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1: status=ok  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 120 filas en 120.0 s · max anon 921.7890625 = max_rss_mb 921.7890625? True · working_set 1149.6 MiB · shmem 0.0 MiB
+   Prometheus: rss max 915.305 MiB (dif 0.00703) · throttling 475.661744 s vs columna 478.42281 (dif 0.00577, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 3925.6, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 0.0}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.0313, 'throttled_s': 0.0, 'memory_usage_max_mib': 29.7}, 'benchmon_node_exporter': {'nucleos_medios': 0.0153, 'throttled_s': 0.0, 'memory_usage_max_mib': 8.4}, 'benchmon_prometheus': {'nucleos_medios': 0.0197, 'throttled_s': 0.0, 'memory_usage_max_mib': 85.2}} · scrape máx {'cadvisor': 0.0355, 'prometheus': 0.0194, 'node': 0.04} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1: status=ok  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 120 filas en 120.0 s · max anon 547.18359375 = max_rss_mb 547.18359375? True · working_set 940.0 MiB · shmem 0.0 MiB
+   Prometheus: rss max 546.25 MiB (dif 0.00171) · throttling 76.41595 s vs columna 76.444467 (dif 0.00037, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 4588.7, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 0.028}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.0299, 'throttled_s': 0.0, 'memory_usage_max_mib': 31.3}, 'benchmon_node_exporter': {'nucleos_medios': 0.0109, 'throttled_s': 0.0, 'memory_usage_max_mib': 8.7}, 'benchmon_prometheus': {'nucleos_medios': 0.0187, 'throttled_s': 0.0, 'memory_usage_max_mib': 91.8}} · scrape máx {'cadvisor': 0.018, 'prometheus': 0.0135, 'node': 0.0158} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1: status=ok  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 120 filas en 120.0 s · max anon 126.79296875 = max_rss_mb 126.79296875? True · working_set 1049.5 MiB · shmem 161.9 MiB
+   Prometheus: rss max 126.789 MiB (dif 3e-05) · throttling 433.424904 s vs columna 435.8081 (dif 0.00547, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 4587.2, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 0.0}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.0522, 'throttled_s': 0.0, 'memory_usage_max_mib': 28.1}, 'benchmon_node_exporter': {'nucleos_medios': 0.0161, 'throttled_s': 0.0, 'memory_usage_max_mib': 8.7}, 'benchmon_prometheus': {'nucleos_medios': 0.0307, 'throttled_s': 0.0, 'memory_usage_max_mib': 82.9}} · scrape máx {'cadvisor': 0.0923, 'prometheus': 0.0574, 'node': 0.053} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1: status=ok  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 120 filas en 120.0 s · max anon 16.51171875 = max_rss_mb 16.51171875? True · working_set 891.4 MiB · shmem 142.9 MiB
+   Prometheus: rss max 16.547 MiB (dif 0.00213) · throttling 338.42653 s vs columna 337.89155 (dif 0.00158, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 4966.3, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 0.0}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.033, 'throttled_s': 0.0, 'memory_usage_max_mib': 29.7}, 'benchmon_node_exporter': {'nucleos_medios': 0.011, 'throttled_s': 0.0, 'memory_usage_max_mib': 8.8}, 'benchmon_prometheus': {'nucleos_medios': 0.0224, 'throttled_s': 0.0, 'memory_usage_max_mib': 86.7}} · scrape máx {'cadvisor': 0.035, 'prometheus': 0.031, 'node': 0.0481} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+-> results/smoke/check_f64.json · TODO CUADRA
+
+Listo. Avísale a Claude (registro: results/smoke/f64_20261102T104051Z.txt).

@@ -1,0 +1,20 @@
+{
+ "descripcion": "picos breves de anon (F6.2); no es una medición",
+ "contenedor": "bench_postgres",
+ "sello": "20261102T033844Z",
+ "segundos": 60,
+ "lecturas": 5622,
+ "intervalo_medio_ms": 10.67,
+ "cambios_de_valor": 169,
+ "picos_<=200ms": 1,
+ "picos_por_minuto": 1.0,
+ "picos_ejemplos": [
+  {
+   "duracion_ms": 10.7,
+   "dif_kib": 44
+  }
+ ],
+ "dif_kib_de_los_picos": [
+  44
+ ]
+}

@@ -1,0 +1,10 @@
+ Network benchmon_default Creating 
+ Network benchmon_default Created 
+ Volume benchmon_prom_data Creating 
+ Volume benchmon_prom_data Created 
+ Container benchmon_cadvisor Creating 
+ Container benchmon_prometheus Creating 
+ Container benchmon_node_exporter Creating 
+ Container benchmon_node_exporter Error response from daemon: path / is mounted on / but it is not a shared mount 
+Error response from daemon: path / is mounted on / but it is not a shared mount
+exit=1

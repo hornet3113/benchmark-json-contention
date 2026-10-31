@@ -1,0 +1,13 @@
+== memory.stat de bench_postgres en reposo (PROFILE_C), leído desde fuera — 20261102T034926Z
+anon 5455872
+file 16093184
+kernel 2809856
+shmem 15888384
+file_mapped 14561280
+inactive_file 8192
+active_file 196608
+memory.current 24358912
+huge_pages|try|
+shared_buffers|16384|8kB
+shared_memory_type|mmap|
+work_mem|4096|kB

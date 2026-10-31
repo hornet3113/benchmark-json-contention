@@ -1,0 +1,134 @@
+# docker-compose.monitoring.yml — F6: telemetría (R-23, playbook.pdf §7, p.3).
+#
+# Proyecto de compose APARTE (F6-b): el motor se baja y se sube en cada
+# repetición con `docker compose ... down --remove-orphans` sobre el proyecto
+# "benchjson" (scripts/up_profile.sh). Si el monitoreo viviera en ese proyecto,
+# cada repetición lo tumbaría y las curvas tendrían un hueco por repetición.
+#
+# CPUs (F6-c): todo en RUNNER_CPUSET (8-11), nunca en las del motor (0-7), con
+# tope de CPU y memoria por servicio. Su consumo se mide y se declara (L3).
+#
+# Arranque:  scripts/up_monitoring.sh      Parada:  scripts/down_monitoring.sh
+
+name: benchmon
+
+services:
+
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:?falta PROMETHEUS_IMAGE - usa scripts/up_monitoring.sh}
+    container_name: benchmon_prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      # Las ventanas de cada repetición se exportan a results/ (F6-e); la base
+      # de Prometheus no es la evidencia, así que basta con cubrir la matriz.
+      - --storage.tsdb.retention.time=30d
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prom_data:/prometheus
+    # Solo loopback, igual que los motores.
+    ports:
+      - "127.0.0.1:9090:9090"
+    cpuset: ${RUNNER_CPUSET:?falta RUNNER_CPUSET}
+    cpus: 1.0
+    mem_limit: 512m
+    memswap_limit: 512m
+    # Sin reinicio automático: si se cae queremos verlo (up deja de responder y
+    # el runner marca el hueco, F6-f), no que Docker lo resucite en silencio.
+    restart: "no"
+
+  cadvisor:
+    image: ${CADVISOR_IMAGE:?falta CADVISOR_IMAGE}
+    container_name: benchmon_cadvisor
+    command:
+      # F6-d: lectura real cada 1 s. Con el ajuste dinámico (por defecto)
+      # cAdvisor espacia las lecturas de un contenedor estable hasta 60 s y el
+      # scrape de 1 s repetiría el mismo valor.
+      - --housekeeping_interval=1s
+      - --allow_dynamic_housekeeping=false
+      # Además, cada espera lleva un "jitter" de hasta jitter_factor × intervalo
+      # (lib/manager/container.go, func jitter; 1.0 por defecto): con 1 s leía cada
+      # 1–2 s, paso mediano 1.4–1.5 s (results/f6/f6_1/check_monitoring_reposo_20261102T032355Z.json).
+      # Con 0 la espera es exactamente el intervalo.
+      - --jitter_factor=0
+      # Docker Desktop (WSL2) no expone el socket de containerd, y sin él cAdvisor
+      # no registra el conector de Docker (log del primer arranque, F6.1). Por eso
+      # no hay etiqueta "name": los contenedores se leen como cgroups crudos
+      # /docker/<id completo>, el mismo árbol que lee el runner
+      # (benchmark_runner/metrics/cgroup.py), y se identifican por el id, que el
+      # runner ya conoce. La lista de prefijos evita leer todos los cgroups de la VM.
+      - --docker_only=true
+      - --raw_cgroup_prefix_whitelist=/docker/
+      # Solo lo que usa el experimento: CPU (throttling), memoria (rss), I/O de
+      # disco y eventos de OOM. Menos métricas = menos costo en las CPUs del runner.
+      - --enable_metrics=cpu,memory,diskIO,oom_event
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    cpuset: ${RUNNER_CPUSET:?falta RUNNER_CPUSET}
+    # 2.0, no 1.0: cAdvisor (Go, varios hilos) supera 1 CPU en ráfagas aunque su
+    # media sea 0.05–0.1. Con 1.0 sufrió throttling y la lectura de su propio
+    # cgroup salió tarde: 2 muestras perdidas a las 04:59:51 UTC, con todos los
+    # scrapes completos (results/f6/f6_3/check_monitoring_node_1cpu_20261102T045840Z.json).
+    # Lo mismo podría atrasar la lectura del motor. El tope solo frena un desbocamiento.
+    cpus: 2.0
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: "no"
+
+  node-exporter:
+    image: ${NODE_EXPORTER_IMAGE:?falta NODE_EXPORTER_IMAGE}
+    container_name: benchmon_node_exporter
+    command:
+      - --path.rootfs=/host
+      # Sin el colector "filesystem" (espacio libre; el experimento no lo usa): no
+      # entiende los montajes 9p de WSL (/mnt/c, /usr/lib/wsl/drivers) y falló en
+      # TODOS los scrapes desde el arranque. A ratos tardaba 6–42 s; los scrapes
+      # colgados se acumularon y node_exporter murió por OOM con 64 MiB
+      # (2026-11-02 04:48 UTC, docs/F6_TELEMETRIA.md, F6.3). Lo que pide el
+      # manual (I/O de disco, swap, memoria) sale de diskstats, vmstat y meminfo.
+      # Además, los colectores de subsistemas que esta VM no tiene (zfs, nfs,
+      # bcachefs, infiniband, …) quedaban con node_scrape_collector_success=0 en
+      # cada scrape. Por eso se apagan los de por defecto y se enciende solo lo que
+      # el experimento usa; así un colector fallido es siempre una señal real.
+      #   meminfo/vmstat: memoria y swap de la VM (playbook §7; F6-f: registrar
+      #   memoria y swap en cada fallo de telemetría) · diskstats: I/O de disco ·
+      #   pressure: PSI de memoria/CPU/IO (presión de memoria, F6-f) ·
+      #   cpu/stat/loadavg: carga del host (ruido).
+      - --collector.disable-defaults
+      - --collector.meminfo
+      - --collector.vmstat
+      - --collector.diskstats
+      - --collector.pressure
+      - --collector.cpu
+      - --collector.stat
+      - --collector.loadavg
+    # Ve los procesos y /proc de la VM (un solo kernel en WSL2). La red que
+    # reporta es la del contenedor, no la del host: el experimento no usa red.
+    pid: host
+    # Sin ",rslave": en Docker Desktop "/" no es un montaje compartido y el
+    # daemon lo rechaza (results/f6/f6_1/up_monitoring_*.txt, primer intento).
+    # Solo afecta a montajes que aparezcan después de arrancar; /proc y /sys se ven igual.
+    volumes:
+      - /:/host:ro
+    cpuset: ${RUNNER_CPUSET:?falta RUNNER_CPUSET}
+    # Con 0.25 consumía 0.06 núcleos de media pero acumuló 16 s de throttling en
+    # 60 s: cada scrape es una ráfaga que no cabía en la cuota y tardaba 0.2–0.3 s
+    # (mismo archivo de evidencia que el jitter de cAdvisor). Con 0.5 seguía con
+    # ~5 s de throttling por minuto y scrapes de hasta 0.44 s, cerca del timeout
+    # de 1 s, antes de que el runner compita por las mismas CPUs (F6.3). Con 1.0
+    # el tope solo frena un desbocamiento; la media sigue en ~0.06 núcleos.
+    cpus: 1.0
+    mem_limit: 64m
+    memswap_limit: 64m
+    restart: "no"
+
+volumes:
+  prom_data:
+    name: benchmon_prom_data

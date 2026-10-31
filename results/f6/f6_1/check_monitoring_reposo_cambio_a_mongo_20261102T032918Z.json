@@ -1,0 +1,172 @@
+{
+ "descripcion": "verificación del monitoreo (F6.1); no es una medición del benchmark",
+ "etiqueta": "reposo_cambio_a_mongo",
+ "sello": "20261102T032918Z",
+ "segundos": 30,
+ "contenedores": {
+  "bench_mongo": "6a4279790f5efa9814d1fbca619f89c9c1f1efcb4e3b7d67281ada338eeafc50",
+  "benchmon_cadvisor": "3164671e06e44f24d7aa32e801e577eb210ebd2a6c9f79d057ae831162b03df9",
+  "benchmon_node_exporter": "75aef4e23b0ae00add0941f1ac768052b342a678fb85b21000fa74f9f8fd85c1",
+  "benchmon_prometheus": "d6f505d22ed8bc526fc0158e5281173a30a4dc79aecca952852c6eda8e6930c9"
+ },
+ "targets_inicio": {
+  "cadvisor": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0142,
+   "scrapeInterval": "1s"
+  },
+  "node": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0501,
+   "scrapeInterval": "1s"
+  },
+  "prometheus": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0091,
+   "scrapeInterval": "1s"
+  }
+ },
+ "mem_available_vm_mib_inicio": 5057.5,
+ "mem_available_vm_mib_fin": 5055.8,
+ "targets_fin": {
+  "cadvisor": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0116,
+   "scrapeInterval": "1s"
+  },
+  "node": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0707,
+   "scrapeInterval": "1s"
+  },
+  "prometheus": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0093,
+   "scrapeInterval": "1s"
+  }
+ },
+ "consumo_cgroup": {
+  "bench_mongo": {
+   "nucleos_medios": 0.2491,
+   "anon_max_mib": 260.8,
+   "memory_current_max_mib": 621.9,
+   "throttled_s": 1.756
+  },
+  "benchmon_cadvisor": {
+   "nucleos_medios": 0.0369,
+   "anon_max_mib": 22.8,
+   "memory_current_max_mib": 28.7,
+   "throttled_s": 0.0
+  },
+  "benchmon_node_exporter": {
+   "nucleos_medios": 0.0576,
+   "anon_max_mib": 9.4,
+   "memory_current_max_mib": 10.2,
+   "throttled_s": 0.317
+  },
+  "benchmon_prometheus": {
+   "nucleos_medios": 0.0243,
+   "anon_max_mib": 48.9,
+   "memory_current_max_mib": 55.8,
+   "throttled_s": 0.0
+  }
+ },
+ "monitoreo_total": {
+  "nucleos_medios": 0.1188,
+  "memory_current_max_mib": 94.7
+ },
+ "resolucion": {
+  "bench_mongo": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 28,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.004
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 17,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.004
+   }
+  },
+  "benchmon_cadvisor": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 28,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 23,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   }
+  },
+  "benchmon_node_exporter": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 28,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 24,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   }
+  },
+  "benchmon_prometheus": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 28,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 28,
+    "valores_distintos": 6,
+    "paso_mediano_s": 1.002,
+    "paso_max_s": 1.003
+   }
+  }
+ },
+ "series_requeridas": {
+  "cadvisor": {
+   "container_cpu_cfs_throttled_seconds_total": 7,
+   "container_cpu_cfs_throttled_periods_total": 7,
+   "container_cpu_usage_seconds_total": 8,
+   "container_memory_rss": 9,
+   "container_memory_working_set_bytes": 9
+  },
+  "node": {
+   "node_memory_MemAvailable_bytes": 1,
+   "node_memory_SwapFree_bytes": 1,
+   "node_disk_read_bytes_total": 6,
+   "node_disk_written_bytes_total": 6,
+   "node_vmstat_pswpin": 1,
+   "node_vmstat_pswpout": 1
+  }
+ },
+ "comprobaciones": {
+  "up_3_de_3_inicio_y_fin": true,
+  "resolucion_1s": true,
+  "series_presentes": true
+ }
+}

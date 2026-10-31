@@ -108,15 +108,16 @@ Evidencia de cierre: `results/env/f1/PROFILE_*_20261101T1728*Z` y `…T1729*Z.{t
 - [ ] R-22 Conteo de celdas conforme a lo decidido en A2
 
 ### Telemetría
-- [ ] R-23 Prometheus con `scrape_interval: 1s`; cAdvisor y node_exporter con `up==1`
-- [ ] R-24 Los 8 KPIs obtenidos y mapeados a columnas o a `status`
-- [ ] Throttling observado distinto de cero en PROFILE_C bajo carga de CPU
+- [x] R-23 Prometheus con `scrape_interval: 1s`; cAdvisor y node_exporter con `up==1` — `monitoring/prometheus.yml`; `results/f6/f6_1/check_monitoring_reposo_20261102T032714Z.json`, `results/f6/f6_3/check_monitoring_cadvisor_2cpu_*.json`, bajo carga `results/f6/f6_4/humo_f64/check_f64.json`
+- [x] **R-24** Los 8 KPIs **mapeados** a columnas o a `status` — SPEC §4 (con las notas de interpretación de F6.2: throttling acumulado por CPU, `max_rss_mb` frente a `working_set`)
+- [ ] **R-24** Los 8 KPIs **obtenidos en la matriz** (F8). En humo y en las sondas ya salieron: `results/f6/f6_4/humo_f64/`, `results/f6/probes/`
+- [x] Throttling observado distinto de cero en PROFILE_C bajo carga de CPU — `results/f6/probes/throttling_profile_c_{postgresql,mongodb}_*.json` (143 s y 222 s en 120 s); humo Postgres C c=1: 338 s
 
 Capacidad de detección (sondas, **no** resultados del benchmark):
-- [ ] Sonda de spill en Postgres (sort sin `LIMIT`) detectada por `temp_bytes` y por `EXPLAIN ANALYZE`
-- [ ] Sonda de spill en Mongo (`$sort` sin `$limit`) detectada por contadores y `usedDisk`
-- [ ] Sonda de OOM contra `memory.max` clasificada como `status=oom` — *el OOM ya es observable (F1, `OOM_PROFILE_C_SEVERE_…txt`); falta que el runner lo clasifique (F6)*
-- [ ] Las sondas viven en `scripts/probes/`, no en `queries/`, y no producen filas del CSV
+- [x] Sonda de spill en Postgres (sort sin `LIMIT`) detectada por `temp_bytes` y por `EXPLAIN ANALYZE` — `results/f6/probes/spill_postgres_c_severe_20261102T044223Z.json`
+- [x] Sonda de spill en Mongo (`$sort` sin `$limit`) detectada por contadores y `usedDisk` — `results/f6/probes/spill_mongo_c_severe_20261102T044309Z.json` (también sin `$project`: con él no llega a 100 MB)
+- [x] Sonda de OOM contra `memory.max` clasificada como `status=oom` — `results/f6/probes/oom_engine_{postgresql,mongodb}_*.json` (dentro del contenedor del motor, por `assemble_row`); el OOM ya era observable en F1
+- [x] Las sondas viven en `scripts/probes/`, no en `queries/`, y no producen filas del CSV — `results/f6/f6_5/sondas_sin_csv_20261102T105619Z.txt`
 - [ ] En el reporte están etiquetadas como verificación de instrumento, en la sección 2
 
 Resultados reales:

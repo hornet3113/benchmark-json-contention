@@ -1,0 +1,54 @@
+{
+ "descripcion": "sonda de throttling en PROFILE_C (F6.3); NO es una medición ni una fila del CSV",
+ "motor": "postgresql",
+ "perfil": "PROFILE_C_SEVERE",
+ "sello": "20261102T043706Z",
+ "limites_cgroup": {
+  "cpu.max": "100000 100000",
+  "cpuset.cpus": "0-7"
+ },
+ "carga": "2 × docker exec timeout … sh -c 'while :; do :; done'",
+ "segundos": 120,
+ "throttled_s_cgroup": 143.389002,
+ "nr_throttled": 1197,
+ "nr_periods": 1200,
+ "uso_cpu_s": 119.983102,
+ "throttling_cgroup_vs_prometheus": {
+  "a_definicion": {
+   "delta_prometheus": 144.184123,
+   "delta_cgroup_mismas_marcas": null,
+   "dif_relativa": null,
+   "segundos": 121.578
+  },
+  "b_control_cruzado": {
+   "delta_cgroup_bordes": 143.389002,
+   "delta_prometheus_bordes": 143.186289,
+   "dif_relativa": 0.00141,
+   "desfase_bordes_s": [
+    0.28,
+    -0.167
+   ]
+  }
+ },
+ "uso_cpu_cgroup_vs_prometheus": {
+  "a_definicion": {
+   "delta_prometheus": 121.564894,
+   "delta_cgroup_mismas_marcas": null,
+   "dif_relativa": null,
+   "segundos": 121.578
+  },
+  "b_control_cruzado": {
+   "delta_cgroup_bordes": 119.983102,
+   "delta_prometheus_bordes": 119.558938,
+   "dif_relativa": 0.00354,
+   "desfase_bordes_s": [
+    0.28,
+    -0.167
+   ]
+  }
+ },
+ "comprobaciones": {
+  "throttling_>0": true,
+  "control_cruzado_<5%": true
+ }
+}

@@ -1,0 +1,46 @@
+== F6.1 docker pull — 20261102T031832Z
+docker server 29.4.1 / client 29.4.1
+
+### prom/prometheus:v3.15.1
+v3.15.1: Pulling from prom/prometheus
+72dcf69f72aa: Pull complete
+456bdf926fcd: Pull complete
+ec1fd540d53f: Pull complete
+53331f987f8e: Pull complete
+e3f841be4001: Pull complete
+1f7c3462f17e: Pull complete
+606913744ff0: Pull complete
+ab279a31ee5b: Pull complete
+5937650a3919: Pull complete
+Digest: sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2
+Status: Downloaded newer image for prom/prometheus:v3.15.1
+docker.io/prom/prometheus:v3.15.1
+exit=0
+RepoDigests=["prom/prometheus@sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2"]  Id=sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2  Created=2026-10-21T14:04:11.99362206Z  Arch=amd64  Size=114084929
+
+### ghcr.io/google/cadvisor:v0.60.6
+v0.60.6: Pulling from google/cadvisor
+d0c1d894c237: Pull complete
+9661b918016b: Pull complete
+ef4c3b81306e: Pull complete
+369822488070: Pull complete
+dfecceb8fdfa: Pull complete
+6cd23b2ca52b: Pull complete
+90862d9f1aca: Pull complete
+2fea5a243a46: Pull complete
+Digest: sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a
+Status: Downloaded newer image for ghcr.io/google/cadvisor:v0.60.6
+ghcr.io/google/cadvisor:v0.60.6
+exit=0
+RepoDigests=["ghcr.io/google/cadvisor@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a"]  Id=sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a  Created=2026-09-18T22:46:43.181321764Z  Arch=amd64  Size=30694143
+
+### prom/node-exporter:v1.12.1
+v1.12.1: Pulling from prom/node-exporter
+c93f261857c3: Pull complete
+bef5f3176279: Pull complete
+f5ee56b8245c: Pull complete
+Digest: sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
+Status: Downloaded newer image for prom/node-exporter:v1.12.1
+docker.io/prom/node-exporter:v1.12.1
+exit=0
+RepoDigests=["prom/node-exporter@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0"]  Id=sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0  Created=2026-07-14T12:11:16.849376637Z  Arch=amd64  Size=13412361

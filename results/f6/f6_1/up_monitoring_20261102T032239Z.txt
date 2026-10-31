@@ -1,0 +1,8 @@
+ Container benchmon_node_exporter Running 
+ Container benchmon_cadvisor Recreate 
+ Container benchmon_prometheus Running 
+ Container benchmon_cadvisor Recreated 
+ Container benchmon_cadvisor Starting 
+ Container benchmon_cadvisor Started 
+== Esperando up==1 en prometheus, cadvisor y node .... -> 3/3
+exit=0

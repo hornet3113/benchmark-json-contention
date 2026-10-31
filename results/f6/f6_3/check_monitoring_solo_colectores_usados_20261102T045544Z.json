@@ -1,0 +1,157 @@
+{
+ "descripcion": "verificación del monitoreo (F6.1); no es una medición del benchmark",
+ "etiqueta": "solo_colectores_usados",
+ "sello": "20261102T045544Z",
+ "segundos": 60,
+ "contenedores": {
+  "benchmon_node_exporter": "e18aa5c22fd9a63c49bbb23727f777700471234513d947e9564073e9da962d67",
+  "benchmon_cadvisor": "3164671e06e44f24d7aa32e801e577eb210ebd2a6c9f79d057ae831162b03df9",
+  "benchmon_prometheus": "d6f505d22ed8bc526fc0158e5281173a30a4dc79aecca952852c6eda8e6930c9"
+ },
+ "targets_inicio": {
+  "cadvisor": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.058,
+   "scrapeInterval": "1s"
+  },
+  "node": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.1153,
+   "scrapeInterval": "1s"
+  },
+  "prometheus": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.049,
+   "scrapeInterval": "1s"
+  }
+ },
+ "mem_available_vm_mib_inicio": 5155.9,
+ "mem_available_vm_mib_fin": 5148.6,
+ "targets_fin": {
+  "cadvisor": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0266,
+   "scrapeInterval": "1s"
+  },
+  "node": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0503,
+   "scrapeInterval": "1s"
+  },
+  "prometheus": {
+   "health": "up",
+   "lastError": "",
+   "lastScrapeDuration_s": 0.0361,
+   "scrapeInterval": "1s"
+  }
+ },
+ "consumo_cgroup": {
+  "benchmon_node_exporter": {
+   "nucleos_medios": 0.0644,
+   "anon_max_mib": 7.2,
+   "memory_current_max_mib": 7.8,
+   "throttled_s": 4.923
+  },
+  "benchmon_cadvisor": {
+   "nucleos_medios": 0.1058,
+   "anon_max_mib": 25.0,
+   "memory_current_max_mib": 30.9,
+   "throttled_s": 0.832
+  },
+  "benchmon_prometheus": {
+   "nucleos_medios": 0.0894,
+   "anon_max_mib": 59.7,
+   "memory_current_max_mib": 150.4,
+   "throttled_s": 0.061
+  }
+ },
+ "monitoreo_total": {
+  "nucleos_medios": 0.2596,
+  "memory_current_max_mib": 189.1
+ },
+ "resolucion": {
+  "benchmon_node_exporter": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 57,
+    "valores_distintos": 57,
+    "paso_mediano_s": 1.003,
+    "paso_max_s": 1.024
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 57,
+    "valores_distintos": 34,
+    "paso_mediano_s": 1.003,
+    "paso_max_s": 1.024
+   }
+  },
+  "benchmon_cadvisor": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 56,
+    "valores_distintos": 56,
+    "paso_mediano_s": 1.004,
+    "paso_max_s": 2.026
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 56,
+    "valores_distintos": 38,
+    "paso_mediano_s": 1.004,
+    "paso_max_s": 2.026
+   }
+  },
+  "benchmon_prometheus": {
+   "container_cpu_usage_seconds_total": {
+    "series": 1,
+    "muestras": 56,
+    "valores_distintos": 56,
+    "paso_mediano_s": 1.003,
+    "paso_max_s": 2.013
+   },
+   "container_memory_rss": {
+    "series": 1,
+    "muestras": 56,
+    "valores_distintos": 2,
+    "paso_mediano_s": 1.003,
+    "paso_max_s": 2.013
+   }
+  }
+ },
+ "series_requeridas": {
+  "cadvisor": {
+   "container_cpu_cfs_throttled_seconds_total": 4,
+   "container_cpu_cfs_throttled_periods_total": 4,
+   "container_cpu_usage_seconds_total": 5,
+   "container_memory_rss": 6,
+   "container_memory_working_set_bytes": 6
+  },
+  "node": {
+   "node_memory_MemAvailable_bytes": 1,
+   "node_memory_SwapFree_bytes": 1,
+   "node_disk_read_bytes_total": 6,
+   "node_disk_written_bytes_total": 6,
+   "node_vmstat_pswpin": 1,
+   "node_vmstat_pswpout": 1,
+   "node_pressure_memory_waiting_seconds_total": 1
+  }
+ },
+ "colectores_node_con_fallos": [],
+ "scrape_max_s": {
+  "prometheus": 0.1754,
+  "cadvisor": 0.2316,
+  "node": 0.442
+ },
+ "comprobaciones": {
+  "up_3_de_3_inicio_y_fin": true,
+  "resolucion_1s": true,
+  "series_presentes": true,
+  "colectores_node_sin_fallos": true
+ }
+}

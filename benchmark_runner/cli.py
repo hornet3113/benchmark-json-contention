@@ -122,6 +122,17 @@ def main(argv: list[str] | None = None) -> int:
             for reason in res["reasons"]:
                 print(f"   - {reason}", flush=True)
             print(f"   crudo: {Path(res['raw']).relative_to(ROOT)}  · CSV: {csv_path.relative_to(ROOT)}", flush=True)
+            tele = res.get("telemetria")
+            if tele is not None:
+                print(f"   telemetría: {'FALLO' if tele['fallo'] else tele['estado_exportacion']}"
+                      f"  ({Path(tele['archivo']).relative_to(ROOT)})", flush=True)
+                for reason in tele["motivos"]:
+                    print(f"   - telemetría: {reason}", flush=True)
+                if tele["fallo"] or tele["motivos"]:
+                    # F6-f: el fallo queda en el log, con memoria y swap de la VM. NO detiene la matriz (F6-A1).
+                    with (base / "telemetria_eventos.jsonl").open("a") as f:
+                        f.write(json.dumps({"run_id": run.run_id, "fallo": tele["fallo"], "motivos": tele["motivos"],
+                                            "memoria_vm": tele.get("memoria_vm")}, ensure_ascii=False) + "\n")
     finally:
         keepalive.stop()
         lifecycle.stop_engines()

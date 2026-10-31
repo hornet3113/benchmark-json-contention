@@ -1,0 +1,29 @@
+== ¿Alguna sonda escribe en el CSV o vive en queries/? — 20261102T105619Z
+-- archivos en scripts/probes/:
+__pycache__
+oom_engine.py
+oom_profile_c.sh
+probe_common.py
+spill_mongo.py
+spill_postgres.py
+throttling_baseline.py
+throttling_profile_c.py
+-- archivos en queries/ (solo las queries del manual):
+queries/README.md
+queries/mongo/q1_unwind_group.json
+queries/mongo/q2_sort_topk.json
+queries/postgres/q1_unwind_group.sql
+queries/postgres/q2_sort_topk.sql
+-- referencias a CsvWriter / measurements*.csv / csv_writer en scripts/probes/ (vacío = ninguna):
+(ninguna)
+-- adónde escriben las sondas:
+scripts/probes/probe_common.py:35:OUT_DIR = ROOT / "results" / "f6" / "probes"
+scripts/probes/throttling_baseline.py:91:    dest = ROOT / "results" / "f6" / "f6_3" / "baseline" / f"{engine}_{profile}_{stamp}.json"
+scripts/probes/throttling_baseline.py:122:    dest = ROOT / "results" / "f6" / "f6_3" / "baseline" / f"resumen_{stamp}.json"
+-- results/f6/probes/:
+oom_engine_mongodb_20261102T045034Z.json
+oom_engine_postgresql_20261102T045007Z.json
+spill_mongo_c_severe_20261102T044309Z.json
+spill_postgres_c_severe_20261102T044223Z.json
+throttling_profile_c_mongodb_20261102T043942Z.json
+throttling_profile_c_postgresql_20261102T043706Z.json

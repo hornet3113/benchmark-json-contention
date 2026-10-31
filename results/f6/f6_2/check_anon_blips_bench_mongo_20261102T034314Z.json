@@ -1,0 +1,13 @@
+{
+ "descripcion": "picos breves de anon (F6.2); no es una medición",
+ "contenedor": "bench_mongo",
+ "sello": "20261102T034314Z",
+ "segundos": 60,
+ "lecturas": 5613,
+ "intervalo_medio_ms": 10.69,
+ "cambios_de_valor": 1125,
+ "picos_<=200ms": 0,
+ "picos_por_minuto": 0.0,
+ "picos_ejemplos": [],
+ "dif_kib_de_los_picos": []
+}

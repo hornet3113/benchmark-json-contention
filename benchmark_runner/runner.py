@@ -32,12 +32,12 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from benchmark_runner import csv_writer
+from benchmark_runner import csv_writer, telemetry
 from benchmark_runner.config import (CENSORED_ERROR_FRACTION, PERCENTILE_VALID_BELOW, QUERY_TIMEOUT_S,
                                      RSS_SAMPLE_INTERVAL_S)
 from benchmark_runner.matrix import Run
 from benchmark_runner.metrics import percentiles, window
-from benchmark_runner.metrics.cgroup import AnonSampler, Cgroup, delta
+from benchmark_runner.metrics.cgroup import SAMPLE_COLUMNS, AnonSampler, Cgroup, delta
 from benchmark_runner.metrics.concurrency import PeriodicReader
 
 
@@ -192,7 +192,9 @@ class EngineProbe:
 
 def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Path | None,
             header_spaces: bool = False, matrix: int = 54, cpus=None, grace_s: float = 15.0,
-            processes: int | None = None, activity_every_s: float | None = None) -> dict:
+            processes: int | None = None, activity_every_s: float | None = None,
+            prometheus_get: telemetry.Getter | None = telemetry.http_get) -> dict:
+    """Una repetición. prometheus_get=None desactiva la telemetría (solo pruebas y diagnósticos)."""
     from benchmark_runner import lifecycle
     from benchmark_runner.env import load_env
     from benchmark_runner.metrics import spill
@@ -200,8 +202,17 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
 
     cell = run.cell
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # F6-A4: ANTES de preparar, para que un reinicio del monitoreo nunca caiga dentro de
+    # una ventana. Si falla, la repetición corre igual (F6-A1); queda marcado.
+    root = Path(__file__).resolve().parent.parent
+    pre = (telemetry.preflight(prometheus_get, lambda: telemetry.run_recovery(root))
+           if prometheus_get is not None else None)
     prep = lifecycle.prepare(cell.engine, cell.profile)          # puede lanzar RunAborted
-    cg = Cgroup(prep["container_id"])
+    try:
+        cg = Cgroup(prep["container_id"])
+    except OSError as exc:
+        # Lo único que aborta por instrumentación (Alix, F6-f): sin cgroup no hay columnas.
+        raise lifecycle.RunAborted(f"no se puede leer el cgroup del motor: {exc}") from exc
     env = load_env()
     probe = EngineProbe(cell.engine, env)
     sampler = AnonSampler(cg, RSS_SAMPLE_INTERVAL_S)
@@ -266,6 +277,20 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
                                 container_running=bool(state.get("Running")))
     csv_writer.CsvWriter(csv_path, header_spaces=header_spaces, matrix=matrix).write(row)
 
+    # F6-e: después del enfriamiento (run_load ya volvió), con margen alrededor de la ventana.
+    tele = None
+    if prometheus_get is not None:
+        exp = telemetry.export(prometheus_get, prep["container_id"], load.start_hook["clock"].wall_ns / 1e9,
+                               load.end_hook["clock"].wall_ns / 1e9)
+        summ = telemetry.summary(pre, exp)
+        if summ["fallo"] or summ["motivos"]:
+            summ["memoria_vm"] = telemetry.vm_memory()        # F6-f: en cada fallo
+        tele_file = raw_dir.parent / "telemetry" / f"{run.run_id}.json"
+        tele_file.parent.mkdir(parents=True, exist_ok=True)
+        tele_file.write_text(json.dumps({"run_id": run.run_id, "resumen": summ, "comprobacion_previa": pre,
+                                         "exportacion": exp}, ensure_ascii=False) + "\n")
+        tele = {"archivo": str(tele_file), **summ}
+
     raw = {
         "run_id": run.run_id, "inicio_utc": started, "fila_csv": row, "motivos": reasons,
         "ventanas_s": vars(windows), "concurrencia": cell.concurrency, "opciones": dict(cell.options),
@@ -279,6 +304,9 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
         "cgroup": {"inicio": load.start_hook["cgroup"], "fin": load.end_hook["cgroup"]},
         "spill": {"inicio": load.start_hook["spill"], "fin": load.end_hook["spill"], "delta": spill_delta},
         "memoria_anon": {"muestras": len(sampler.samples), "max_mib": sampler.max_mib, "errores": sampler.errors[:5]},
+        # Serie completa de 1 s de la ventana (F6): curva de RSS sin depender de Prometheus,
+        # con shmem/file (F6-A3) y throttling/uso de CPU acumulados. Reloj: el monotónico de ventana_ns.
+        "serie_cgroup_1s": {"columnas": list(SAMPLE_COLUMNS), "filas": [list(s) for s in sampler.samples]},
         "censura": cens,
         "actividad_del_motor": {"inicio": load.start_hook.get("actividad"), "fin": load.end_hook.get("actividad"),
                                 "serie_cada_s": activity_every_s,
@@ -294,7 +322,10 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
         # Muestras crudas: permiten recalcular percentiles con otro método (SPEC §7).
         # [inicio_ns, fin_ns, ok, worker]; el worker se añadió en F5.5b para cruzar las fotos del motor.
         "muestras": [[s.start_ns, s.end_ns, int(s.ok), s.wid] for s in load.samples],
+        # F6: resumen de la telemetría de Prometheus (las series, en results/…/telemetry/<run_id>.json).
+        "telemetria": tele,
     }
     raw_dir.mkdir(parents=True, exist_ok=True)
     (raw_dir / f"{run.run_id}.json").write_text(json.dumps(raw, ensure_ascii=False, default=str) + "\n")
-    return {"row": row, "reasons": reasons, "raw": str(raw_dir / f"{run.run_id}.json"), "wall_s": load.wall_s}
+    return {"row": row, "reasons": reasons, "raw": str(raw_dir / f"{run.run_id}.json"), "wall_s": load.wall_s,
+            "telemetria": tele}

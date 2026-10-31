@@ -1,0 +1,195 @@
+{
+ "descripcion": "verificación de definiciones cgroup frente a cAdvisor/Prometheus (F6.2); no es una medición",
+ "contenedor": "bench_postgres",
+ "id": "f9971d6fa6e46c17d41b61e2149b6858eea9e9003ab0dfe04c8d5ea6de3a5ec7",
+ "limites_cgroup": {
+  "cpu.max": "100000 100000",
+  "memory.max": "1073741824",
+  "cpuset.cpus": "0-7"
+ },
+ "sello": "20261102T033532Z",
+ "muestreo_propio_s": 0.2,
+ "escalera_memoria": [
+  [
+   10,
+   200,
+   25
+  ],
+  [
+   45,
+   300,
+   25
+  ]
+ ],
+ "fases": [
+  {
+   "fase": "reposo",
+   "inicio": 1793590532.4762456,
+   "fin": 1793590592.4696224,
+   "segundos": 59.993,
+   "lecturas_propias": 304,
+   "rss_vs_anon": {
+    "muestras_prometheus": 60,
+    "comparables_exactas": 57,
+    "iguales": 56,
+    "max_dif_bytes_en_estables": 114688.0,
+    "en_transicion": 3,
+    "en_transicion_dentro_del_intervalo": 1
+   },
+   "working_set_vs_current_menos_inactive_file": {
+    "muestras_prometheus": 60,
+    "comparables_exactas": 46,
+    "iguales": 46,
+    "max_dif_bytes_en_estables": 0,
+    "en_transicion": 14,
+    "en_transicion_dentro_del_intervalo": 11
+   },
+   "throttled_seconds": {
+    "a_definicion": {
+     "delta_prometheus": 0.130796,
+     "delta_cgroup_mismas_marcas": 0.130796,
+     "dif_relativa": 0.0,
+     "segundos": 59.13
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 0.130796,
+     "delta_prometheus_bordes": 0.130796,
+     "dif_relativa": 0.0,
+     "desfase_bordes_s": [
+      0.475,
+      -0.361
+     ]
+    }
+   },
+   "throttled_periods": {
+    "a_definicion": {
+     "delta_prometheus": 9.0,
+     "delta_cgroup_mismas_marcas": 9.0,
+     "dif_relativa": 0.0,
+     "segundos": 59.13
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 9.0,
+     "delta_prometheus_bordes": 9.0,
+     "dif_relativa": 0.0,
+     "desfase_bordes_s": [
+      0.475,
+      -0.361
+     ]
+    }
+   },
+   "cpu_usage_seconds": {
+    "a_definicion": {
+     "delta_prometheus": 2.092084,
+     "delta_cgroup_mismas_marcas": 2.092068,
+     "dif_relativa": 1e-05,
+     "segundos": 59.13
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 2.092419,
+     "delta_prometheus_bordes": 2.092084,
+     "dif_relativa": 0.00016,
+     "desfase_bordes_s": [
+      0.475,
+      -0.361
+     ]
+    }
+   },
+   "cpu_usage_valores_distintos": [
+    60,
+    60
+   ],
+   "anon_max_mib": 7.8
+  },
+  {
+   "fase": "carga",
+   "inicio": 1793590592.470779,
+   "fin": 1793590683.6818058,
+   "segundos": 91.211,
+   "lecturas_propias": 463,
+   "rss_vs_anon": {
+    "muestras_prometheus": 91,
+    "comparables_exactas": 74,
+    "iguales": 74,
+    "max_dif_bytes_en_estables": 0,
+    "en_transicion": 17,
+    "en_transicion_dentro_del_intervalo": 14
+   },
+   "working_set_vs_current_menos_inactive_file": {
+    "muestras_prometheus": 91,
+    "comparables_exactas": 61,
+    "iguales": 61,
+    "max_dif_bytes_en_estables": 0,
+    "en_transicion": 30,
+    "en_transicion_dentro_del_intervalo": 23
+   },
+   "throttled_seconds": {
+    "a_definicion": {
+     "delta_prometheus": 104.535565,
+     "delta_cgroup_mismas_marcas": 104.487318,
+     "dif_relativa": 0.00046,
+     "segundos": 90.207
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 104.648939,
+     "delta_prometheus_bordes": 104.535565,
+     "dif_relativa": 0.00108,
+     "desfase_bordes_s": [
+      0.642,
+      -0.442
+     ]
+    }
+   },
+   "throttled_periods": {
+    "a_definicion": {
+     "delta_prometheus": 899.0,
+     "delta_cgroup_mismas_marcas": 898.614,
+     "dif_relativa": 0.00043,
+     "segundos": 90.207
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 902.0,
+     "delta_prometheus_bordes": 899.0,
+     "dif_relativa": 0.00333,
+     "desfase_bordes_s": [
+      0.642,
+      -0.442
+     ]
+    }
+   },
+   "cpu_usage_seconds": {
+    "a_definicion": {
+     "delta_prometheus": 89.905242,
+     "delta_cgroup_mismas_marcas": 89.934091,
+     "dif_relativa": 0.00032,
+     "segundos": 90.207
+    },
+    "b_control_cruzado": {
+     "delta_cgroup_bordes": 90.512391,
+     "delta_prometheus_bordes": 89.905242,
+     "dif_relativa": 0.00671,
+     "desfase_bordes_s": [
+      0.642,
+      -0.442
+     ]
+    }
+   },
+   "cpu_usage_valores_distintos": [
+    91,
+    91
+   ],
+   "anon_max_mib": 309.8
+  }
+ ],
+ "monitoreo_en_carga_nucleos": {
+  "benchmon_cadvisor": 0.0364,
+  "benchmon_node_exporter": 0.0591,
+  "benchmon_prometheus": 0.0247
+ },
+ "comprobaciones": {
+  "rss_igual_a_anon_en_todas_las_estables": false,
+  "throttling_en_carga_mayor_que_0": true,
+  "throttling_definicion_<5%": true,
+  "throttling_control_cruzado_<5%": true
+ }
+}

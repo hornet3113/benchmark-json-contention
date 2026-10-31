@@ -1,0 +1,57 @@
+{
+ "descripcion": "sonda de OOM dentro del contenedor del motor (F6.3); NO es una medición ni una fila del CSV",
+ "motor": "postgresql",
+ "perfil": "PROFILE_C_SEVERE",
+ "sello": "20261102T045007Z",
+ "limites_cgroup": {
+  "memory.max": "1073741824",
+  "memory.swap.max": "0"
+ },
+ "carga": "docker exec bench_postgres sh -c 'head -c 2G /dev/zero | tail'",
+ "carga_exit_code": 137,
+ "carga_segundos": 11.89,
+ "carga_stderr": "Killed\n",
+ "memory_events_inicio": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\n",
+ "memory_events_fin": "low 0\nhigh 0\nmax 105\noom 2\noom_kill 1\noom_group_kill 0\n",
+ "oom_kill_delta": 1,
+ "anon_max_mib": 985.2890625,
+ "consultas": [
+  "ok",
+  "ok",
+  "ok",
+  "ok",
+  "ok",
+  "ok"
+ ],
+ "estado_contenedor": {
+  "Status": "running",
+  "Running": true,
+  "OOMKilled": true,
+  "ExitCode": 0,
+  "Error": ""
+ },
+ "fila_del_clasificador_NO_ES_DEL_CSV": {
+  "timestamp_epoch": 1793595019,
+  "engine": "postgresql",
+  "profile": "PROFILE_C_SEVERE",
+  "query_id": "SONDA_OOM",
+  "concurrency": 1,
+  "run_number": 1,
+  "throughput_qps": 0.43096876940228807,
+  "latency_p50_ms": 3.4750034999999997,
+  "latency_p95_ms": 12.7706235,
+  "latency_p99_ms": 14.4042095,
+  "cpu_throttled_seconds": 6.145978,
+  "max_rss_mb": 985.2890625,
+  "disk_spill": false,
+  "status": "oom"
+ },
+ "motivos": [
+  "baja densidad muestral: 6 completadas en la ventana (A4)",
+  "OOM: oom_kill +1, OOMKilled=True"
+ ],
+ "comprobaciones": {
+  "oom_kill_delta_>=1": true,
+  "status_oom": true
+ }
+}
