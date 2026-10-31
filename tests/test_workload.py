@@ -223,6 +223,16 @@ class CliTest(unittest.TestCase):
         from benchmark_runner.cli import main
         self.assertEqual(main(self.ARGS), 2)
 
+    def test_salida_no_se_admite_con_smoke(self):
+        from benchmark_runner.cli import main
+        self.assertEqual(main([*self.ARGS, "--smoke", "--salida", "f7"]), 2)
+
+    def test_salida_rechaza_rutas(self):
+        """F7-a: es un nombre de subcarpeta de results/, no una ruta."""
+        from benchmark_runner.cli import main
+        for bad in ("../x", "a/b", "/tmp", ".", "", "  "):
+            self.assertEqual(main([*self.ARGS, "--confirmo-medicion-real", "--salida", bad]), 2, bad)
+
 
 class MongoActivityTest(unittest.TestCase):
     """El filtro de currentOp debe ir como campos del comando (defecto de F5.5)."""

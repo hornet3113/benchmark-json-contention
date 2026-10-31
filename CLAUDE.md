@@ -51,6 +51,7 @@ Regla de precedencia: ante conflicto, `playbook.pdf` define **qué se mide**;
 | `docs/F2_GENERADOR.md`, `docs/F3_CARGA.md` | Plan y registro de F2 y de F3/F4 (cerradas) |
 | `docs/F5_RUNNER.md` | Plan, decisiones F5-a…F5-i, registro de humo y cierre de F5 |
 | `docs/F6_TELEMETRIA.md` | Plan, decisiones F6-a…F6-h, ambigüedades F6-A1…A4, registro y cierre de F6 |
+| `docs/F7_PILOTO.md` | Plan de F7, decisiones F7-a…F7-d, criterios del piloto y registro |
 
 Estos documentos son el estado acumulado del proyecto. **No los rehagas ni los
 reinterpretes desde cero**: léelos, y si algo te parece equivocado, dilo en vez
@@ -79,7 +80,7 @@ de cambiarlo por tu cuenta.
 | F4 — Queries y equivalencia | **CERRADA (2026-11-01)**: ejecutada en G2, re-verificada en G3 |
 | F5 — Runner de benchmark | **CERRADA (2026-11-01)** con evidencia en `results/f5/`, `results/smoke*/` y `results/env/f5/` |
 | F6 — Telemetría, spill y OOM | **CERRADA (2026-11-02)** con evidencia en `results/f6/` |
-| F7 — Celda piloto | **En curso** (empezando: plan) |
+| F7 — Celda piloto | **En curso** (plan aprobado 2026-11-02; F7.1 hecha, F7.2–F7.4 las corre Alix) |
 | F8–F9 | No iniciadas |
 
 Resultado de F1, en breve: MongoDB **8.2.12** (wiredTiger) y PostgreSQL
@@ -134,13 +135,10 @@ sin motivo: recrean la colección y la tabla.
 
 ### Lo siguiente, concretamente
 
-F7 — celda piloto (Mongo y Postgres × PROFILE_C × Q2_MEM_LOW × c=1, tiempos
-reales, 3 repeticiones). Presentar el plan antes de correr nada; las corridas
-reales necesitan sudo y las corre Alix. Criterios de PLAN F7, que incluyen:
-- CV < 15 % **y sin tendencia monótona** entre r1, r2 y r3;
-- la primera consulta en frío frente a los 60 s, en los tres perfiles.
-
-Antes de correr, el monitoreo debe estar arriba (`scripts/up_monitoring.sh`).
+F7.2 — Alix corre el piloto: `scripts/run_pilot_f7.sh` (~50 min, con sudo, el
+monitoreo arriba, cargador conectado y sin suspensión). Luego F7.3 (primera
+consulta en frío en los tres perfiles) y F7.4 (ventana real en PROFILE_A).
+Plan, decisiones F7-a…F7-d y criterios en `docs/F7_PILOTO.md`.
 
 ### Herramientas que ya existen (F1)
 
@@ -177,6 +175,9 @@ Antes de correr, el monitoreo debe estar arriba (`scripts/up_monitoring.sh`).
   `spill_mongo.py` y `oom_engine.py`.
 - F6 — Verificaciones: `check_definitions.py`, `check_frozen.py`,
   `check_telemetry_live.py` y `check_smoke_f64.py`; humo: `scripts/smoke_f64.sh`.
+- F7 — `scripts/run_pilot_f7.sh` (MEDICIÓN REAL con `--salida f7`) y
+  `scripts/checks/check_pilot_f7.py` (CV, tendencia F7-b, primera consulta en
+  frío, tiempo real y estimación de F8). `--salida DIR` solo en corridas reales.
 - Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (248 al cierre
   de F6; con el `python3` del sistema se omiten las que necesitan drivers).
   `pytest` no está instalado; las pruebas se escriben compatibles con los dos.
