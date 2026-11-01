@@ -1,0 +1,170 @@
+== F7.3 primera consulta en frío — 20261102T122820Z — loadavg 0.47 0.85 1.16
+== ventanas 60/30/5 (el dato está en el calentamiento) · c=50 · Q1, Q2_MEM_LOW y Q2_MEM_HIGH
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## PROFILE_A_BASELINE · postgresql · Q1 · c=50 — 12:28:22 UTC
+== postgresql_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=98.631523 s rss=1763.04296875 MiB spill=False (112.81 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_A_BASELINE_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_A_BASELINE · postgresql · Q2_MEM_LOW · c=50 — 12:30:49 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.000000 p50/p95/p99=40992.375329999995/43859.58264545/43926.824286940006 ms throttled=108.758489 s rss=126.00390625 MiB spill=False (112.26 s)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_A_BASELINE · postgresql · Q2_MEM_HIGH · c=50 — 12:33:03 UTC
+== postgresql_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.800000 p50/p95/p99=31790.125753999993/33907.60870225/34185.1404247 ms throttled=110.415552 s rss=126.4453125 MiB spill=False (108.98 s)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## PROFILE_A_BASELINE · mongodb · Q1 · c=50 — 12:35:11 UTC
+== mongodb_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=118.363743 s rss=892.81640625 MiB spill=False (104.31 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_A_BASELINE_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_A_BASELINE · mongodb · Q2_MEM_LOW · c=50 — 12:37:19 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.733333 p50/p95/p99=29520.5113225/32270.6357737/33589.33422601 ms throttled=119.072957 s rss=908.32421875 MiB spill=False (111.92 s)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_A_BASELINE · mongodb · Q2_MEM_HIGH · c=50 — 12:39:34 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=2.566667 p50/p95/p99=26277.966669/28691.597119799997/29913.07498028 ms throttled=119.155271 s rss=894.25390625 MiB spill=False (111.99 s)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · postgresql · Q1 · c=50 — 12:41:48 UTC
+== postgresql_PROFILE_B_MEDIUM_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=129.048024 s rss=1761.078125 MiB spill=False (112.25 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_B_MEDIUM_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_B_MEDIUM_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · postgresql · Q2_MEM_LOW · c=50 — 12:44:00 UTC
+== postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.266667 p50/p95/p99=66841.00175450002/73743.31918705/75265.83467857 ms throttled=163.187128 s rss=124.171875 MiB spill=False (112.14 s)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · postgresql · Q2_MEM_HIGH · c=50 — 12:46:12 UTC
+== postgresql_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.900000 p50/p95/p99=65322.109867/68718.8429039/69015.79397865999 ms throttled=163.999772 s rss=126.13671875 MiB spill=False (112.13 s)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · mongodb · Q1 · c=50 — 12:48:22 UTC
+== mongodb_PROFILE_B_MEDIUM_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=178.728125 s rss=695.8046875 MiB spill=False (112.02 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_B_MEDIUM_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_B_MEDIUM_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · mongodb · Q2_MEM_LOW · c=50 — 12:50:35 UTC
+== mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=177.641821 s rss=898.23828125 MiB spill=False (111.76 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_B_MEDIUM · mongodb · Q2_MEM_HIGH · c=50 — 12:52:49 UTC
+== mongodb_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=177.566405 s rss=901.87109375 MiB spill=False (111.56 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · postgresql · Q1 · c=50 — 12:55:01 UTC
+== postgresql_PROFILE_C_SEVERE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=oom qps=0.000000 p50/p95/p99=None/None/None ms throttled=194.244433 s rss=186.76953125 MiB spill=False (114.06 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   - 116647 consulta(s) fallidas o con timeout dentro de la ventana
+   - 455504 consulta(s) con error (no timeout) en toda la repetición
+   - OOM: oom_kill +3, OOMKilled=True
+   crudo: results/f7_frio/raw/postgresql_PROFILE_C_SEVERE_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_C_SEVERE_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · postgresql · Q2_MEM_LOW · c=50 — 12:57:15 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.366667 p50/p95/p99=74098.82241/85047.336472/87246.36394480002 ms throttled=187.027156 s rss=123.69140625 MiB spill=False (112.3 s)
+   - baja densidad muestral: 11 completadas en la ventana (A4)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · postgresql · Q2_MEM_HIGH · c=50 — 12:59:25 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.366667 p50/p95/p99=79289.537048/88840.415442/89196.95728439999 ms throttled=187.244955 s rss=122.6484375 MiB spill=False (111.74 s)
+   - baja densidad muestral: 11 completadas en la ventana (A4)
+   crudo: results/f7_frio/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · mongodb · Q1 · c=50 — 13:01:33 UTC
+== mongodb_PROFILE_C_SEVERE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=206.176217 s rss=598.17578125 MiB spill=False (111.76 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_C_SEVERE_Q1_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_C_SEVERE_Q1_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · mongodb · Q2_MEM_LOW · c=50 — 13:03:45 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=201.318492 s rss=648.0703125 MiB spill=False (111.6 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json)
+########## exit 0
+
+########## PROFILE_C_SEVERE · mongodb · Q2_MEM_HIGH · c=50 — 13:05:58 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 30, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.000000 p50/p95/p99=None/None/None ms throttled=199.413101 s rss=650.7890625 MiB spill=False (111.49 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f7_frio/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f7_frio/measurements_smoke.csv
+   telemetría: completa  (results/f7_frio/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json)
+########## exit 0
+
+########## Análisis
+celda                                                        1ª máx  mediana  >cal  en vent  % vent  p95 fila  p95 sin 1ª
+mongodb_PROFILE_A_BASELINE_Q1_c50_r1                          102.2    100.6    50        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1                  39.4     36.9     0        0    0.0%     28692       28692
+mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1                   41.3     38.3     0        0    0.0%     32271       32271
+mongodb_PROFILE_B_MEDIUM_Q1_c50_r1                              0.0      0.0     0        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1                     0.0      0.0     0        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1                      0.0      0.0     0        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_C_SEVERE_Q1_c50_r1                              0.0      0.0     0        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1                     0.0      0.0     0        0    0.0%         0           0   NO CABE
+mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1                      0.0      0.0     0        0    0.0%         0           0   NO CABE
+postgresql_PROFILE_A_BASELINE_Q1_c50_r1                         0.0      0.0     0        0    0.0%         0           0   NO CABE
+postgresql_PROFILE_A_BASELINE_Q2_MEM_HIGH_c50_r1               41.2     34.8     0        0    0.0%     33908       33908
+postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c50_r1                52.3     43.8     0        0    0.0%     43860       43860
+postgresql_PROFILE_B_MEDIUM_Q1_c50_r1                           0.0      0.0     0        0    0.0%         0           0   NO CABE
+postgresql_PROFILE_B_MEDIUM_Q2_MEM_HIGH_c50_r1                 69.1     58.5    21       21   77.8%     68719       26733   NO CABE
+postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1                  75.3     63.9    31       31   81.6%     73743       44348   NO CABE
+postgresql_PROFILE_C_SEVERE_Q1_c50_r1                          90.5     89.5    16       14    0.0%         0           0   NO CABE
+postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1                110.3     98.9    29       10   90.9%     88840           0   NO CABE
+postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1                 109.4    101.1    22        7   63.6%     85047       42349   NO CABE
+
+Perfiles donde NO cabe: ['PROFILE_A_BASELINE/mongodb', 'PROFILE_A_BASELINE/postgresql', 'PROFILE_B_MEDIUM/mongodb', 'PROFILE_B_MEDIUM/postgresql', 'PROFILE_C_SEVERE/mongodb', 'PROFILE_C_SEVERE/postgresql']
+-> /home/alix_anahi/benchmark-json-contention/results/f7_frio/check_cold.json
+
+Listo. Avísale a Claude (registro: results/f7_frio/frio_20261102T122820Z.txt).

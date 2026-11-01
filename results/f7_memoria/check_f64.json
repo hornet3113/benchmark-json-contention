@@ -1,0 +1,140 @@
+{
+ "mongodb_PROFILE_A_BASELINE_Q1_c50_r1": {
+  "status": "ok",
+  "max_rss_mb": 1046.19140625,
+  "cpu_throttled_seconds": 1187.877485,
+  "ventana_s": 300.0,
+  "serie_1s": {
+   "filas": 300,
+   "max_anon_mib": 1046.19140625,
+   "igual_a_max_rss_mb": true,
+   "working_set_max_mib": 1269.7,
+   "shmem_max_mib": 0.0
+  },
+  "telemetria": {
+   "fallo": false,
+   "estado_exportacion": "completa",
+   "motivos": []
+  },
+  "huecos_en_ventana": {},
+  "rss_prometheus_max_mib": 1045.496,
+  "rss_dif_rel": 0.00066,
+  "working_set_prometheus_max_mib": 1269.0,
+  "throttling_prometheus_s": 1190.667707,
+  "throttling_desfase_bordes_s": [
+   -0.286,
+   0.362
+  ],
+  "throttling_dif_rel": 0.00235,
+  "throttling_exige_5pct": true,
+  "vm": {
+   "mem_available_min_mib": 4390.6,
+   "pswpout_delta": 0.0,
+   "presion_memoria_espera_s": 0.0
+  },
+  "monitoreo": {
+   "contenedores": {
+    "benchmon_cadvisor": {
+     "nucleos_medios": 0.0336,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 37.4
+    },
+    "benchmon_node_exporter": {
+     "nucleos_medios": 0.0167,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 11.2
+    },
+    "benchmon_prometheus": {
+     "nucleos_medios": 0.0248,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 104.9
+    }
+   },
+   "scrape_max_s": {
+    "cadvisor": 0.0296,
+    "prometheus": 0.0395,
+    "node": 0.068
+   },
+   "up_min": {
+    "cadvisor": 1.0,
+    "prometheus": 1.0,
+    "node": 1.0
+   }
+  },
+  "comprobaciones": {
+   "serie_1s_cubre_la_ventana": true,
+   "serie_1s_max_es_max_rss_mb": true,
+   "telemetria_sin_fallo": true,
+   "throttling_columna_vs_prometheus_<5%": true
+  }
+ },
+ "postgresql_PROFILE_A_BASELINE_Q1_c50_r1": {
+  "status": "error",
+  "max_rss_mb": 1976.9375,
+  "cpu_throttled_seconds": 1032.338243,
+  "ventana_s": 300.0,
+  "serie_1s": {
+   "filas": 300,
+   "max_anon_mib": 1976.9375,
+   "igual_a_max_rss_mb": true,
+   "working_set_max_mib": 2936.2,
+   "shmem_max_mib": 211.5
+  },
+  "telemetria": {
+   "fallo": false,
+   "estado_exportacion": "completa",
+   "motivos": []
+  },
+  "huecos_en_ventana": {},
+  "rss_prometheus_max_mib": 1979.629,
+  "rss_dif_rel": 0.00136,
+  "working_set_prometheus_max_mib": 2935.2,
+  "throttling_prometheus_s": 1035.096715,
+  "throttling_desfase_bordes_s": [
+   -0.362,
+   0.367
+  ],
+  "throttling_dif_rel": 0.00267,
+  "throttling_exige_5pct": true,
+  "vm": {
+   "mem_available_min_mib": 3216.6,
+   "pswpout_delta": 0.0,
+   "presion_memoria_espera_s": 120.235
+  },
+  "monitoreo": {
+   "contenedores": {
+    "benchmon_cadvisor": {
+     "nucleos_medios": 0.0434,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 37.4
+    },
+    "benchmon_node_exporter": {
+     "nucleos_medios": 0.0145,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 10.9
+    },
+    "benchmon_prometheus": {
+     "nucleos_medios": 0.0254,
+     "throttled_s": 0.0,
+     "memory_usage_max_mib": 102.9
+    }
+   },
+   "scrape_max_s": {
+    "cadvisor": 0.0743,
+    "prometheus": 0.0441,
+    "node": 0.0687
+   },
+   "up_min": {
+    "cadvisor": 1.0,
+    "prometheus": 1.0,
+    "node": 1.0
+   }
+  },
+  "comprobaciones": {
+   "serie_1s_cubre_la_ventana": true,
+   "serie_1s_max_es_max_rss_mb": true,
+   "telemetria_sin_fallo": true,
+   "throttling_columna_vs_prometheus_<5%": true
+  }
+ }
+}

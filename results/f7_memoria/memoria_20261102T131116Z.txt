@@ -1,0 +1,46 @@
+== F7.4 memoria con la ventana real en PROFILE_A — 20261102T131116Z — loadavg 0.27 2.60 5.85
+== ventanas 60/300/60 · PROFILE_A_BASELINE · Q1 · c=50 · 1 repetición por motor
+                  total        used        free      shared  buff/cache   available
+   Mem:            7331        1510        5009           3         971        5820
+   Swap:           2048         944        1103
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## postgresql · PROFILE_A_BASELINE · Q1 · c=50 — 13:11:18 UTC
+== postgresql_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.013333 p50/p95/p99=250328.00065250002/261416.02991840002/262661.04683168 ms throttled=1032.338243 s rss=1976.9375 MiB spill=True (437.36 s)
+   - baja densidad muestral: 4 completadas en la ventana (A4)
+   - 46 consulta(s) fallidas o con timeout dentro de la ventana
+   - datos censurados por la derecha: 92.0% de timeouts a 300 s (≥ 1%); percentiles válidos: ninguno
+   crudo: results/f7_memoria/raw/postgresql_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/f7_memoria/measurements_smoke.csv
+   telemetría: completa  (results/f7_memoria/telemetry/postgresql_PROFILE_A_BASELINE_Q1_c50_r1.json)
+########## exit 0
+
+########## mongodb · PROFILE_A_BASELINE · Q1 · c=50 — 13:18:54 UTC
+== mongodb_PROFILE_A_BASELINE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.683333 p50/p95/p99=72675.659372/80116.5586114/81304.83820544 ms throttled=1187.877485 s rss=1046.19140625 MiB spill=False (436.96 s)
+   crudo: results/f7_memoria/raw/mongodb_PROFILE_A_BASELINE_Q1_c50_r1.json  · CSV: results/f7_memoria/measurements_smoke.csv
+   telemetría: completa  (results/f7_memoria/telemetry/mongodb_PROFILE_A_BASELINE_Q1_c50_r1.json)
+########## exit 0
+
+########## Análisis (serie de 1 s, telemetría, memoria de la VM y costo del monitoreo)
+== mongodb_PROFILE_A_BASELINE_Q1_c50_r1: status=ok  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 300 filas en 300.0 s · max anon 1046.19140625 = max_rss_mb 1046.19140625? True · working_set 1269.7 MiB · shmem 0.0 MiB
+   Prometheus: rss max 1045.496 MiB (dif 0.00066) · throttling 1190.667707 s vs columna 1187.877485 (dif 0.00235, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 4390.6, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 0.0}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.0336, 'throttled_s': 0.0, 'memory_usage_max_mib': 37.4}, 'benchmon_node_exporter': {'nucleos_medios': 0.0167, 'throttled_s': 0.0, 'memory_usage_max_mib': 11.2}, 'benchmon_prometheus': {'nucleos_medios': 0.0248, 'throttled_s': 0.0, 'memory_usage_max_mib': 104.9}} · scrape máx {'cadvisor': 0.0296, 'prometheus': 0.0395, 'node': 0.068} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+== postgresql_PROFILE_A_BASELINE_Q1_c50_r1: status=error  telemetría={'fallo': False, 'estado_exportacion': 'completa', 'motivos': []}
+   serie 1 s: 300 filas en 300.0 s · max anon 1976.9375 = max_rss_mb 1976.9375? True · working_set 2936.2 MiB · shmem 211.5 MiB
+   Prometheus: rss max 1979.629 MiB (dif 0.00136) · throttling 1035.096715 s vs columna 1032.338243 (dif 0.00267, exige 5 %: True) · huecos {}
+   VM: {'mem_available_min_mib': 3216.6, 'pswpout_delta': 0.0, 'presion_memoria_espera_s': 120.235}
+   monitoreo: {'benchmon_cadvisor': {'nucleos_medios': 0.0434, 'throttled_s': 0.0, 'memory_usage_max_mib': 37.4}, 'benchmon_node_exporter': {'nucleos_medios': 0.0145, 'throttled_s': 0.0, 'memory_usage_max_mib': 10.9}, 'benchmon_prometheus': {'nucleos_medios': 0.0254, 'throttled_s': 0.0, 'memory_usage_max_mib': 102.9}} · scrape máx {'cadvisor': 0.0743, 'prometheus': 0.0441, 'node': 0.0687} · up mín {'cadvisor': 1.0, 'prometheus': 1.0, 'node': 1.0}
+   {'serie_1s_cubre_la_ventana': True, 'serie_1s_max_es_max_rss_mb': True, 'telemetria_sin_fallo': True, 'throttling_columna_vs_prometheus_<5%': True}
+-> /home/alix_anahi/benchmark-json-contention/results/f7_memoria/check_f64.json · TODO CUADRA
+
+########## Memoria del árbol del runner y de la VM (monitor del host)
+-- postgresql: mínimo de mem_disp_mb, máximo de swap y de runner_rss_mb
+   mem_disp_min=3220 MB  swap_max=944 MB  runner_rss_max=472 MB
+-- mongodb: mínimo de mem_disp_mb, máximo de swap y de runner_rss_mb
+   mem_disp_min=4388 MB  swap_max=928 MB  runner_rss_max=442 MB
+
+Listo. Avísale a Claude (registro: results/f7_memoria/memoria_20261102T131116Z.txt).

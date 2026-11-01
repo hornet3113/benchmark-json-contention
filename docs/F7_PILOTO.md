@@ -234,3 +234,224 @@ scripts/run_memory_f74.sh     # F7.4, ~16 min
 En F7.3, un timeout de 300 s en la primera consulta (posible con Q1 y c=50 en
 PROFILE_C) **no es un fallo**: es el hallazgo, y la celda sale con
 `status=error`, que en humo no cuenta.
+
+### F7.3 — Primera consulta en frío por perfil y motor (2026-11-02, 12:28–13:11 UTC)
+
+`results/f7_frio/frio_20261102T122820Z.txt`, `results/f7_frio/check_cold.json`.
+18 celdas, c=50, ventanas 60/30/5. **La respuesta es sí: la primera consulta en
+frío supera los 60 s de calentamiento en casi todas las celdas con c=50.**
+
+Solo cabe en **4 de 18**, todas en PROFILE_A y con Q2:
+
+| Celda (c=50) | 1ª consulta máx. | Mediana | ¿Cabe en 60 s? |
+|---|---|---|---|
+| Mongo · A · Q2_MEM_HIGH | 39.4 s | 36.9 s | sí |
+| Postgres · A · Q2_MEM_HIGH | 41.2 s | 34.8 s | sí |
+| Mongo · A · Q2_MEM_LOW | 41.3 s | 38.3 s | sí |
+| Postgres · A · Q2_MEM_LOW | 52.3 s | 43.8 s | sí, al filo |
+| Postgres · B · Q2_MEM_HIGH | 69.1 s | 58.5 s | **no** |
+| Postgres · B · Q2_MEM_LOW | 75.3 s | 63.9 s | **no** |
+| Postgres · C · Q2_MEM_LOW | 109.4 s | 101.1 s | **no** |
+| Postgres · C · Q2_MEM_HIGH | 110.3 s | 98.9 s | **no** |
+| Mongo · A · Q1 | 102.2 s | 100.6 s | **no** |
+| Postgres · C · Q1 | 90.5 s | 89.5 s | **no** (además OOM, abajo) |
+| Mongo · B y C × las 3 queries (6 celdas) | **> 110 s** | — | **no** |
+| Postgres · A · Q1 y B · Q1 | **> 110 s** | — | **no** |
+
+En las 8 celdas de "> 110 s" no terminó **ninguna** consulta: los 50 workers
+quedaron con su primera consulta en vuelo cuando se agotaron calentamiento +
+ventana + enfriamiento + gracia (110 s). No hubo errores ni timeouts y el motor
+siguió sano: solo es que tardan más que toda la corrida. Es una cota inferior,
+no una medida. Para PROFILE_A de Postgres con Q1, F7.4 la midió de verdad: **~260 s**.
+
+**Cuánto contamina los percentiles.** Lo que importa no es solo que no quepa,
+sino qué fracción de la ventana son primeras consultas:
+
+| Celda | % de la ventana que son 1ª consulta | p95 de la fila | p95 sin las 1ª |
+|---|---|---|---|
+| Postgres · B · Q2_MEM_LOW | **81.6 %** | 73 743 ms | 44 348 ms |
+| Postgres · B · Q2_MEM_HIGH | **77.8 %** | 68 719 ms | 26 733 ms (−61 %) |
+| Postgres · C · Q2_MEM_HIGH | **90.9 %** | 88 840 ms | sin muestras suficientes |
+| Postgres · C · Q2_MEM_LOW | 63.6 % | 85 047 ms | 42 349 ms |
+| Mongo y Postgres · A · Q2 | 0 % | — | igual |
+
+Con c=50 en B y C, **la ventana de medición mide sobre todo consultas en frío**,
+no el régimen estacionario que el manual quiere medir. En PROFILE_A con Q2 no hay
+contaminación ninguna.
+
+**Hallazgo nuevo: OOM real en Postgres · C · Q1 · c=50.** `status=oom`,
+`oom_kill +3`, `OOMKilled=true`. El kernel mató backends de Postgres al pasar de
+1 GiB. **Es la primera evidencia de OOM en una query del manual** (hasta ahora
+solo había sondas), y responde M2 con datos. Detalle en
+`results/f7_frio/raw/postgresql_PROFILE_C_SEVERE_Q1_c50_r1.json`.
+
+### F7.4 — Memoria con la ventana real en PROFILE_A (2026-11-02, 13:11–13:27 UTC)
+
+`results/f7_memoria/memoria_20261102T131116Z.txt`. Q1 con c=50, ventanas reales
+60/300/60. `check_smoke_f64.py`: **TODO CUADRA** (serie de 1 s igual a
+`max_rss_mb`, telemetría completa sin huecos, throttling columna/Prometheus al
+0.2 %).
+
+| | Mongo | Postgres |
+|---|---|---|
+| `status` | ok | **error** (92 % de timeouts) |
+| `max_rss_mb` (anon) | 1 046 MiB | 1 977 MiB |
+| `working_set` | 1 270 MiB | **2 936 MiB** (`shmem` 211) |
+| Throttling en 300 s | 1 188 s | 1 032 s |
+| `MemAvailable` mínima de la VM | 4 391 MiB | **3 217 MiB** |
+| Presión de memoria (PSI, espera) | 0 s | **120 s de 300** |
+| Páginas enviadas a swap | 0 | 0 |
+| RSS del árbol del runner | 442 MiB | 472 MiB |
+| Monitoreo | 0.075 núcleos, ≤ 105 MiB | 0.083 núcleos, ≤ 103 MiB |
+
+**La memoria aguanta, pero con menos margen del que parecía:** nunca se usó
+swap, y quedaron 3.2 GiB libres en el peor caso. Eso sí, **la VM pasó 120 de los
+300 s en espera por memoria** (reclamando caché de páginas) en la celda de
+Postgres. El monitoreo no es el problema: cuesta menos de 0.09 núcleos y ~105 MiB.
+
+**Dos hallazgos reales de esa celda (Postgres · A · Q1 · c=50):**
+
+1. **Spill masivo:** `disk_spill=true`, `temp_bytes` **+37.2 GB** en 380 archivos
+   temporales durante la ventana. En F3, Q1 con una sola consulta volcaba 1.4 GiB;
+   con 50 concurrentes son 37 GB. Responde M2 con datos.
+2. **92 % de timeouts:** 46 de 50 consultas agotaron el límite de 300 s y solo 4
+   terminaron. Por A4 la fila sale `status=error` y **ningún percentil es válido**;
+   el p95 que aparece (261 s) está censurado y no se usa. Es el comportamiento
+   correcto del runner, no un fallo.
+
+### Qué significa todo esto para F8
+
+**Q1 con c=50 es, en buena medida, inmedible en este hardware.** En PROFILE_A da
+92 % de timeouts; en C, OOM; en B, ninguna consulta termina en 110 s. Esas filas
+saldrán `error` u `oom`, con las columnas que se puedan medir y las latencias
+vacías. **No es un fallo del experimento: es el resultado**, y es justo lo que el
+manual quiere observar bajo contención. Hay que anticiparlo en el reporte en vez
+de descubrirlo al final de 13 h de corrida.
+
+---
+
+## Decisiones que salen de F7 (pendientes de Alix)
+
+### F7-e — Qué hacer con los P95/P99 contaminados por la consulta en frío
+
+El calentamiento de 60 s del manual no alcanza con c=50 en B y C: hasta el 91 %
+de la ventana son primeras consultas. Tres caminos:
+
+| | Qué | Coste |
+|---|---|---|
+| **(a)** | Correr tal como dice el manual y **declarar la limitación**, mostrando en el reporte las dos vistas: el p95 del CSV y el p95 recalculado sin las primeras consultas (los crudos ya guardan cada muestra con su worker, así que se recalcula sin volver a medir) | Ninguno. Es lo que ya acordamos al cerrar F5 |
+| (b) | Alargar el calentamiento a 120–180 s | Desviarse de §6 del manual, repetir F7 y +3–6 h de F8 |
+| (c) | Descartar las celdas de c=50 en B y C | Perder la mitad de la respuesta a M1 |
+
+**Recomiendo (a)**, que además es lo que ya decidiste. Lo nuevo es la **segunda
+vista** en el reporte: sin ella, un p95 de 88 s en PROFILE_C se lee como latencia
+del motor cuando es sobre todo arranque en frío.
+
+### F8-a — El bucle de reintentos cuando el motor muere
+
+En la celda del OOM, al morir los backends, cada worker reintentó la conexión
+**sin pausa**: 455 504 "consultas" de 0.005 ms en 110 s, y un crudo de **19 MB**.
+En F8, con ventanas de 300 s, serían ~2 M muestras y ~80 MB por repetición
+afectada, y Q1 · C · c=50 se corre 3 veces.
+
+Propongo que, al fallar la conexión, el worker **espere 1 s antes de reintentar**.
+Así el bucle sigue vivo (si el motor se recupera, se ve), pero las muestras
+quedan acotadas a ~300 por worker y el crudo a un tamaño normal. No cambia
+ninguna columna: los errores no cuentan para el throughput ni para los
+percentiles (A4), y la fila seguiría siendo `oom`. Cambia solo el **número** de
+errores registrados, que hoy mide la velocidad del bucle y no el experimento.
+
+Son dos líneas en `benchmark_runner/workload.py` y una prueba. **No lo toco sin
+tu aprobación**, porque cambia lo que se registra.
+
+### A2 — Tu decisión, confirmada
+
+La estrategia de tandas es correcta y así está implementada: la **tanda 1** son
+`Q1` + `Q2_MEM_LOW` (36 celdas, 108 corridas) y `run_benchmarks.sh` la corre por
+defecto, dejando `Q2_MEM_HIGH` al final de la matriz. Si el docente dice 54, se
+añade con `--todo`.
+
+Un detalle del caso "responde 36": el cambio de etiqueta `Q2_MEM_LOW` → `Q2`
+afecta al CSV **y** a los 108 crudos. Para que no sea una edición a mano (que el
+proyecto prohíbe), hay que hacerlo con un script que reescriba el CSV a partir de
+los crudos. Es media hora de trabajo y solo si hace falta; lo anoto como
+pendiente en vez de escribirlo ahora.
+
+---
+
+## Cierre de F7 — PROPUESTA para revisión de Alix (2026-11-02)
+
+**No se ha tocado PLAN, CLAUDE ni CHECKLIST.** Esto es lo que propongo marcar.
+
+### PLAN F7
+
+| Casilla | Propuesta | Evidencia |
+|---|---|---|
+| 3 filas con `run_number` 1, 2, 3 | [x] | `results/f7/measurements.csv` (6 filas, 3 por motor) |
+| `validate_csv.py` pasa | [x] | VÁLIDO, en el registro del piloto |
+| CV del throughput < 15 % | [x] | 4.2 % (Mongo) y 3.8 % (Postgres), `results/f7/check_pilot.json` |
+| Sin tendencia monótona | [x] | Mongo no es monótono; Postgres sí, pero +7.9 % < 10 % (F7-b). Anotado para vigilar en F8 |
+| Planes capturados (R-31) | [x] | `results/f7/explains/` (uno por celda, en r1) |
+| Tiempo real → costo de F8 | [x] | 448.5 s por repetición → **20.2 h** con 162 corridas y **13.5 h** con 108 |
+| Primera consulta en frío frente al calentamiento, en los 3 perfiles | [x] | `results/f7_frio/check_cold.json`: **no cabe en 14 de 18 celdas con c=50**. Se declara como limitación del protocolo (F7-e) |
+
+### CHECKLIST
+
+Propongo marcar, con su archivo: el piloto corrido con 3 repeticiones, el CV,
+los planes por celda y la estimación del costo de F8. **No** marco nada del
+reporte (F9) ni de la matriz (F8).
+
+### Lo que F7 deja dicho para el reporte
+
+1. **El calentamiento de 60 s del manual no alcanza con c=50** en B y C: hasta
+   el 91 % de la ventana son primeras consultas en frío, y el p95 llega a bajar
+   un 61 % si se quitan. Se declara, y se muestran las dos vistas (F7-e).
+2. **Q1 con c=50 es inmedible en este hardware:** 92 % de timeouts en A, OOM en
+   C, ninguna consulta terminada en B. Son resultados, no fallos.
+3. **Primera evidencia de OOM y de spill en queries del manual** (no en sondas):
+   Postgres · C · Q1 · c=50 → OOM; Postgres · A · Q1 · c=50 → 37.2 GB de
+   archivos temporales. Las dos responden M2 con datos.
+4. **Postgres acumula 4 veces más throttling que Mongo** con la misma cuota de
+   1 CPU, porque Q2 le lanza 2 workers paralelos y el throttling se suma por CPU.
+5. **La memoria de la VM aguanta** (3.2 GiB libres en el peor caso, sin swap),
+   pero con 120 de 300 s en espera por memoria en la celda más pesada.
+6. **Costo de F8 medido:** 13.5 h la tanda 1 (108 corridas) y 20.2 h la matriz
+   completa, a 448 s por repetición.
+
+### Pendientes que F7 pasa a F8
+
+- **F7-e** y **F8-a**, arriba, que necesitan tu decisión.
+- **V7**: el diseño de la regla de sudoers está en `docs/V7_SUDOERS.md`, sin aplicar.
+- Vigilar la tendencia de Postgres (monótona pero pequeña) con más repeticiones.
+- Recomprobar con c=50 lo de la consulta huérfana (en el piloto, con c=1, es inocua).
+- Si el docente responde 36, hace falta un script que reescriba el CSV desde los
+  crudos para cambiar la etiqueta, en vez de editarlo a mano.
+
+### Herramienta de F8 lista: `scripts/run_benchmarks.sh`
+
+Nombre exigido por R-25. Recorre la matriz y es **reanudable**: antes de cada
+celda consulta el CSV y corre solo las repeticiones que faltan
+(`benchmark_runner/schedule.py`, clave `engine/profile/query_id/concurrency/run_number`).
+
+- `--listar` dice qué falta **sin correr nada y sin sudo**.
+- Por defecto, **tanda 1** (Q1 + Q2_MEM_LOW); `--todo` añade Q2_MEM_HIGH;
+  `--matriz 36 --q2-variante MEM_LOW` para el otro conteo de A2.
+- `--motor` / `--perfil` / `--query` / `--concurrencia` para correr por bloques,
+  y `--max-celdas N` para cortar la sesión a propósito.
+- **Comprueba `sudo -n` antes de cada celda** y se detiene si la caché caducó, en
+  vez de dejar repeticiones sin flush (V7).
+- Se detiene tras 3 celdas seguidas con fallo.
+- `--humo` corre 2 celdas (una por motor, PROFILE_C, Q2_MEM_LOW, c=1) con
+  ventanas 5/20/5 en `results/f8_humo/`, solo la primera repetición que falte,
+  para no duplicar filas al relanzarlo.
+
+**Probado sin sudo:** `--listar` con el CSV real del piloto da 156 corridas
+pendientes y excluye las 6 ya hechas; `--matriz 36` da 108; los filtros de
+bloque dan 6 celdas; el humo da 2 celdas y 2 repeticiones; sin `sudo -v` se
+detiene antes de tocar nada. Pruebas: `tests/test_schedule.py`, 9 nuevas
+(reanudar sin repetir ni saltar, los dos conteos de A2, Q2_MEM_HIGH al final,
+filas ajenas a la matriz, filtros). Suite completa **279/279**
+(`results/f7/tests_f8_runner_20261102T141608Z.txt`).
+
+**Falta el humo con motores de verdad, que necesita sudo:**
+`scripts/run_benchmarks.sh --humo` (~2 min).
