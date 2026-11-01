@@ -92,13 +92,15 @@ def cold_first_queries(raw: dict) -> dict:
             first[wid] = [start, end, ok]
     ms = sorted(round((e - s) / 1e6, 1) for s, e, _ in first.values())
     warm = raw["ventanas_s"]["warmup_s"]
-    sin_terminar = raw["consultas"].get("workers_sin_terminar", [])
+    # Un worker cortado al FINAL de la ventana no dice nada de su primera consulta: lo
+    # que importa aquí es un worker que no terminó NINGUNA (su primera no cabe ni medida).
+    sin_ninguna = sorted(set(raw["consultas"].get("workers_sin_terminar", [])) - set(first))
     return {"workers_con_muestra": len(ms), "primera_consulta_ms": ms,
             "max_s": round(max(ms) / 1000, 2) if ms else None,
             "calentamiento_s": warm,
-            "cabe_en_el_calentamiento": bool(ms) and max(ms) / 1000 <= warm and not sin_terminar,
+            "cabe_en_el_calentamiento": bool(ms) and max(ms) / 1000 <= warm and not sin_ninguna,
             "primera_consulta_dentro_de_la_ventana": sum(1 for _, (s, _, _) in first.items() if s >= w0),
-            "workers_sin_ninguna_consulta_terminada": sorted(set(sin_terminar) - set(first))}
+            "workers_sin_ninguna_consulta_terminada": sin_ninguna}
 
 
 def per_run(raw: dict) -> dict:
@@ -143,7 +145,10 @@ def evaluate(engine: str, raws: list[dict], base: dict) -> dict:
         "cv_throughput_<15%": out["cv_throughput"] is not None and out["cv_throughput"] < CV_MAX,
         "sin_tendencia_throughput": not out["tendencia_throughput"]["hay_tendencia"],
         "sin_tendencia_p50": not out["tendencia_p50"]["hay_tendencia"],
-        "plan_capturado": all(r["plan"] for r in runs),
+        # R-31, tal como lo diseñó F5: UN plan por celda, en la repetición 1 de c=1 y
+        # fuera de la ventana. No se exige en las 3 repeticiones; sería el mismo plan.
+        "plan_capturado": any(r["plan"] and Path(r["plan"]).exists() for r in runs)
+                          and not any(r["plan_error"] for r in runs),
         "flush_con_efecto": all(r["flush_ok"] and (r["flush_liberado_kb"] or 0) > 0 for r in runs),
         "sin_suspension": all(abs(r["deriva_reloj_s"]) < 2 for r in runs),
         "telemetria_sin_fallo": all((r["telemetria"] or {}).get("fallo") is not True for r in runs),

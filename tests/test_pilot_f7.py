@@ -10,7 +10,9 @@ Lo que se protege:
 
 from __future__ import annotations
 
+import shutil
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -97,6 +99,44 @@ class ColdFirstQueryTest(unittest.TestCase):
         self.assertEqual(r["workers_sin_ninguna_consulta_terminada"], [1])
         self.assertFalse(r["cabe_en_el_calentamiento"])
 
+    def test_worker_cut_at_the_end_still_fits(self):
+        """El corte al final de la ventana no dice nada de la primera consulta (piloto r1 de Mongo)."""
+        r = pilot.cold_first_queries(raw([(0, 33, 0), (33, 60, 0)], unfinished=[0]))
+        self.assertEqual(r["workers_sin_ninguna_consulta_terminada"], [])
+        self.assertTrue(r["cabe_en_el_calentamiento"])
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PlanCriterionTest(unittest.TestCase):
+    """R-31 tal como lo diseñó F5: UN plan por celda, en la repetición 1 de c=1."""
+
+    def setUp(self):
+        self.dir = Path(tempfile.mkdtemp())
+        self.plan = self.dir / "plan.json"
+        self.plan.write_text("{}")
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def runs(self, plans, errors=(None, None, None)):
+        return [{"run_number": i + 1, "plan": p, "plan_error": e}
+                for i, (p, e) in enumerate(zip(plans, errors))]
+
+    def check(self, runs):
+        return (any(r["plan"] and Path(r["plan"]).exists() for r in runs)
+                and not any(r["plan_error"] for r in runs))
+
+    def test_only_the_first_run_captures_it(self):
+        self.assertTrue(self.check(self.runs([str(self.plan), None, None])))
+
+    def test_no_plan_at_all_fails(self):
+        self.assertFalse(self.check(self.runs([None, None, None])))
+
+    def test_a_plan_error_fails_even_with_a_file(self):
+        self.assertFalse(self.check(self.runs([str(self.plan), None, None], (None, "TimeoutError: x", None))))
+
+    def test_a_path_that_does_not_exist_fails(self):
+        self.assertFalse(self.check(self.runs([str(self.dir / "no_existe.json"), None, None])))

@@ -99,3 +99,84 @@ plan) sale **~21–22 h**. El número definitivo saldrá del piloto, no del ensa
   reposo (línea base de F6.3). El analizador los pone uno al lado del otro.
 - **Si el CV o la tendencia fallan, no se pasa a F8:** primero se busca la causa
   (caché, memoria de la VM, térmico, energía).
+
+### F7.2 — Celda piloto corrida por Alix (2026-11-02, 11:18–11:59 UTC)
+
+`results/f7/pilot_20261102T111824Z.txt`, `results/f7/check_pilot.json`.
+Cargador conectado (batería estado=2, 99 %), plan "Equilibrado". Ventanas
+60/300/60, 3 repeticiones por motor, 6 filas en `results/f7/measurements.csv`.
+`validate_csv.py`: **VÁLIDO**.
+
+| Motor | qps (r1/r2/r3) | CV qps | Tendencia | p50 (ms) | CV p50 | Completadas | Throttling (s) | `max_rss_mb` (MiB) |
+|---|---|---|---|---|---|---|---|---|
+| MongoDB | 0.0433 / 0.0467 / 0.0467 | **4.2 %** | no | 22 587 / 21 075 / 21 831 | 3.5 % | 13 / 14 / 14 | 204 / 193 / 193 | 616 / 624 / 613 |
+| PostgreSQL | 0.5033 / 0.5233 / 0.5433 | **3.8 %** | no (creciente, +7.9 % < 10 %) | 1 900 / 1 807 / 1 804 | 3.0 % | 151 / 157 / 163 | 858 / 861 / 853 | 16.4 / 16.8 / 17.9 |
+
+**Los 8 criterios se cumplen en los dos motores:** 3 filas r1–r3, CV < 15 %, sin
+tendencia en throughput ni en p50, plan capturado (R-31), flush con efecto
+medido (de 695 MB a 1 843 MB liberados por repetición), sin suspensión de la VM,
+y telemetría sin fallo.
+
+**Sobre la tendencia (F7-b).** Postgres sí salió monótono creciente en
+throughput y decreciente en p50, pero el cambio de r1 a r3 es del 7.9 % y del
+−5.1 %, por debajo del umbral del 10 %. Es el caso que el umbral existe para no
+confundir con deriva: con 3 valores, el orden monótono sale por azar 1 de cada 3
+veces. Aun así hay que mirarlo en F8, porque los dos indicadores apuntan al
+mismo lado (va mejorando, probablemente caché del sistema de archivos que el
+flush no alcanza, o calentamiento de la VM).
+
+**Tiempo real: 448.5 s por repetición** (mediana entre repeticiones del mismo
+motor), 28.5 s más que las ventanas. **Estimación de F8: 20.2 h** con 162
+corridas y 13.5 h con 108. El PLAN decía ~19 h contando solo las ventanas. Es de
+PROFILE_C con c=1; con c=50 el arranque y el corte de workers pueden subirlo.
+
+**Primera consulta en frío (PROFILE_C, c=1):** Mongo 32.9 / 27.5 / 28.2 s y
+Postgres 4.4 / 3.3 / 3.3 s, **todas dentro del calentamiento de 60 s**. En esta
+celda los P95/P99 no están contaminados, y los tres percentiles son válidos
+según la censura (A4). Para A y B queda F7.3.
+
+**Throttling frente a la línea base en reposo (F6.3):** Mongo 193–204 s por
+ventana, de los que ~27 s son de reposo (13 %). Postgres 853–861 s, con 0.4 s de
+reposo. **Postgres acumula 4 veces más throttling que Mongo con 1 CPU de cuota**
+porque Q2 le lanza 2 workers paralelos: 3 procesos en 3 CPUs contra la cuota de
+una, y el tiempo de throttling se suma por CPU (SPEC §4). No es que Postgres sufra
+más: es que pide más paralelismo. Va al reporte junto a la figura de throttling.
+
+**Baja densidad muestral en Mongo, como estaba previsto:** 13–14 consultas
+completadas en la ventana, por debajo de 20 (A4). Se marca en el log y en el
+crudo. Postgres tuvo 151–163.
+
+**Gracia y enfriamiento frente a la latencia (pendiente de F5, resuelto para
+esta celda).** En Mongo r1 y r3, un worker quedó cortado al final. Secuencia
+real: la ventana cierra, los workers **siguen** en bucle durante el enfriamiento
+(60 s), y al terminarlo hay 15 s de gracia; una consulta de ~21 s no cabe en esos
+15 s, así que el worker se corta y su consulta queda en el servidor. La última
+muestra registrada terminó 59.6 s después del cierre de la ventana, ya en el
+enfriamiento. **No contamina nada:** no entra en la ventana (A4) y cada
+repetición empieza con `stop_engines` + flush + contenedor nuevo
+(`lifecycle.prepare`), así que la consulta huérfana muere con el contenedor
+anterior. Hay que volver a comprobarlo con c=50 en F8.
+
+**Huecos de telemetría en r3 de los dos motores (marcados, no fallo).** Las 7
+series del contenedor perdieron **una** muestra (hueco de 2.0 s en 300); las del
+host, ninguna. Causa: cAdvisor se saltó una lectura de ese cgroup. No fue falta
+de recursos: en esas ventanas cAdvisor no tuvo throttling (0.0 s) y su scrape
+máximo fue de 0.02–0.04 s. Es el 0.3 % de las muestras, y las columnas del CSV
+salen del cgroup, no de aquí. Quedó en `results/f7/telemetria_eventos.jsonl` con
+la memoria de la VM (4.6–5.1 GiB disponibles, sin presión), que es justo lo que
+F6-f pedía para distinguir un hueco inocuo de uno por presión de memoria.
+
+**Dos fallos de mi analizador, encontrados con los datos reales y corregidos:**
+
+1. `plan_capturado` exigía plan en las 3 repeticiones. Por diseño de F5 (R-31)
+   se captura **uno por celda**, en la repetición 1 de c=1. Ahora comprueba que
+   exista el archivo de alguna repetición y que ninguna tenga `plan_error`.
+2. `cabe_en_el_calentamiento` daba falso negativo si algún worker quedaba
+   cortado **al final** de la ventana, algo que no dice nada de la primera
+   consulta. Ahora solo cuenta un worker que no terminó **ninguna** consulta.
+   Por eso el primer análisis avisaba de que 32.91 s "no cabía" en 60 s.
+
+Con las correcciones, el analizador da **CUMPLE** en los dos motores.
+Pruebas: 19 en `tests/test_pilot_f7.py` (4 nuevas para el criterio del plan y 1
+para el worker cortado al final); suite completa **269/269**
+(`results/f7/tests_f72_20261102T120658Z.txt`).

@@ -1,0 +1,370 @@
+{
+ "descripcion": "criterios de la celda piloto (PLAN F7); verificación, no medición",
+ "filas_en_el_csv": 6,
+ "motores": {
+  "mongodb": {
+   "repeticiones": [
+    {
+     "run_number": 1,
+     "status": "ok",
+     "throughput_qps": 0.043333333333333335,
+     "p50": 22586.883763,
+     "p95": 26563.1011148,
+     "p99": 27506.31613016,
+     "cpu_throttled_seconds": 203.768394,
+     "max_rss_mb": 615.5625,
+     "completadas_en_ventana": 13,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [
+      "baja densidad muestral: 13 completadas en la ventana (A4)"
+     ],
+     "flush_liberado_kb": 876392,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.025,
+     "workers_cortados_al_final": 1,
+     "workers_sin_terminar": [
+      0
+     ],
+     "plan": "/home/alix_anahi/benchmark-json-contention/results/f7/explains/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json",
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "completa",
+      "motivos": []
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       32910.0
+      ],
+      "max_s": 32.91,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    },
+    {
+     "run_number": 2,
+     "status": "ok",
+     "throughput_qps": 0.04666666666666667,
+     "p50": 21074.8428095,
+     "p95": 22764.2656968,
+     "p99": 23189.90140496,
+     "cpu_throttled_seconds": 192.680354,
+     "max_rss_mb": 623.56640625,
+     "completadas_en_ventana": 14,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [
+      "baja densidad muestral: 14 completadas en la ventana (A4)"
+     ],
+     "flush_liberado_kb": 695004,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.025,
+     "workers_cortados_al_final": 0,
+     "workers_sin_terminar": [],
+     "plan": null,
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "completa",
+      "motivos": []
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       27514.7
+      ],
+      "max_s": 27.51,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    },
+    {
+     "run_number": 3,
+     "status": "ok",
+     "throughput_qps": 0.04666666666666667,
+     "p50": 21831.112614,
+     "p95": 22871.13994685,
+     "p99": 23183.117405369998,
+     "cpu_throttled_seconds": 192.564164,
+     "max_rss_mb": 612.51953125,
+     "completadas_en_ventana": 14,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [
+      "baja densidad muestral: 14 completadas en la ventana (A4)"
+     ],
+     "flush_liberado_kb": 1590960,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.025,
+     "workers_cortados_al_final": 1,
+     "workers_sin_terminar": [
+      0
+     ],
+     "plan": null,
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "con_huecos",
+      "motivos": [
+       "huecos en 7 serie(s); el mayor de 2.0 s"
+      ]
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       28236.8
+      ],
+      "max_s": 28.24,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    }
+   ],
+   "cv_throughput": 0.0422,
+   "cv_p50": 0.0346,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0769,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.0335,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "perfil": "PROFILE_C_SEVERE",
+   "linea_base_throttling_en_reposo": {
+    "s_por_minuto": 5.3331,
+    "estimado_en_la_ventana_s": 26.67,
+    "archivo": "results/f6/f6_3/baseline/resumen_20261102T035910Z.json"
+   },
+   "checks": {
+    "3_filas_r1_r2_r3": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true,
+    "plan_capturado": true,
+    "flush_con_efecto": true,
+    "sin_suspension": true,
+    "telemetria_sin_fallo": true
+   },
+   "avisos": [
+    "r1: baja densidad muestral (13 < 20; A4)",
+    "r1: 1 worker(s) cortados al final (consulta huérfana en el servidor hasta bajar el contenedor)",
+    "r2: baja densidad muestral (14 < 20; A4)",
+    "r3: baja densidad muestral (14 < 20; A4)",
+    "r3: 1 worker(s) cortados al final (consulta huérfana en el servidor hasta bajar el contenedor)"
+   ]
+  },
+  "postgresql": {
+   "repeticiones": [
+    {
+     "run_number": 1,
+     "status": "ok",
+     "throughput_qps": 0.5033333333333333,
+     "p50": 1900.204564,
+     "p95": 2652.1116515000003,
+     "p99": 3103.6227839999997,
+     "cpu_throttled_seconds": 858.166758,
+     "max_rss_mb": 16.40625,
+     "completadas_en_ventana": 151,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [],
+     "flush_liberado_kb": 1570336,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.026,
+     "workers_cortados_al_final": 0,
+     "workers_sin_terminar": [],
+     "plan": "/home/alix_anahi/benchmark-json-contention/results/f7/explains/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json",
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "completa",
+      "motivos": []
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       4386.9
+      ],
+      "max_s": 4.39,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    },
+    {
+     "run_number": 2,
+     "status": "ok",
+     "throughput_qps": 0.5233333333333333,
+     "p50": 1806.7803329999997,
+     "p95": 2290.087334,
+     "p99": 2498.275958,
+     "cpu_throttled_seconds": 861.245016,
+     "max_rss_mb": 16.76171875,
+     "completadas_en_ventana": 157,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [],
+     "flush_liberado_kb": 1842768,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.026,
+     "workers_cortados_al_final": 0,
+     "workers_sin_terminar": [],
+     "plan": null,
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "completa",
+      "motivos": []
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       3319.1
+      ],
+      "max_s": 3.32,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    },
+    {
+     "run_number": 3,
+     "status": "ok",
+     "throughput_qps": 0.5433333333333333,
+     "p50": 1804.2071060000003,
+     "p95": 2187.789096,
+     "p99": 2250.10050394,
+     "cpu_throttled_seconds": 852.883879,
+     "max_rss_mb": 17.8828125,
+     "completadas_en_ventana": 163,
+     "fraccion_timeouts": 0.0,
+     "percentil_valido": {
+      "p50": true,
+      "p95": true,
+      "p99": true
+     },
+     "motivos": [],
+     "flush_liberado_kb": 1807484,
+     "flush_ok": true,
+     "deriva_reloj_s": -0.025,
+     "workers_cortados_al_final": 0,
+     "workers_sin_terminar": [],
+     "plan": null,
+     "plan_error": null,
+     "telemetria": {
+      "fallo": false,
+      "estado_exportacion": "con_huecos",
+      "motivos": [
+       "huecos en 7 serie(s); el mayor de 2.0 s"
+      ]
+     },
+     "serie_cgroup_1s_filas": 300,
+     "frio": {
+      "workers_con_muestra": 1,
+      "primera_consulta_ms": [
+       3269.5
+      ],
+      "max_s": 3.27,
+      "calentamiento_s": 60,
+      "cabe_en_el_calentamiento": true,
+      "primera_consulta_dentro_de_la_ventana": 0,
+      "workers_sin_ninguna_consulta_terminada": []
+     }
+    }
+   ],
+   "cv_throughput": 0.0382,
+   "cv_p50": 0.0298,
+   "tendencia_throughput": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0795,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.0505,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "perfil": "PROFILE_C_SEVERE",
+   "linea_base_throttling_en_reposo": {
+    "s_por_minuto": 0.0773,
+    "estimado_en_la_ventana_s": 0.39,
+    "archivo": "results/f6/f6_3/baseline/resumen_20261102T035910Z.json"
+   },
+   "checks": {
+    "3_filas_r1_r2_r3": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true,
+    "plan_capturado": true,
+    "flush_con_efecto": true,
+    "sin_suspension": true,
+    "telemetria_sin_fallo": true
+   },
+   "avisos": []
+  }
+ },
+ "tiempo_real": {
+  "segundos_por_repeticion_mediana": 448.5,
+  "sobrecosto_sobre_las_ventanas_s": 28.5,
+  "muestras": 4,
+  "ventanas_s": 420,
+  "nota": "diferencia entre inicio_utc consecutivos; la última repetición no cuenta"
+ },
+ "estimacion_f8": {
+  "54_celdas": {
+   "corridas": 162,
+   "horas_solo_ventanas": 18.9,
+   "horas_con_tiempo_real_del_piloto": 20.2,
+   "nota": "el tiempo real del piloto es de PROFILE_C con c=1; con c=50 el corte de workers y el arranque pueden cambiarlo"
+  },
+  "36_celdas": {
+   "corridas": 108,
+   "horas_solo_ventanas": 12.6,
+   "horas_con_tiempo_real_del_piloto": 13.5,
+   "nota": "el tiempo real del piloto es de PROFILE_C con c=1; con c=50 el corte de workers y el arranque pueden cambiarlo"
+  }
+ },
+ "todo_cumple": true
+}

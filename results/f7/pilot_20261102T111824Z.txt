@@ -1,0 +1,67 @@
+== F7 celda piloto (MEDICIÓN REAL) — 20261102T111824Z — loadavg 1.58 1.00 1.74
+== ventanas 60/300/60 · PROFILE_C_SEVERE · Q2_MEM_LOW · c=1 · runs 1 2 3
+host: bateria estado=2 carga=99%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## mongodb — 11:18:27 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.043333 p50/p95/p99=22586.883763/26563.1011148/27506.31613016 ms throttled=203.768394 s rss=615.5625 MiB spill=False (435.68 s)
+   - baja densidad muestral: 13 completadas en la ventana (A4)
+   crudo: results/f7/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/f7/measurements.csv
+   telemetría: completa  (results/f7/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.046667 p50/p95/p99=21074.8428095/22764.2656968/23189.90140496 ms throttled=192.680354 s rss=623.56640625 MiB spill=False (434.4 s)
+   - baja densidad muestral: 14 completadas en la ventana (A4)
+   crudo: results/f7/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json  · CSV: results/f7/measurements.csv
+   telemetría: completa  (results/f7/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json)
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.046667 p50/p95/p99=21831.112614/22871.13994685/23183.117405369998 ms throttled=192.564164 s rss=612.51953125 MiB spill=False (435.82 s)
+   - baja densidad muestral: 14 completadas en la ventana (A4)
+   crudo: results/f7/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json  · CSV: results/f7/measurements.csv
+   telemetría: con_huecos  (results/f7/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+########## exit 0
+
+########## postgresql — 11:41:42 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.503333 p50/p95/p99=1900.204564/2652.1116515000003/3103.6227839999997 ms throttled=858.166758 s rss=16.40625 MiB spill=False (421.97 s)
+   crudo: results/f7/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/f7/measurements.csv
+   telemetría: completa  (results/f7/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.523333 p50/p95/p99=1806.7803329999997/2290.087334/2498.275958 ms throttled=861.245016 s rss=16.76171875 MiB spill=False (421.8 s)
+   crudo: results/f7/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json  · CSV: results/f7/measurements.csv
+   telemetría: completa  (results/f7/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.543333 p50/p95/p99=1804.2071060000003/2187.789096/2250.10050394 ms throttled=852.883879 s rss=17.8828125 MiB spill=False (421.21 s)
+   crudo: results/f7/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json  · CSV: results/f7/measurements.csv
+   telemetría: con_huecos  (results/f7/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+########## exit 0
+
+########## Validación del CSV y análisis del piloto
+VÁLIDO: results/f7/measurements.csv
+== mongodb
+   r1 status=ok qps=0.043333333333333335 p50/p95/p99=22586.883763/26563.1011148/27506.31613016 ms throttled=203.768394 s rss=615.5625 MiB · completadas=13 · 1ª en frío=32.91 s (calentamiento 60 s) · flush -876392 kB · telemetría=completa
+   r2 status=ok qps=0.04666666666666667 p50/p95/p99=21074.8428095/22764.2656968/23189.90140496 ms throttled=192.680354 s rss=623.56640625 MiB · completadas=14 · 1ª en frío=27.51 s (calentamiento 60 s) · flush -695004 kB · telemetría=completa
+   r3 status=ok qps=0.04666666666666667 p50/p95/p99=21831.112614/22871.13994685/23183.117405369998 ms throttled=192.564164 s rss=612.51953125 MiB · completadas=14 · 1ª en frío=28.24 s (calentamiento 60 s) · flush -1590960 kB · telemetría=con_huecos
+   CV qps=0.0422 p50=0.0346 · tendencia qps={'monotona': None, 'cambio_rel': 0.0769, 'umbral': 0.1, 'hay_tendencia': False} p50={'monotona': None, 'cambio_rel': -0.0335, 'umbral': 0.1, 'hay_tendencia': False}
+   línea base de throttling en reposo: {'s_por_minuto': 5.3331, 'estimado_en_la_ventana_s': 26.67, 'archivo': 'results/f6/f6_3/baseline/resumen_20261102T035910Z.json'}
+   AVISO r1: baja densidad muestral (13 < 20; A4)
+   AVISO r1: la primera consulta en frío (32.91 s) NO cabe en el calentamiento de 60 s → P95/P99 contaminados (limitación del protocolo)
+   AVISO r1: 1 worker(s) cortados al final (consulta huérfana en el servidor hasta bajar el contenedor)
+   AVISO r2: baja densidad muestral (14 < 20; A4)
+   AVISO r3: baja densidad muestral (14 < 20; A4)
+   AVISO r3: la primera consulta en frío (28.24 s) NO cabe en el calentamiento de 60 s → P95/P99 contaminados (limitación del protocolo)
+   AVISO r3: 1 worker(s) cortados al final (consulta huérfana en el servidor hasta bajar el contenedor)
+   {'3_filas_r1_r2_r3': True, 'cv_throughput_<15%': True, 'sin_tendencia_throughput': True, 'sin_tendencia_p50': True, 'plan_capturado': False, 'flush_con_efecto': True, 'sin_suspension': True, 'telemetria_sin_fallo': True}
+== postgresql
+   r1 status=ok qps=0.5033333333333333 p50/p95/p99=1900.204564/2652.1116515000003/3103.6227839999997 ms throttled=858.166758 s rss=16.40625 MiB · completadas=151 · 1ª en frío=4.39 s (calentamiento 60 s) · flush -1570336 kB · telemetría=completa
+   r2 status=ok qps=0.5233333333333333 p50/p95/p99=1806.7803329999997/2290.087334/2498.275958 ms throttled=861.245016 s rss=16.76171875 MiB · completadas=157 · 1ª en frío=3.32 s (calentamiento 60 s) · flush -1842768 kB · telemetría=completa
+   r3 status=ok qps=0.5433333333333333 p50/p95/p99=1804.2071060000003/2187.789096/2250.10050394 ms throttled=852.883879 s rss=17.8828125 MiB · completadas=163 · 1ª en frío=3.27 s (calentamiento 60 s) · flush -1807484 kB · telemetría=con_huecos
+   CV qps=0.0382 p50=0.0298 · tendencia qps={'monotona': 'creciente', 'cambio_rel': 0.0795, 'umbral': 0.1, 'hay_tendencia': False} p50={'monotona': 'decreciente', 'cambio_rel': -0.0505, 'umbral': 0.1, 'hay_tendencia': False}
+   línea base de throttling en reposo: {'s_por_minuto': 0.0773, 'estimado_en_la_ventana_s': 0.39, 'archivo': 'results/f6/f6_3/baseline/resumen_20261102T035910Z.json'}
+   {'3_filas_r1_r2_r3': True, 'cv_throughput_<15%': True, 'sin_tendencia_throughput': True, 'sin_tendencia_p50': True, 'plan_capturado': False, 'flush_con_efecto': True, 'sin_suspension': True, 'telemetria_sin_fallo': True}
+   tiempo real: {'segundos_por_repeticion_mediana': 448.5, 'sobrecosto_sobre_las_ventanas_s': 28.5, 'muestras': 4, 'ventanas_s': 420, 'nota': 'diferencia entre inicio_utc consecutivos; la última repetición no cuenta'}
+   estimación de F8: {'54_celdas': {'corridas': 162, 'horas_solo_ventanas': 18.9, 'horas_con_tiempo_real_del_piloto': 20.2, 'nota': 'el tiempo real del piloto es de PROFILE_C con c=1; con c=50 el corte de workers y el arranque pueden cambiarlo'}, '36_celdas': {'corridas': 108, 'horas_solo_ventanas': 12.6, 'horas_con_tiempo_real_del_piloto': 13.5, 'nota': 'el tiempo real del piloto es de PROFILE_C con c=1; con c=50 el corte de workers y el arranque pueden cambiarlo'}}
+-> /home/alix_anahi/benchmark-json-contention/results/f7/check_pilot.json · REVISAR
+
+Listo. Avísale a Claude (registro: results/f7/pilot_20261102T111824Z.txt).
