@@ -223,15 +223,23 @@ class CliTest(unittest.TestCase):
         from benchmark_runner.cli import main
         self.assertEqual(main(self.ARGS), 2)
 
-    def test_salida_no_se_admite_con_smoke(self):
-        from benchmark_runner.cli import main
-        self.assertEqual(main([*self.ARGS, "--smoke", "--salida", "f7"]), 2)
-
     def test_salida_rechaza_rutas(self):
         """F7-a: es un nombre de subcarpeta de results/, no una ruta."""
         from benchmark_runner.cli import main
         for bad in ("../x", "a/b", "/tmp", ".", "", "  "):
             self.assertEqual(main([*self.ARGS, "--confirmo-medicion-real", "--salida", bad]), 2, bad)
+
+    def test_salida_elige_carpeta_sin_cambiar_el_nombre_del_csv_de_humo(self):
+        """Un humo con ventanas propias (F7.3/F7.4) no debe pisar results/smoke/ ni parecer real."""
+        from benchmark_runner.cli import output_paths, valid_salida
+        self.assertEqual(output_paths(True, None)[0].name, "smoke")
+        base, name = output_paths(True, "f7")
+        self.assertEqual((base.name, name), ("f7", "measurements_smoke.csv"))
+        base, name = output_paths(False, "f7")
+        self.assertEqual((base.name, name), ("f7", "measurements.csv"))
+        self.assertEqual(output_paths(False, None)[1], "measurements.csv")
+        self.assertTrue(valid_salida("f7"))
+        self.assertFalse(any(valid_salida(b) for b in ("../x", "a/b", "/tmp", ".", "", "  ")))
 
 
 class MongoActivityTest(unittest.TestCase):

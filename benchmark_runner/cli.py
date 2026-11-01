@@ -8,8 +8,11 @@ Uso (desde la raíz del repo, con el entorno del proyecto):
 --smoke   ventanas 5/20/5 s; escribe en results/smoke/ (F5-g). NO son resultados.
 Sin --smoke la corrida es REAL (60/300/60 s) y escribe en results/measurements.csv:
 exige --confirmo-medicion-real, para que una prueba nunca ensucie el CSV del experimento.
---salida DIR (solo en corridas reales, F7-a) desvía esas filas a results/DIR/: el
-piloto de F7 va a results/f7/ y no mezcla sus condiciones con el CSV de la matriz.
+--salida DIR desvía la salida a results/DIR/ (F7-a): el piloto de F7 va a
+results/f7/ y no mezcla sus condiciones con el CSV de la matriz. Con --smoke el
+archivo sigue llamándose measurements_smoke.csv, así que un CSV de humo nunca se
+confunde con uno real; sirve para que un humo con ventanas propias (F7.3, F7.4)
+no pise results/smoke/.
 
 El proceso y sus workers se fijan en RUNNER_CPUSET (docker/images.env, F5-c):
 no comparten núcleo físico con el motor.
@@ -37,6 +40,17 @@ def parse_cpuset(text: str) -> set[int]:
     return cpus
 
 
+def valid_salida(name: str) -> bool:
+    """Un nombre simple de subcarpeta de results/: ni rutas, ni '..', ni vacío (F7-a)."""
+    return bool(name.strip()) and Path(name).name == name and not name.startswith(".")
+
+
+def output_paths(smoke: bool, salida: str | None) -> tuple[Path, str]:
+    """Carpeta y nombre del CSV. El humo conserva su nombre aunque cambie de carpeta (F7.3/F7.4)."""
+    sub = salida if salida else ("smoke" if smoke else "")
+    return ROOT / "results" / sub, ("measurements_smoke.csv" if smoke else "measurements.csv")
+
+
 def find_cell(mode: int, q2_variant: str | None, engine: str, profile: str, query_id: str, concurrency: int):
     for c in matrix.cells(mode, q2_variant):
         if (c.engine, c.profile, c.query_id, c.concurrency) == (engine, profile, query_id, concurrency):
@@ -62,8 +76,8 @@ def main(argv: list[str] | None = None) -> int:
                    help="solo con --smoke: otras duraciones (s) para pruebas de carga; la salida sigue en results/smoke/")
     r.add_argument("--confirmo-medicion-real", action="store_true", help="necesario sin --smoke")
     r.add_argument("--salida", metavar="DIR",
-                   help="solo en corridas reales: subcarpeta de results/ donde van el CSV, los crudos, "
-                        "los planes y la telemetría (F7-a; el piloto usa f7)")
+                   help="subcarpeta de results/ donde van el CSV, los crudos, los planes y la telemetría "
+                        "(F7-a; el piloto usa f7). Con --smoke el CSV sigue siendo measurements_smoke.csv")
     r.add_argument("--procesos", type=int,
                    help="solo con --smoke: procesos del runner (por defecto min(c, 10), con c/procesos hilos cada uno)")
     r.add_argument("--actividad-cada", type=float, metavar="S",
@@ -79,10 +93,9 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: --actividad-cada solo se admite con --smoke y con S > 0 (comparaciones del runner, F5.5b).",
               file=sys.stderr)
         return 2
-    if args.salida is not None and (args.smoke or not args.salida.strip()
-                                    or Path(args.salida).name != args.salida or args.salida.startswith(".")):
+    if args.salida is not None and not valid_salida(args.salida):
         # Un nombre simple de subcarpeta: nada de rutas ni de subir a directorios de arriba.
-        print("ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7) y no se admite con --smoke.",
+        print("ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.",
               file=sys.stderr)
         return 2
     if args.ventanas and not args.smoke:
@@ -102,8 +115,8 @@ def main(argv: list[str] | None = None) -> int:
 
     cpus = parse_cpuset(load_env()["RUNNER_CPUSET"])
     os.sched_setaffinity(0, cpus)                     # los workers lo heredan (F5-c)
-    base = ROOT / "results" / ("smoke" if args.smoke else (args.salida or ""))
-    csv_path = base / ("measurements_smoke.csv" if args.smoke else "measurements.csv")
+    base, csv_name = output_paths(args.smoke, args.salida)
+    csv_path = base / csv_name
     windows = (Windows(*args.ventanas) if args.ventanas else SMOKE_WINDOWS) if args.smoke else WINDOWS
 
     keepalive = lifecycle.SudoKeepAlive()

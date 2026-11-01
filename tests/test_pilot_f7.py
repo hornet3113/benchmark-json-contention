@@ -140,3 +140,24 @@ class PlanCriterionTest(unittest.TestCase):
 
     def test_a_path_that_does_not_exist_fails(self):
         self.assertFalse(self.check(self.runs([str(self.dir / "no_existe.json"), None, None])))
+
+
+class ColdSweepUnitsTest(unittest.TestCase):
+    """F7.3: las duraciones van en SEGUNDOS, porque se comparan con los 60 s del manual."""
+
+    def test_first_query_durations_are_seconds(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts" / "checks"))
+        import check_cold_f73 as cold
+        r = cold.analyse({
+            "run_id": "x", "ventana_ns": {"inicio": 60 * S, "fin": 90 * S},
+            "ventanas_s": {"warmup_s": 60, "measure_s": 30, "cooldown_s": 5},
+            # worker 0: 35 s en frío (cabe en 60) y luego 2 s · worker 1: 70 s (no cabe)
+            "muestras": [[0, 35 * S, 1, 0], [35 * S, 37 * S, 1, 0], [0, 70 * S, 1, 1]],
+            "consultas": {"workers_sin_terminar": []},
+            "fila_csv": {"engine": "mongodb", "profile": "PROFILE_A_BASELINE", "query_id": "Q1",
+                         "concurrency": 50, "status": "ok", "latency_p50_ms": 1.0,
+                         "latency_p95_ms": 2.0, "latency_p99_ms": 3.0}})
+        self.assertEqual(r["primera_consulta_s"]["max"], 70.0)
+        self.assertEqual(r["primeras_que_pasan_del_calentamiento"], 1)      # solo la de 70 s
+        self.assertFalse(r["cabe_en_el_calentamiento"])
+        self.assertEqual(r["primeras_que_terminan_en_la_ventana"], 1)       # la de 70 s acaba en la ventana

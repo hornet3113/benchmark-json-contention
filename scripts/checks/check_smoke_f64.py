@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """check_smoke_f64.py — ¿cuadran la fila, la serie de 1 s y Prometheus en cada repetición del humo? (F6.4)
 
-Uso:  .venv/bin/python scripts/checks/check_smoke_f64.py     (después de scripts/smoke_f64.sh)
+Uso:  .venv/bin/python scripts/checks/check_smoke_f64.py [CARPETA]
+      (CARPETA es la de la corrida; por defecto results/smoke. F7.4 usa results/f7_memoria)
 
 Por cada crudo de results/smoke/raw/:
   1. Serie de 1 s del runner (serie_cgroup_1s): cubre la ventana, y su máximo de
@@ -132,9 +133,12 @@ def evaluate(raw: dict) -> dict:
 
 
 def main() -> int:
+    global SMOKE
+    if len(sys.argv) > 1:
+        SMOKE = Path(sys.argv[1]).resolve()
     files = sorted((SMOKE / "raw").glob("*.json"))
     if not files:
-        sys.exit("no hay crudos en results/smoke/raw/")
+        sys.exit(f"no hay crudos en {SMOKE / 'raw'}")
     res = {f.stem: evaluate(json.loads(f.read_text())) for f in files}
     ok = all(all(r.get("comprobaciones", {"sin_telemetria": False}).values()) for r in res.values())
     (SMOKE / "check_f64.json").write_text(json.dumps(res, ensure_ascii=False, indent=1) + "\n")
@@ -151,7 +155,7 @@ def main() -> int:
         m = r.get("monitoreo") or {}
         print(f"   monitoreo: {m.get('contenedores')} · scrape máx {m.get('scrape_max_s')} · up mín {m.get('up_min')}")
         print(f"   {r.get('comprobaciones')}")
-    print(f"-> results/smoke/check_f64.json · {'TODO CUADRA' if ok else 'REVISAR'}")
+    print(f"-> {SMOKE / 'check_f64.json'} · {'TODO CUADRA' if ok else 'REVISAR'}")
     return 0 if ok else 1
 
 

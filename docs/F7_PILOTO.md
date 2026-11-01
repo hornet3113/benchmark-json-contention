@@ -180,3 +180,57 @@ Con las correcciones, el analizador da **CUMPLE** en los dos motores.
 Pruebas: 19 en `tests/test_pilot_f7.py` (4 nuevas para el criterio del plan y 1
 para el worker cortado al final); suite completa **269/269**
 (`results/f7/tests_f72_20261102T120658Z.txt`).
+
+### Herramientas de F7.3 y F7.4 (2026-11-02)
+
+**Cambio en `--salida`:** ahora también vale con `--smoke`, y en ese caso el CSV
+sigue llamándose `measurements_smoke.csv`, así que un CSV de humo nunca se
+confunde con uno real. Hacía falta porque F7.3 y F7.4 son corridas de humo con
+ventanas propias que no deben pisar `results/smoke/`. Sigue rechazando rutas,
+`.` y lo vacío. Carpetas: **`results/f7_frio/`** y **`results/f7_memoria/`** (la
+CLI solo acepta un nombre simple, sin barras, así que no son subcarpetas de `f7/`).
+
+**F7.3 — `scripts/run_cold_f73.sh` y `scripts/checks/check_cold_f73.py`.**
+3 perfiles × 2 motores × 3 queries con **c=50** (el peor caso: 50 primeras
+consultas en frío a la vez), ventanas **60/30/5**: el dato está en el
+calentamiento, no en la ventana. Cada corrida lleva el procedimiento real
+(flush, contenedor nuevo, calentamiento de 60 s). El analizador da, por celda:
+duración de la primera consulta de cada worker (mediana y máximo), cuántas pasan
+del calentamiento, cuántas **terminan dentro de la ventana** —las que contaminan
+los percentiles—, qué fracción de la ventana son, y el p95/p99 de la fila frente
+al recalculado **sin** las primeras consultas, que es lo que mide cuánto se
+desplazan.
+
+**F7.4 — `scripts/run_memory_f74.sh`.** Una repetición por motor de **Q1 con
+c=50 en PROFILE_A** y ventanas **reales 60/300/60**: la query que más memoria
+mueve, en el perfil con menos margen. Reutiliza `check_smoke_f64.py`, que ahora
+acepta la carpeta como argumento, y añade el mínimo de memoria disponible, el
+máximo de swap y el RSS del árbol del runner, del monitor del host.
+
+**Ensayo en seco del analizador de F7.3** (en el directorio temporal de la
+sesión, con los crudos del humo de F6.4 y del piloto): destapó **un fallo real
+mío**. Calculaba las duraciones en milisegundos y las comparaba con los 60
+**segundos** del manual, así que todas las celdas salían "NO CABE", incluidas
+las de 3.3 s. Corregido y fijado con una prueba de unidades
+(`ColdSweepUnitsTest`). Con la corrección, el ensayo deja ver el fenómeno que
+F7.3 va a medir: en el humo de F6.4 (PROFILE_A, c=50, calentamiento de **30 s**),
+la primera consulta tardó 35.9 s en Mongo y 43.5 s en Postgres; **el 17 % de las
+consultas de la ventana eran primeras consultas**, y el p95 de Mongo pasó de
+25 243 ms sin ellas a 34 048 ms con ellas, un 35 % más. Con el calentamiento
+real de 60 s puede que quepan; eso es justo lo que hay que medir.
+
+**Pruebas:** 270/270 (`results/f7/tests_f73_herramientas_20261102T122357Z.txt`).
+
+### Lo que falta correr
+
+```bash
+cd ~/benchmark-json-contention
+scripts/up_monitoring.sh      # si no está arriba
+sudo -v
+scripts/run_cold_f73.sh       # F7.3, ~45 min (puede pasar de 1.5 h si hay timeouts)
+scripts/run_memory_f74.sh     # F7.4, ~16 min
+```
+
+En F7.3, un timeout de 300 s en la primera consulta (posible con Q1 y c=50 en
+PROFILE_C) **no es un fallo**: es el hallazgo, y la celda sale con
+`status=error`, que en humo no cuenta.
