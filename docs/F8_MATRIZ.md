@@ -207,3 +207,97 @@ descartadas (R-27.1) y los planes capturados.
 
 Las celdas con filas `error` u `oom` se marcan como **no medibles** y su CV se
 informa sin exigirlo: con 4 muestras censuradas, un CV no significa nada (A4).
+
+### Bloque 2 — Postgres, c=1, los tres perfiles (2026-11-02, 18:47–19:40 UTC)
+
+`results/run_benchmarks_20261102T184722Z.txt`. 6 celdas, 18 repeticiones,
+**0 fallos**, CSV `VÁLIDO`, 12 planes en total. Con esto, **c=1 está completo en
+los dos motores y los tres perfiles**: 36 de 162 corridas.
+
+| Celda (Postgres, c=1) | status | CV qps | CV p50 | Tendencia | qps | Throttling (reposo) |
+|---|---|---|---|---|---|---|
+| A · Q1 | spill ×3 | 1.5 % | 0.8 % | no | 0.132 | 0 s (0.0) |
+| A · Q2_MEM_LOW | ok ×3 | **12.3 %** | 11.7 % | **decreciente −19.2 %** | 1.880 | 18 s |
+| B · Q1 | spill ×3 | 0.0 % | 1.8 % | no | 0.110 | 146 s |
+| B · Q2_MEM_LOW | ok ×3 | 0.9 % | 0.3 % | no | 1.089 | 550 s |
+| C · Q1 | spill ×3 | 0.0 % | 1.5 % | no | 0.057 | 489 s (0.4) |
+| C · Q2_MEM_LOW | ok ×3 | 4.7 % | 5.9 % | creciente +9.0 % | 0.572 | 871 s |
+
+**Hallazgo grande: Q1 vuelca a disco en Postgres en los TRES perfiles**, también
+en PROFILE_A. No es un caso extremo de c=50: ocurre con **una sola consulta a la
+vez**. `status=spill` en las 9 repeticiones, y por ventana de 300 s:
+
+| Perfil | `temp_bytes` | Archivos temporales | Consultas completadas |
+|---|---|---|---|
+| A | **+32.3 GB** | 600 | 40 |
+| B | +27.5 GB | 510 | 33 |
+| C | +13.7 GB | 255 | 17 |
+
+Son ~0.8 GB de temporales **por consulta** (32.3 GB ÷ 40). Coincide con F3, donde
+una sola ejecución de Q1 volcó 1.4 GiB. **M2 ya tiene respuesta con datos:** el
+volcado existe, es masivo y sistemático en Postgres con Q1, y no aparece en
+ninguna celda de Mongo.
+
+**Comparación entre motores con c=1** (throughput medio de las 3 repeticiones):
+
+| Perfil / query | Mongo | Postgres | Quién gana |
+|---|---|---|---|
+| A · Q1 | 0.291 | 0.132 | **Mongo ×2.2** |
+| B · Q1 | 0.261 | 0.110 | **Mongo ×2.4** |
+| C · Q1 | 0.193 | 0.057 | **Mongo ×3.4** |
+| A · Q2 | 0.730 | 1.880 | **Postgres ×2.6** |
+| B · Q2 | 0.180 | 1.089 | **Postgres ×6.0** |
+| C · Q2 | 0.053 | 0.572 | **Postgres ×10.7** |
+
+El resultado se parte por query, no por motor: **Mongo gana Q1 y Postgres gana
+Q2**, y la diferencia **crece** al apretar los recursos en los dos casos. Falta
+la concurrencia (bloques 3–6) antes de escribirlo en el reporte.
+
+### La tendencia de Postgres · A · Q2_MEM_LOW: diagnóstico
+
+Es la primera celda que incumple un criterio, y es exactamente lo que el criterio
+F7-b existe para cazar: el CV (12.3 %) **pasa** el límite del 15 %, pero las tres
+repeticiones bajan en orden y el cambio de r1 a r3 es del −19.2 %.
+
+| | r1 | r2 | r3 |
+|---|---|---|---|
+| qps | 2.147 | 1.760 | 1.733 |
+| p50 (ms) | 444 | 545 | 551 |
+| Completadas en la ventana | 644 | 528 | 520 |
+| **Tiempo de CPU en la ventana** | **1 142.7 s** | **1 141.1 s** | **1 142.0 s** |
+| Flush (liberado) | 1 132 MB | 1 036 MB | 1 174 MB |
+
+**El mismo tiempo de CPU produjo un 19 % menos de trabajo.** Eso descarta varias
+causas: no es el flush (los tres liberaron lo mismo), no es throttling de cgroups
+(17–20 s en los tres), no es memoria (sin swap ni presión) y no es que el motor
+se quedara esperando disco (entonces habría gastado *menos* CPU, no la misma).
+
+**No es una deriva dentro de la ventana, es un escalón entre r1 y r2.** Medianas
+por tercio de ventana: r1 `435 → 448 → 453 ms`, r2 `526 → 555 → 558`, r3
+`529 → 538 → 578`. r1 empieza rápido y acaba casi donde empieza r2.
+
+**Y solo le pasa a la celda que satura las 4 CPUs.** Núcleos medios por celda:
+
+| Celda | Núcleos usados | ¿Tendencia? |
+|---|---|---|
+| **Postgres A · Q2** | **3.81 de 4** | **sí, −19 %** |
+| Postgres A · Q1 | 1.71 | no (0.133/0.130/0.133) |
+| Postgres B · Q2 | 1.99 de 2 | no (1.080/1.100/1.087) |
+| Postgres C · Q2 | 1.00 de 1 | no |
+| Mongo A · Q2 | 1.24 | no |
+
+**Hipótesis: el reloj del procesador baja.** Un Ryzen 5 PRO 5675U de portátil
+(15–25 W) con cuatro núcleos saturados durante 20 minutos reduce la frecuencia
+por potencia o temperatura. Encaja con todo: mismo tiempo de CPU, menos trabajo,
+escalón al pasar de la repetición en frío a las siguientes, y solo donde hay
+carga de 4 núcleos (las celdas de B y C no pasan de 2 y 1).
+
+**No se puede comprobar desde WSL2:** no hay `cpufreq` en `/sys` y
+`/proc/cpuinfo` informa siempre la frecuencia nominal (2295.613 MHz). **Windows
+sí lo sabe**: `Win32_Processor` da `CurrentClockSpeed` (2010 MHz en reposo, con
+un máximo de 2301). Por eso ahora hay `scripts/checks/monitor_cpu_clock.sh`, que
+`run_benchmarks.sh` **arranca solo en cada sesión** (un único proceso de
+PowerShell cada 15 s, con limpieza garantizada al salir) y deja
+`monitor_clock_<sello>.csv` junto a los resultados, con el resumen al final de la
+corrida. Desde el bloque 3, cada celda tendrá su contexto de frecuencia sin
+costar un minuto extra. `--sin-reloj` lo desactiva.

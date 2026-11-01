@@ -1,0 +1,19 @@
+......................................................................................usage: python -m unittest [-h] --size {1000,10000,500000} [--seed SEED]
+                          [--out OUT] [--stats STATS]
+python -m unittest: error: argument --size: invalid choice: '123' (choose from 1000, 10000, 500000)
+.............................................................................................................................................................................................ERROR: --actividad-cada solo se admite con --smoke y con S > 0 (comparaciones del runner, F5.5b).
+ERROR: --actividad-cada solo se admite con --smoke y con S > 0 (comparaciones del runner, F5.5b).
+.ERROR: sin --smoke es una medición REAL que escribe en results/measurements.csv.
+       Añade --confirmo-medicion-real si es lo que quieres.
+..ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+ERROR: --salida es un nombre de subcarpeta de results/ (p. ej. f7), sin barras ni puntos.
+.ERROR: --ventanas solo se admite con --smoke: las corridas reales usan 60/300/60 (playbook.pdf §6).
+.............
+----------------------------------------------------------------------
+Ran 292 tests in 34.211s
+
+OK

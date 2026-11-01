@@ -40,6 +40,7 @@ TODO=0
 LISTAR=0
 MAX_CELDAS=0
 FALLOS_SEGUIDOS_MAX=3
+RELOJ=1
 declare -a MOTORES=() PERFILES=() QUERIES=() CONCURRENCIAS=()
 
 while [[ $# -gt 0 ]]; do
@@ -55,6 +56,7 @@ while [[ $# -gt 0 ]]; do
     --todo)          TODO=1; shift ;;
     --humo)          HUMO=1; shift ;;
     --listar)        LISTAR=1; shift ;;
+    --sin-reloj)     RELOJ=0; shift ;;
     -h|--help)       sed -n '2,32p' "$0"; exit 0 ;;
     *) echo "ERROR: opción desconocida: $1" >&2; exit 2 ;;
   esac
@@ -151,6 +153,16 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="$BASE/run_benchmarks_${STAMP}.txt"
 exec > >(tee "$LOG") 2>&1
 
+# Frecuencia real del procesador durante la sesión (F8, bloque 2): desde WSL2 no se
+# puede leer, y en el bloque 2 la única celda que saturó las 4 CPUs perdió un 19 % de
+# throughput gastando el mismo tiempo de CPU. Un solo proceso, cada 15 s.
+CLOCK_MON=""
+if [[ $RELOJ -eq 1 ]]; then
+  scripts/checks/monitor_cpu_clock.sh "$BASE/monitor_clock_${STAMP}.csv" 15 >/dev/null 2>&1 &
+  CLOCK_MON=$!
+  trap '[[ -n "$CLOCK_MON" ]] && kill "$CLOCK_MON" 2>/dev/null' EXIT
+fi
+
 echo "== run_benchmarks.sh — $STAMP — loadavg $(cut -d' ' -f1-3 /proc/loadavg)"
 timeout 60 powershell.exe -NoProfile -Command "\$b = Get-CimInstance Win32_Battery; 'host: bateria estado=' + \$b.BatteryStatus + ' carga=' + \$b.EstimatedChargeRemaining + '%'; powercfg /getactivescheme" 2>/dev/null | tr -d '\r' || true
 
@@ -203,7 +215,12 @@ for L in "${CELDAS[@]}"; do
   fi
 done
 
+[[ -n "$CLOCK_MON" ]] && kill "$CLOCK_MON" 2>/dev/null
 echo; echo "########## Resumen de la sesión: $HECHAS celda(s) completas, $FALLOS con fallo"
+if [[ -s "$BASE/monitor_clock_${STAMP}.csv" ]]; then
+  awk -F, 'NR>1 && $2!="" {n++; s+=$2; if(m==""||$2<m)m=$2; if($2>M)M=$2}
+           END{if(n) printf "Frecuencia del procesador: media %.0f MHz, mínimo %s, máximo %s (de %d muestras, máx. nominal 2301)\n", s/n, m, M, n}'       "$BASE/monitor_clock_${STAMP}.csv"
+fi
 .venv/bin/python scripts/validate_csv.py "$CSV" || true
 [[ "$MAX_CELDAS" -gt 0 ]] && echo "Corte pedido con --max-celdas $MAX_CELDAS: vuelve a lanzar el mismo comando para seguir."
 echo "Para ver qué queda:  scripts/run_benchmarks.sh --listar${SALIDA:+ --salida $SALIDA}${TODO:+ --todo}"

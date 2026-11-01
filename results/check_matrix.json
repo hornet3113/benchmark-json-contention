@@ -1,12 +1,12 @@
 {
  "descripcion": "estado de la matriz (F8): CV, tendencias y avisos por celda; verificación, no medición",
  "csv": "results/measurements.csv",
- "filas": 18,
+ "filas": 36,
  "resumen_matriz": {
   "matriz": 54,
   "corridas_de_la_matriz": 162,
-  "hechas": 18,
-  "faltan": 144
+  "hechas": 36,
+  "faltan": 126
  },
  "ajenas_a_esta_matriz": [],
  "descartadas": [],
@@ -16,7 +16,13 @@
   "mongodb_PROFILE_B_MEDIUM_Q1_c1.json",
   "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1.json",
   "mongodb_PROFILE_C_SEVERE_Q1_c1.json",
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json"
+  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json",
+  "postgresql_PROFILE_A_BASELINE_Q1_c1.json",
+  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c1.json",
+  "postgresql_PROFILE_B_MEDIUM_Q1_c1.json",
+  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1.json",
+  "postgresql_PROFILE_C_SEVERE_Q1_c1.json",
+  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json"
  ],
  "celdas": {
   "mongodb_PROFILE_A_BASELINE_Q1_1": {
@@ -424,8 +430,419 @@
     "sin_tendencia_p50": true
    },
    "medible": true
+  },
+  "postgresql_PROFILE_A_BASELINE_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.133333,
+    0.13,
+    0.133333
+   ],
+   "p50_ms": [
+    7536.995,
+    7489.679,
+    7415.458
+   ],
+   "p95_ms": [
+    7973.912,
+    8343.535,
+    8644.232
+   ],
+   "p99_ms": [
+    8277.344,
+    9521.762,
+    9290.853
+   ],
+   "cpu_throttled_seconds": [
+    0.117,
+    0.357,
+    0.333
+   ],
+   "max_rss_mb": [
+    104.836,
+    104.02,
+    102.484
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0146,
+   "cv_p50": 0.0082,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.0161,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    2.146667,
+    1.76,
+    1.733333
+   ],
+   "p50_ms": [
+    443.914,
+    545.369,
+    550.525
+   ],
+   "p95_ms": [
+    620.247,
+    748.569,
+    775.622
+   ],
+   "p99_ms": [
+    703.472,
+    804.556,
+    875.926
+   ],
+   "cpu_throttled_seconds": [
+    19.827,
+    17.114,
+    18.364
+   ],
+   "max_rss_mb": [
+    15.312,
+    14.934,
+    16.68
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.123,
+   "cv_p50": 0.1171,
+   "tendencia_throughput": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.1925,
+    "umbral": 0.1,
+    "hay_tendencia": true
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.2402,
+    "umbral": 0.1,
+    "hay_tendencia": true
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": false,
+    "sin_tendencia_p50": false
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_B_MEDIUM_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.11,
+    0.11,
+    0.11
+   ],
+   "p50_ms": [
+    8764.788,
+    8922.943,
+    9081.228
+   ],
+   "p95_ms": [
+    9325.125,
+    10810.07,
+    10306.801
+   ],
+   "p99_ms": [
+    10246.091,
+    11661.445,
+    11686.469
+   ],
+   "cpu_throttled_seconds": [
+    138.797,
+    147.011,
+    152.075
+   ],
+   "max_rss_mb": [
+    103.875,
+    106.145,
+    104.852
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0177,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0361,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    1.08,
+    1.1,
+    1.086667
+   ],
+   "p50_ms": [
+    883.103,
+    884.211,
+    887.751
+   ],
+   "p95_ms": [
+    1177.159,
+    1083.359,
+    1130.7
+   ],
+   "p99_ms": [
+    1308.744,
+    1369.493,
+    1253.697
+   ],
+   "cpu_throttled_seconds": [
+    538.514,
+    550.478,
+    561.026
+   ],
+   "max_rss_mb": [
+    16.605,
+    16.328,
+    15.969
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0094,
+   "cv_p50": 0.0027,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0062,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0053,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_C_SEVERE_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.056667,
+    0.056667,
+    0.056667
+   ],
+   "p50_ms": [
+    17546.177,
+    17297.125,
+    17821.112
+   ],
+   "p95_ms": [
+    18777.076,
+    18108.35,
+    18505.122
+   ],
+   "p99_ms": [
+    19154.458,
+    18202.231,
+    18973.044
+   ],
+   "cpu_throttled_seconds": [
+    502.393,
+    483.103,
+    482.491
+   ],
+   "max_rss_mb": [
+    104.996,
+    103.562,
+    104.531
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0149,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0157,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [
+    "r1: baja densidad muestral (17 < 20; A4)",
+    "r2: baja densidad muestral (17 < 20; A4)",
+    "r3: baja densidad muestral (17 < 20; A4)"
+   ],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.553333,
+    0.56,
+    0.603333
+   ],
+   "p50_ms": [
+    1789.261,
+    1788.024,
+    1612.855
+   ],
+   "p95_ms": [
+    2090.209,
+    2092.783,
+    1889.308
+   ],
+   "p99_ms": [
+    2211.857,
+    2205.879,
+    1906.65
+   ],
+   "cpu_throttled_seconds": [
+    851.791,
+    861.448,
+    898.96
+   ],
+   "max_rss_mb": [
+    16.664,
+    16.676,
+    16.625
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": 0.0474,
+   "cv_p50": 0.0587,
+   "tendencia_throughput": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0904,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.0986,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
   }
  },
- "celdas_medibles": 6,
- "celdas_con_criterio_incumplido": {}
+ "celdas_medibles": 12,
+ "celdas_con_criterio_incumplido": {
+  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_1": [
+   "sin_tendencia_throughput",
+   "sin_tendencia_p50"
+  ]
+ }
 }
