@@ -298,15 +298,30 @@ Cierre aprobado por Alix tal como se propuso en `docs/F6_TELEMETRIA.md` ("Cierre
 **Trabajo.** Correr una celda real completa: MongoDB × PROFILE_C × Q2_MEM_LOW × concurrencia 1, con tiempos reales (420 s) y 3 repeticiones. Luego la misma celda en Postgres.
 
 **Criterios de aceptación.**
-- [ ] 3 filas en el CSV con `run_number` 1, 2, 3.
-- [ ] `validate_csv.py` pasa: encabezado exacto, tipos correctos, dominios cerrados, sin celdas vacías salvo las permitidas.
-- [ ] Coeficiente de variación del throughput entre las 3 repeticiones **< 15 %**. Si es mayor, el entorno tiene ruido (otros procesos del host, térmico) y hay que estabilizarlo antes de gastar 19 h en la matriz.
-- [ ] **Sin tendencia monótona entre las 3 repeticiones** (pedido por Alix al cerrar F6). Además del CV, revisar si throughput y latencias suben o bajan en orden (r1 < r2 < r3 o r1 > r2 > r3). El CV no detecta una degradación progresiva: 100-110-120 da un CV del 9 % y pasa. Origen: en F6.3, la sonda de spill de Mongo se degradó de 31 a 62 y a 161 s en tres corridas seguidas. Si hay tendencia, se busca la causa (caché, memoria de la VM, térmico) antes de F8, aunque el CV pase.
-- [ ] Planes de ejecución capturados para esa celda (R-31).
-- [ ] Tiempo real medido de una celda → estimación fundamentada del costo total de F8.
-- [ ] **Primera consulta en frío frente al calentamiento** (pedido por Alix al cerrar F5; **ampliado a los tres perfiles** el 2026-11-01, al aprobar F6): medir cuánto tarda la primera consulta en frío en **PROFILE_A, PROFILE_B y PROFILE_C** y compararla con los 60 s de calentamiento del manual. Motivo de la ampliación: en el humo de F5.5 la primera tanda de Q1 de Mongo con c=50 tardó ~74 s ya en PROFILE_A, el perfil con más recursos. Si no cabe, las celdas de ese perfil salen con P95 y P99 contaminados por la consulta en frío. Es una **limitación del protocolo que se declara en el reporte**, no un error del runner. Origen: F5.5b, donde el calentamiento de humo (30.3 s) quedó al filo de la primera consulta (27–35 s) y partió el p95 en dos.
+- [x] 3 filas en el CSV con `run_number` 1, 2, 3. — 6 filas (3 por motor) en `results/f7/measurements.csv`
+- [x] `validate_csv.py` pasa: encabezado exacto, tipos correctos, dominios cerrados, sin celdas vacías salvo las permitidas. — `VÁLIDO` en `results/f7/pilot_20261102T111824Z.txt`
+- [x] Coeficiente de variación del throughput entre las 3 repeticiones **< 15 %**. Si es mayor, el entorno tiene ruido (otros procesos del host, térmico) y hay que estabilizarlo antes de gastar 19 h en la matriz. — **4.2 % (Mongo) y 3.8 % (Postgres)**, `results/f7/check_pilot.json`
+- [x] **Sin tendencia monótona entre las 3 repeticiones** (pedido por Alix al cerrar F6). Además del CV, revisar si throughput y latencias suben o bajan en orden (r1 < r2 < r3 o r1 > r2 > r3). El CV no detecta una degradación progresiva: 100-110-120 da un CV del 9 % y pasa. Origen: en F6.3, la sonda de spill de Mongo se degradó de 31 a 62 y a 161 s en tres corridas seguidas. Si hay tendencia, se busca la causa (caché, memoria de la VM, térmico) antes de F8, aunque el CV pase. — Mongo no es monótono; Postgres sí (creciente en throughput, decreciente en p50) pero con **+7.9 % de r1 a r3**, por debajo del umbral del 10 %. Queda anotado para vigilarlo en F8
+- [x] Planes de ejecución capturados para esa celda (R-31). — `results/f7/explains/` (uno por celda, en la repetición 1, como diseñó F5)
+- [x] Tiempo real medido de una celda → estimación fundamentada del costo total de F8. — **448.5 s por repetición** → 13.5 h la tanda 1 (108 corridas) y **20.2 h** la matriz completa (162). El PLAN estimaba ~19 h contando solo las ventanas
+- [x] **Primera consulta en frío frente al calentamiento** (pedido por Alix al cerrar F5; **ampliado a los tres perfiles** el 2026-11-01, al aprobar F6): medir cuánto tarda la primera consulta en frío en **PROFILE_A, PROFILE_B y PROFILE_C** y compararla con los 60 s de calentamiento del manual. Motivo de la ampliación: en el humo de F5.5 la primera tanda de Q1 de Mongo con c=50 tardó ~74 s ya en PROFILE_A, el perfil con más recursos. Si no cabe, las celdas de ese perfil salen con P95 y P99 contaminados por la consulta en frío. Es una **limitación del protocolo que se declara en el reporte**, no un error del runner. Origen: F5.5b, donde el calentamiento de humo (30.3 s) quedó al filo de la primera consulta (27–35 s) y partió el p95 en dos. — **Medido en F7.3** (`results/f7_frio/check_cold.json`, 18 celdas con c=50): **no cabe en 14 de 18**. Solo cabe en PROFILE_A con Q2 (39–52 s); en Postgres B son 69–75 s, en Postgres C 109–110 s, en Mongo A con Q1 102 s, y en 8 celdas **ninguna consulta terminó en 110 s**. Con c=1 (el piloto) sí cabe: Mongo 27–33 s y Postgres 3–4 s. **Contaminación medida:** hasta el **91 %** de la ventana son primeras consultas (Postgres C Q2_MEM_HIGH) y el p95 baja hasta un **61 %** al quitarlas. Se declara como limitación del protocolo y se muestran las dos vistas, también en la figura (F7-e, R-30.1).
 
 **Esta es la última puerta antes del gasto grande.**
+
+
+### Estado de F7 al 2026-11-02: CERRADA
+
+Cierre aprobado por Alix. Plan, decisiones F7-a…F7-e y registro completo en `docs/F7_PILOTO.md`.
+
+- **Piloto real** (Mongo y Postgres × PROFILE_C × Q2_MEM_LOW × c=1, ventanas 60/300/60, 3 repeticiones): CSV válido y los 8 criterios del analizador cumplidos. **CV 4.2 % y 3.8 %**, sin tendencia.
+- **El entorno es estable: se puede ir a F8.** Costo medido: 448.5 s por repetición → 13.5 h la tanda 1 y 20.2 h la matriz completa.
+- **El calentamiento de 60 s del manual no alcanza con c=50** en B y C (F7.3). Limitación del protocolo declarada, con las dos vistas en el texto y en la figura (R-30.1).
+- **Q1 con c=50 es casi inmedible en este hardware:** 92 % de timeouts en A, OOM en C, ninguna consulta terminada en B. Son resultados, no fallos.
+- **Primera evidencia de OOM y de spill en queries del manual** (no en sondas): Postgres × C × Q1 × c=50 → OOM (`oom_kill +3`); Postgres × A × Q1 × c=50 → `temp_bytes` +37.2 GB. Responden M2 con datos.
+- **Memoria (F7.4):** aguanta con 3.2 GiB libres en el peor caso y sin swap, pero la VM pasó 120 de 300 s en espera por memoria. El monitoreo cuesta < 0.09 núcleos.
+- **Cambios aprobados y aplicados:** pausa de 1 s tras un fallo (F8-a; 455 504 reintentos en 110 s eran CPU del runner compitiendo con el motor), recuento del dataset tras cada OOM con parada si no son 500 000 filas (R-08), y la regla de sudoers de V7 instalada (`docs/V7_SUDOERS.md`, reversible con un script).
+- **`scripts/run_benchmarks.sh`** (R-25) listo y probado en humo con motores reales: reanudable desde el CSV, parametrizable para 36 o 54 celdas, por bloques, y con la comprobación de sudo antes de cada celda.
+- **Pruebas:** 285/285 (`results/f7/tests_f8a_v7_20261102T144532Z.txt`).
 
 ---
 

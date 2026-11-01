@@ -1,0 +1,21 @@
+== run_benchmarks.sh — 20261102T145001Z — loadavg 0.64 0.60 0.41
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## [1/2] mongodb · PROFILE_C_SEVERE · Q2_MEM_LOW · c=1 · runs 1 — 14:50:02 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 5, 'measure_s': 20, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.050000 p50/p95/p99=None/None/None ms throttled=10.473358 s rss=521.0859375 MiB spill=False (46.04 s)
+   - 1 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   crudo: results/f8_humo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/f8_humo/measurements_smoke.csv
+   telemetría: completa  (results/f8_humo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+
+########## [2/2] postgresql · PROFILE_C_SEVERE · Q2_MEM_LOW · c=1 · runs 1 — 14:51:28 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 5, 'measure_s': 20, 'cooldown_s': 5}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.650000 p50/p95/p99=1625.3740769999997/1864.0496188000002/2037.4435693599999 ms throttled=58.31304 s rss=16.30078125 MiB spill=False (31.82 s)
+   - baja densidad muestral: 13 completadas en la ventana (A4)
+   crudo: results/f8_humo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/f8_humo/measurements_smoke.csv
+   telemetría: completa  (results/f8_humo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+
+########## Resumen de la sesión: 2 celda(s) completas, 0 con fallo
+VÁLIDO: results/f8_humo/measurements_smoke.csv
+Para ver qué queda:  scripts/run_benchmarks.sh --listar --salida f8_humo --todo
+Registro: results/f8_humo/run_benchmarks_20261102T145001Z.txt

@@ -43,7 +43,7 @@ Verificaciones de F0 **pendientes**:
 
 - [x] **V8** Comportamiento de `mem_swappiness` bajo cgroups v2 confirmado con `docker inspect`, con los avisos de `docker compose up` (ninguno) y con `docker create --memory-swappiness=0` directo (*Memory swappiness discarded*) — `results/env/f1/V8_mem_swappiness_20261101T171426Z.txt`, SPEC A7
 - [ ] **V8** Declarado en la sección 1 del reporte (el reporte aún no existe)
-- [ ] **V7** `sudo` no interactivo para el flush. **No se configura nada permanente todavía**: el diseño restringido (script de root, ruta absoluta, sin argumentos, con procedimiento de reversión) se revisa antes de F8. Para F1 y la celda piloto se usa `sudo -v` con renovación, que no deja rastro en el sistema
+- [x] **V7** `sudo` no interactivo para el flush — diseño revisado y **aprobado por Alix el 2026-11-02**, e instalado por ella: ayudante `/usr/local/sbin/bench-drop-caches` (`root:root 0755`, sin parámetros, fuera del repo) y regla `/etc/sudoers.d/bench-drop-caches` (`0440`, NOPASSWD solo para él), con `scripts/v7_revert_sudoers.sh` para deshacerlo. Comprobado en el humo de F8: el flush fue por la vía `ayudante_v7` y liberó caché sin contraseña. Detalle en `docs/V7_SUDOERS.md`
 - [x] Volatilidad del cast texto→`timestamp` en la versión fijada de Postgres (A3.2) — `timestamp_in` y `timestamptz_in` son `STABLE`; índices con cast rechazados (`results/f3/g1/a32_index_variants.txt`)
 
 Evidencia de F0:
@@ -151,7 +151,7 @@ Resultados reales:
 - [x] `synthetic_data_generator.py` (nombre exacto) — `generator/synthetic_data_generator.py`; ejecutado en `results/f2/F2_3_20261101T181011Z_generacion.txt`
 - [x] Benchmark runner (Python multiproceso) — `benchmark_runner/` (10 procesos × 5 hilos para c=50); humo ejecutado en `results/smoke*/` con CSV `VÁLIDO`; suite 213/213 en `results/f5/tests_cierre_20261102T004918Z.txt` (PLAN F5)
 - [x] `queries/` con las agregaciones Mongo y el SQL de Postgres — 4 archivos extraídos del PDF (`queries/README.md`)
-- [ ] `run_benchmarks.sh` (nombre exacto)
+- [x] `run_benchmarks.sh` (nombre exacto) — `scripts/run_benchmarks.sh`: recorre la matriz, reanudable desde el CSV (`benchmark_runner/schedule.py`), parametrizable para 36 o 54 celdas (A2) y por bloques. Probado en humo con motores reales: `results/f8_humo/run_benchmarks_20261102T145001Z.txt`
 
 ---
 
@@ -204,8 +204,8 @@ Preguntas de métricas:
 - [x] `requirements.txt` con versiones fijadas — `pymongo==4.19.0`, `dnspython==2.9.1`, `psycopg==3.3.6`, `psycopg-binary==3.3.6`; instalación registrada en `results/env/f5/pip_install_20261101T204524Z.txt`
 - [x] Imágenes fijadas por digest, registrado en `results/env/` — `docker/images.env` usa `@sha256:…`; arranque y límites comprobados en `results/env/f1/PROFILE_A_BASELINE_*_20261101T1742*Z.{txt,json}`
 - [x] Semilla del generador versionada — `SEED = 42` en `generator/distributions.py`; registrada en `results/dataset_stats.json` (`semilla: 42`) junto con el SHA-256 de cada fuente del generador
-- [ ] `results/raw/` con latencias crudas (permite recalcular percentiles) — *el runner ya guarda `muestras` por repetición, comprobado en humo (`results/smoke*/raw/`); `results/raw/` se llena con las corridas reales (F7/F8)*
-- [ ] `results/explains/` con planes crudos — *parcial: G2 y G3 bajo PROFILE_A; R-31 pide uno por motor × query × perfil (F7/F8)*
+- [ ] `results/raw/` con latencias crudas (permite recalcular percentiles) — *el runner guarda cada muestra con su worker y la serie de 1 s del cgroup; ya hay corridas reales en `results/f7/raw/`. `results/raw/` se llena con la matriz (F8)*
+- [ ] `results/explains/` con planes crudos — *parcial: G2 y G3 bajo PROFILE_A, más la celda del piloto en `results/f7/explains/` (uno por celda, en la repetición 1). R-31 pide uno por motor × query × perfil: se completa en F8*
 - [ ] `results/env/` con límites reales, versiones y datos del host por corrida
 - [ ] El README advierte que los valores absolutos dependen del hardware
 - [ ] Prueba de reproducibilidad: un tercero sigue el README y obtiene un CSV válido

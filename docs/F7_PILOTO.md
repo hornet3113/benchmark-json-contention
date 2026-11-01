@@ -511,3 +511,38 @@ Scripts hechos: `scripts/v7_install_sudoers.sh` y
 si la regla está puesta). Detalle y reversión en `docs/V7_SUDOERS.md`.
 
 **Pruebas tras estos cambios: 285/285** (`results/f7/tests_f8a_v7_20261102T144532Z.txt`).
+
+### Humo de `run_benchmarks.sh` con motores reales y V7 instalada (2026-11-02, 14:50 UTC)
+
+Corrido por Alix tras instalar la regla de V7.
+`results/f8_humo/run_benchmarks_20261102T145001Z.txt`.
+
+- 2 celdas (una por motor), ventanas 5/20/5, **0 fallos**. CSV `VÁLIDO`.
+- Telemetría **completa** en las dos.
+- **La regla de V7 funciona de verdad:** el flush de las dos repeticiones fue por
+  la vía `ayudante_v7` y liberó 158 MB y 665 MB de caché, **sin contraseña y sin
+  `sudo -v`**. Queda registrado en el crudo de cada repetición.
+- **La reanudación funciona:** al volver a listar, `run_benchmarks.sh` ve las 2
+  corridas hechas y ofrece las repeticiones 2 y 3 de esa celda.
+- Mongo salió `status=error` por tener **1 sola muestra** en una ventana de 20 s
+  (una consulta tarda ~21 s en PROFILE_C): es el comportamiento correcto de A4 con
+  ventanas de humo, no un fallo.
+
+## Estado de F7: CERRADA (2026-11-02)
+
+PLAN F7 con sus **7 casillas marcadas**, cada una con su archivo. En CHECKLIST se
+marcaron **V7** y **`run_benchmarks.sh`** (R-25). CLAUDE.md actualizado: F7
+cerrada, F8 como siguiente, y las decisiones F7-b, F7-e, F8-a, R-08 ampliado y
+V7 instalada en la lista de "no reabrir sin motivo".
+
+### Lo que F8 hereda
+
+- **Tanda 1** (Q1 + Q2_MEM_LOW, 108 corridas, 13.5 h) es trabajo correcto
+  conteste el docente 36 o 54. Si contesta 36, hace falta un script que reescriba
+  el CSV desde los crudos para cambiar la etiqueta `Q2_MEM_LOW` → `Q2`.
+- **Correr por bloques**, no 13 h de un tirón, y con el cargador conectado.
+- **Esperar filas `error` y `oom`** en Q1 con c=50: son resultados.
+- Vigilar la tendencia de Postgres (monótona pero por debajo del umbral) con las
+  3 repeticiones de cada celda.
+- Recomprobar con c=50 lo de la consulta huérfana.
+- Contar al final los eventos de `telemetria_eventos.jsonl` (F6).

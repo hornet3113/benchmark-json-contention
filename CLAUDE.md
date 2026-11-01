@@ -51,7 +51,8 @@ Regla de precedencia: ante conflicto, `playbook.pdf` define **qué se mide**;
 | `docs/F2_GENERADOR.md`, `docs/F3_CARGA.md` | Plan y registro de F2 y de F3/F4 (cerradas) |
 | `docs/F5_RUNNER.md` | Plan, decisiones F5-a…F5-i, registro de humo y cierre de F5 |
 | `docs/F6_TELEMETRIA.md` | Plan, decisiones F6-a…F6-h, ambigüedades F6-A1…A4, registro y cierre de F6 |
-| `docs/F7_PILOTO.md` | Plan de F7, decisiones F7-a…F7-d, criterios del piloto y registro |
+| `docs/F7_PILOTO.md` | Plan, decisiones F7-a…F7-e, criterios del piloto, registro y cierre de F7 |
+| `docs/V7_SUDOERS.md` | V7: diseño de la regla de sudoers, instalación y reversión |
 
 Estos documentos son el estado acumulado del proyecto. **No los rehagas ni los
 reinterpretes desde cero**: léelos, y si algo te parece equivocado, dilo en vez
@@ -73,15 +74,16 @@ de cambiarlo por tu cuenta.
 
 | Fase | Estado |
 |---|---|
-| F0 — Validación del entorno | Cerrada con reservas: V2 y V7 documentadas sin ejecutar; V8 resuelta en F1 |
+| F0 — Validación del entorno | Cerrada con reservas: V2 documentada sin ejecutar; V8 resuelta en F1 y V7 en F7 |
 | F1 — Infraestructura Docker | **CERRADA (2026-11-01)** con evidencia en `results/env/f1/` |
 | F2 — Generador de dataset | **CERRADA (2026-11-01)** con evidencia en `results/f2/` y `results/dataset_stats.json` |
 | F3 — Carga escalonada (G1/G2/G3) | **CERRADA (2026-11-01)** con evidencia en `results/f3/` |
 | F4 — Queries y equivalencia | **CERRADA (2026-11-01)**: ejecutada en G2, re-verificada en G3 |
 | F5 — Runner de benchmark | **CERRADA (2026-11-01)** con evidencia en `results/f5/`, `results/smoke*/` y `results/env/f5/` |
 | F6 — Telemetría, spill y OOM | **CERRADA (2026-11-02)** con evidencia en `results/f6/` |
-| F7 — Celda piloto | **En curso** (plan aprobado 2026-11-02; F7.1 hecha, F7.2–F7.4 las corre Alix) |
-| F8–F9 | No iniciadas |
+| F7 — Celda piloto | **CERRADA (2026-11-02)** con evidencia en `results/f7/`, `results/f7_frio/` y `results/f7_memoria/` |
+| F8 — Matriz completa | **Siguiente**: `scripts/run_benchmarks.sh`, probado en humo |
+| F9 | No iniciada |
 
 Resultado de F1, en breve: MongoDB **8.2.12** (wiredTiger) y PostgreSQL
 **18.6**; límites reales iguales al manual en 3 perfiles × 2 motores;
@@ -129,16 +131,34 @@ Resultado de F6, en breve:
 
 Detalle en `PLAN.md` F6 y en el cierre de `docs/F6_TELEMETRIA.md`.
 
+Resultado de F7, en breve: **el entorno es estable y se puede correr F8.**
+- **Piloto** (PROFILE_C × Q2_MEM_LOW × c=1, 3 repeticiones por motor): CV del
+  throughput 4.2 % y 3.8 %, sin tendencia. **448.5 s por repetición** → 13.5 h la
+  tanda 1 y 20.2 h la matriz completa.
+- **El calentamiento de 60 s del manual no alcanza con c=50** en B y C (F7.3).
+- **Q1 con c=50 es casi inmedible aquí:** 92 % de timeouts en A, OOM en C, nada
+  termina en B. Son resultados, no fallos del runner.
+- **Primera evidencia de OOM y de spill en queries del manual:** Postgres × C ×
+  Q1 × c=50 → OOM; Postgres × A × Q1 × c=50 → +37.2 GB de temporales. Responden M2.
+- **Memoria:** 3.2 GiB libres en el peor caso, sin swap, pero 120 de 300 s en
+  espera por memoria.
+
+Detalle en `PLAN.md` F7 y en el cierre de `docs/F7_PILOTO.md`.
+
 **Estado de los motores:** los volúmenes ya contienen los 500 000 documentos
 con sus índices. **No volver a ejecutar `load_dataset.sh` ni `run_gate.sh`**
 sin motivo: recrean la colección y la tabla.
 
 ### Lo siguiente, concretamente
 
-F7.2 — Alix corre el piloto: `scripts/run_pilot_f7.sh` (~50 min, con sudo, el
-monitoreo arriba, cargador conectado y sin suspensión). Luego F7.3 (primera
-consulta en frío en los tres perfiles) y F7.4 (ventana real en PROFILE_A).
-Plan, decisiones F7-a…F7-d y criterios en `docs/F7_PILOTO.md`.
+F8 — la matriz. `scripts/run_benchmarks.sh` (R-25) es reanudable desde el CSV y
+parametrizable para 36 o 54 celdas. **Tanda 1 por defecto: Q1 + Q2_MEM_LOW**
+(36 celdas, 108 corridas, 13.5 h), que es trabajo correcto conteste el docente
+36 o 54 (A2). `--listar` dice qué falta sin correr nada ni pedir sudo.
+Antes de lanzar: monitoreo arriba, cargador conectado y Windows sin suspensión.
+Correr por bloques (`--motor`, `--perfil`, `--max-celdas`), no 13 h de un tirón.
+**Esperar lo siguiente y no confundirlo con fallos:** Q1 con c=50 da timeouts,
+OOM en PROFILE_C y filas `error`/`oom`; son resultados (F7.3/F7.4).
 
 ### Herramientas que ya existen (F1)
 
@@ -177,9 +197,16 @@ Plan, decisiones F7-a…F7-d y criterios en `docs/F7_PILOTO.md`.
   `check_telemetry_live.py` y `check_smoke_f64.py`; humo: `scripts/smoke_f64.sh`.
 - F7 — `scripts/run_pilot_f7.sh` (MEDICIÓN REAL con `--salida f7`) y
   `scripts/checks/check_pilot_f7.py` (CV, tendencia F7-b, primera consulta en
-  frío, tiempo real y estimación de F8). `--salida DIR` solo en corridas reales.
-- Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (248 al cierre
-  de F6; con el `python3` del sistema se omiten las que necesitan drivers).
+  frío, tiempo real y estimación de F8). `scripts/run_cold_f73.sh` +
+  `check_cold_f73.py` (primera consulta en frío por perfil) y
+  `scripts/run_memory_f74.sh`. `--salida DIR` vale en corridas reales y en humo
+  (con `--smoke` el CSV sigue siendo `measurements_smoke.csv`).
+- F8 — `scripts/run_benchmarks.sh` (R-25) y `benchmark_runner/schedule.py`
+  (qué falta, leído del CSV). `--listar` no necesita sudo; `--humo` corre 2
+  celdas en `results/f8_humo/`.
+- V7 — `scripts/v7_install_sudoers.sh` y `scripts/v7_revert_sudoers.sh`.
+- Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (285 al cierre
+  de F7; con el `python3` del sistema se omiten las que necesitan drivers).
   `pytest` no está instalado; las pruebas se escriben compatibles con los dos.
   Drivers fijados en `requirements.txt`, instalados en `.venv`.
 
@@ -212,6 +239,16 @@ Plan, decisiones F7-a…F7-d y criterios en `docs/F7_PILOTO.md`.
   - la comprobación previa recupera el monitoreo una vez (F6-A4);
   - solo aborta un cgroup ilegible;
   - M3 se calcula con `working_set` o declara el sesgo (F6-A3).
+- **F7**:
+  - **F7-b**: hay tendencia solo si las 3 repeticiones son monótonas **y** r1→r3
+    cambia más del 10 %. Con 3 valores la monotonía sale por azar 1 de cada 3 veces;
+  - **F7-e**: los P95/P99 contaminados por el arranque en frío se declaran y se
+    muestran en **dos vistas**, también en la figura (R-30.1), calculadas de los crudos;
+  - **F8-a**: tras un fallo, el worker espera 1 s. Un timeout no pausa;
+  - **R-08 ampliado**: tras un OOM se recuentan las filas; si no son 500 000 (o no
+    se puede contar), la matriz **se detiene** (código 3);
+  - **V7 instalada**: el flush va por `/usr/local/sbin/bench-drop-caches` sin
+    contraseña; `flush_caches.sh` elige la vía y la anota en el crudo (`"via"`).
 
 ### Pendientes abiertos
 
@@ -227,16 +264,14 @@ Plan, decisiones F7-a…F7-d y criterios en `docs/F7_PILOTO.md`.
   de Mongo con c=50 en PROFILE_C mirar `actividad_del_motor` (conexiones y
   consultas activas), `anon` máximo y `oom_kill`. Si el costo es medible, se
   declara; Postgres no tiene equivalente. Detalle en `docs/F5_RUNNER.md`.
-- **V7** — `sudo` pide contraseña y colgaría una corrida desatendida. Diseño
-  restringido en `SPEC.md` A5. **No configurar nada permanente** sin que Alix
-  lo apruebe explícitamente.
+- **V7 — RESUELTO (2026-11-02)**: Alix aprobó el diseño e instaló la regla. El
+  flush no pide contraseña. Para deshacerlo: `sudo scripts/v7_revert_sudoers.sh`.
+  Queda declararlo en la sección 1 del reporte (`docs/V7_SUDOERS.md`).
 - **V2** — ruta de respaldo del flush: documentada, sin ejecutar.
-- **Primera consulta en frío frente al calentamiento (F7)** — casilla en PLAN
-  F7: medir la primera consulta en frío en **los tres perfiles** (A, B y C)
-  contra los 60 s del manual (ampliado al aprobar F6). Si no cabe, P95/P99 de
-  ese perfil quedan contaminados y se declara como limitación del protocolo,
-  no como error del runner. Motivo: ya se vio una primera tanda de ~74 s en
-  Q1 de Mongo con c=50 en PROFILE_A (humo F5.5).
+- **Primera consulta en frío — MEDIDO en F7.3**: con c=50 **no cabe en los 60 s
+  en 14 de 18 celdas** (solo en PROFILE_A con Q2). Hasta el 91 % de la ventana
+  son primeras consultas y el p95 baja hasta un 61 % al quitarlas. Declarado
+  como limitación del protocolo, con dos vistas (F7-e, R-30.1). Con c=1 sí cabe.
 - **Gracia + enfriamiento frente a la latencia (F7/F8)** — si una consulta
   dura más, el runner corta al worker y la consulta queda huérfana en el
   servidor hasta que se baja el contenedor. No afecta a la ventana (A4), pero
