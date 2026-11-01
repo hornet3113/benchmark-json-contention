@@ -138,6 +138,7 @@ Resultados reales:
 - [ ] `status` ∈ {`ok`,`spill`,`oom`,`error`}
 - [ ] `disk_spill` booleano consistente con `status`
 - [ ] Una fila por repetición
+- [ ] **R-27.1** Tabla de repeticiones descartadas con su motivo en el reporte (cero si no hubo) — `results/.../descartadas.csv`, que escribe `scripts/descartar_repeticion.py` (exige `--motivo`); se consulta con `--listar`. Herramienta probada en `tests/test_descartar.py`
 - [ ] Sin filas duplicadas por clave (engine, profile, query_id, concurrency, run_number)
 - [ ] Sin celdas vacías no justificadas
 - [ ] `validate_csv.py` pasa sobre el CSV final

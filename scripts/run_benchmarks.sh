@@ -112,6 +112,13 @@ PY
 echo "== Matriz de $MATRIZ celdas${Q2_VARIANTE:+ (variante $Q2_VARIANTE)} · CSV: $CSV"
 echo "$SALIDA_PEND" | sed -n 's/^# /   /p'
 readarray -t CELDAS < <(echo "$SALIDA_PEND" | grep -v '^#' | grep -v '^$')
+# --max-celdas recorta la SESIÓN, así que se recorta aquí: el conteo, el tiempo
+# estimado y el listado hablan de lo que de verdad va a correr, no de todo lo pendiente.
+if [[ "$MAX_CELDAS" -gt 0 && ${#CELDAS[@]} -gt "$MAX_CELDAS" ]]; then
+  RECORTADAS=$(( ${#CELDAS[@]} - MAX_CELDAS ))
+  CELDAS=("${CELDAS[@]:0:$MAX_CELDAS}")
+  echo "   (--max-celdas $MAX_CELDAS: quedan $RECORTADAS celda(s) pendientes para la próxima sesión)"
+fi
 
 TOTAL_RUNS=0
 for L in "${CELDAS[@]}"; do
@@ -150,10 +157,6 @@ for L in "${CELDAS[@]}"; do
   # En humo, solo la primera repetición que falte: así no duplica filas al relanzarlo.
   [[ $HUMO -eq 1 ]] && RUNS="${RUNS%%,*}"
   I=$((I + 1))
-  if [[ "$MAX_CELDAS" -gt 0 && $I -gt "$MAX_CELDAS" ]]; then
-    echo; echo "== corte pedido con --max-celdas $MAX_CELDAS. Vuelve a lanzar el mismo comando para seguir."
-    break
-  fi
   echo; echo "########## [$I/${#CELDAS[@]}] $ENGINE · $PROFILE · $QID · c=$CONC · runs $RUNS — $(date -u +%H:%M:%S) UTC"
 
   # La caché de sudo caduca (~15 min). Comprobar ANTES de cada celda: si caducó, una
@@ -197,5 +200,6 @@ done
 
 echo; echo "########## Resumen de la sesión: $HECHAS celda(s) completas, $FALLOS con fallo"
 .venv/bin/python scripts/validate_csv.py "$CSV" || true
+[[ "$MAX_CELDAS" -gt 0 ]] && echo "Corte pedido con --max-celdas $MAX_CELDAS: vuelve a lanzar el mismo comando para seguir."
 echo "Para ver qué queda:  scripts/run_benchmarks.sh --listar${SALIDA:+ --salida $SALIDA}${TODO:+ --todo}"
 echo "Registro: $LOG"

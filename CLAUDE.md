@@ -53,6 +53,7 @@ Regla de precedencia: ante conflicto, `playbook.pdf` define **qué se mide**;
 | `docs/F6_TELEMETRIA.md` | Plan, decisiones F6-a…F6-h, ambigüedades F6-A1…A4, registro y cierre de F6 |
 | `docs/F7_PILOTO.md` | Plan, decisiones F7-a…F7-e, criterios del piloto, registro y cierre de F7 |
 | `docs/V7_SUDOERS.md` | V7: diseño de la regla de sudoers, instalación y reversión |
+| `docs/F8_MATRIZ.md` | Plan de F8, decisiones F8-a…F8-d, bloques y registro |
 
 Estos documentos son el estado acumulado del proyecto. **No los rehagas ni los
 reinterpretes desde cero**: léelos, y si algo te parece equivocado, dilo en vez
@@ -82,7 +83,7 @@ de cambiarlo por tu cuenta.
 | F5 — Runner de benchmark | **CERRADA (2026-11-01)** con evidencia en `results/f5/`, `results/smoke*/` y `results/env/f5/` |
 | F6 — Telemetría, spill y OOM | **CERRADA (2026-11-02)** con evidencia en `results/f6/` |
 | F7 — Celda piloto | **CERRADA (2026-11-02)** con evidencia en `results/f7/`, `results/f7_frio/` y `results/f7_memoria/` |
-| F8 — Matriz completa | **Siguiente**: `scripts/run_benchmarks.sh`, probado en humo |
+| F8 — Matriz completa | **En curso** (plan aprobado 2026-11-02; F8-b hecho, la matriz la corre Alix) |
 | F9 | No iniciada |
 
 Resultado de F1, en breve: MongoDB **8.2.12** (wiredTiger) y PostgreSQL
@@ -205,6 +206,9 @@ OOM en PROFILE_C y filas `error`/`oom`; son resultados (F7.3/F7.4).
   (qué falta, leído del CSV). `--listar` no necesita sudo; `--humo` corre 2
   celdas en `results/f8_humo/`.
 - V7 — `scripts/v7_install_sudoers.sh` y `scripts/v7_revert_sudoers.sh`.
+- F8 — `scripts/descartar_repeticion.py` (F8-b): descarta una repetición para
+  poder repetirla. **Exige `--motivo`**, escribe `descartadas.csv` y mueve el
+  crudo y la telemetría a `descartadas/` sin borrarlos. `--listar` los muestra.
 - Pruebas: `.venv/bin/python -m unittest discover -s tests -v` (285 al cierre
   de F7; con el `python3` del sistema se omiten las que necesitan drivers).
   `pytest` no está instalado; las pruebas se escriben compatibles con los dos.
@@ -249,6 +253,14 @@ OOM en PROFILE_C y filas `error`/`oom`; son resultados (F7.3/F7.4).
     se puede contar), la matriz **se detiene** (código 3);
   - **V7 instalada**: el flush va por `/usr/local/sbin/bench-drop-caches` sin
     contraseña; `flush_caches.sh` elige la vía y la anota en el crudo (`"via"`).
+- **F8**:
+  - **F8-b / R-27.1**: una repetición se descarta solo con `descartar_repeticion.py`,
+    con **motivo obligatorio**, y el reporte lleva la tabla de descartes (cero si
+    no hubo). Nunca se edita el CSV a mano;
+  - **F8-d**: la matriz se corre **por concurrencia** (c=1, luego 10, luego 50),
+    no por perfil: si hay que parar a la mitad, quedan los dos motores y los tres
+    perfiles con datos utilizables;
+  - **tanda 1 = Q1 + Q2_MEM_LOW** (108 corridas, 13.4 h), válida con 36 y con 54 (A2).
 
 ### Pendientes abiertos
 
