@@ -6,6 +6,7 @@ Correr:  .venv/bin/python -m unittest discover -s tests -v
 
 import sys
 import time
+import inspect
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -292,3 +293,30 @@ class CpusetTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ErrorBackoffTest(unittest.TestCase):
+    """F8-a: tras un fallo, el worker espera antes de reintentar.
+
+    Por qué: en F7.3, al morir Postgres por OOM, cada reintento fallaba al instante
+    y hubo 455 504 en 110 s. Eso es CPU del runner compitiendo con el motor dentro
+    de la misma VM, justo cuando el motor está en apuros (y un crudo de 19 MB).
+    """
+
+    def test_a_failing_engine_does_not_spin(self):
+        from benchmark_runner.workload import ERROR_BACKOFF_S, run_load
+        _, on_start, on_end = hooks()
+        # fail_every=1 → todas las consultas fallan, y fallan al instante (delay 0).
+        r = run_load(CELL, W, ("fake", {"delay_s": 0.0, "fail_every": 1}), concurrency=2,
+                     timeout_s=300, on_window_start=on_start, on_window_end=on_end, grace_s=2)
+        self.assertEqual(r.kinds["ok"], 0)
+        self.assertGreater(r.kinds["error"], 0)
+        # Con la pausa de 1 s: ~4 s de corrida (W = 1/2/1) × 2 workers ≈ 8 intentos.
+        # Sin ella, serían decenas de miles. 100 deja margen de sobra al planificador.
+        self.assertLess(r.kinds["error"], 100, "el bucle de reintentos no está pausando")
+        self.assertEqual(ERROR_BACKOFF_S, 1.0)
+
+    def test_timeouts_do_not_back_off(self):
+        """Un timeout ya tardó lo suyo: pausarlo falsearía el bucle cerrado."""
+        from benchmark_runner.workload import _thread_loop
+        self.assertIn('if kind == "error"', inspect.getsource(_thread_loop))

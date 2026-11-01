@@ -49,6 +49,7 @@ Tipo: **OBL** = exigido literalmente · **DER** = derivado inequívocamente del 
 | R-28 | Registrar siempre: `profile`, límites Docker **reales**, versión del motor, si hubo spill/OOM | diapo 5/13 | OBL | `results/env/` por corrida |
 | R-29 | Reporte de métricas con las 7 secciones del playbook | playbook.pdf §8.3, p.4; diapo 10/13 | OBL | Índice del reporte |
 | R-30 | Figuras: P99 vs concurrencia, throttling vs QPS, curva RSS | playbook.pdf §8.3 (sec. 4), p.4 | OBL | 3 figuras en `report/figures/` |
+| R-30.1 | **La figura de P99 contra concurrencia muestra las dos vistas, o marca los puntos contaminados** (Alix, 2026-11-02, al aprobar F7-e). Con c=50 en PROFILE_B y C, hasta el 91 % de la ventana son primeras consultas en frío (F7.3): la curva sube en parte por el arranque en frío, y eso no puede quedar en una nota al pie. Las dos vistas se calculan de los crudos, que guardan cada muestra con su worker | F7.3, `docs/F7_PILOTO.md` | OBL | La figura distingue el P99 del CSV del P99 sin las primeras consultas |
 | R-31 | Planes de ejecución: `explain executionStats` vs `EXPLAIN ANALYZE BUFFERS` | playbook.pdf §8.3 (sec. 5), p.4; diapo 11/13 | OBL | Un plan por motor × query × perfil en `results/explains/` |
 | R-32 | Capturas o logs de spill/OOM como evidencia | diapo 10/13 | OBL | `results/logs/` referenciado desde el reporte |
 | R-33 | Reproducibilidad: otro equipo debe poder reejecutar | diapo 10/13 | OBL | Ver §7 (lista de archivos) |

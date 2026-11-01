@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import subprocess
 import threading
+from pathlib import Path
 
 from benchmark_runner.config import PROFILES
 from benchmark_runner.env import ROOT, capture_env, load_env
@@ -98,9 +99,27 @@ def prepare(engine: str, profile: str) -> dict:
     return {"flush": flush, "capture_env": capture, "container_id": container_id(engine)}
 
 
+# V7, opción 3 (aprobada por Alix el 2026-11-02, docs/V7_SUDOERS.md): ayudante de root
+# con una regla NOPASSWD solo para él. Si está instalado, el flush no necesita que haya
+# credenciales en caché; si no, se sigue usando `sudo -v` como hasta ahora.
+V7_HELPER = "/usr/local/sbin/bench-drop-caches"
+
+
+def v7_helper_allowed() -> bool:
+    """¿Está instalada la regla de V7 para este usuario? `sudo -n -l` NO ejecuta el ayudante."""
+    if not Path(V7_HELPER).exists():
+        return False
+    return subprocess.run(["sudo", "-n", "-l", V7_HELPER], capture_output=True).returncode == 0
+
+
 def sudo_ready() -> bool:
-    """¿Hay credenciales de sudo en caché? (V7: nunca se pide contraseña en mitad de una corrida)."""
-    return subprocess.run(["sudo", "-n", "true"], capture_output=True).returncode == 0
+    """¿Se podrá limpiar la caché sin pedir contraseña? (V7: nunca en mitad de una corrida).
+
+    Vale con credenciales en caché (`sudo -v`) o con la regla de V7 instalada.
+    """
+    if subprocess.run(["sudo", "-n", "true"], capture_output=True).returncode == 0:
+        return True
+    return v7_helper_allowed()
 
 
 class SudoKeepAlive(threading.Thread):
@@ -108,15 +127,22 @@ class SudoKeepAlive(threading.Thread):
 
     No configura nada permanente. Si la renovación falla, la siguiente limpieza
     de caché fallará y la repetición se abortará: nunca se queda esperando.
+
+    Con la regla de V7 instalada no hay nada que renovar: el hilo no arranca, para no
+    acumular fallos de `sudo -n -v` (que con esa regla falla siempre, porque el
+    NOPASSWD cubre solo el ayudante).
     """
 
     def __init__(self, every_s: int = 60):
         super().__init__(daemon=True)
         self.every_s = every_s
         self.failures = 0
+        self.innecesario = v7_helper_allowed()
         self._stop = threading.Event()
 
     def run(self) -> None:
+        if self.innecesario:
+            return
         while not self._stop.wait(self.every_s):
             if subprocess.run(["sudo", "-n", "-v"], capture_output=True).returncode != 0:
                 self.failures += 1

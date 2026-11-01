@@ -455,3 +455,59 @@ filas ajenas a la matriz, filtros). Suite completa **279/279**
 
 **Falta el humo con motores de verdad, que necesita sudo:**
 `scripts/run_benchmarks.sh --humo` (~2 min).
+
+---
+
+## Decisiones aplicadas el 2026-11-02 (aprobadas por Alix)
+
+### F7-e — Las dos vistas, también en la figura
+
+Aprobado. Además del texto, **la figura de P99 contra concurrencia muestra las
+dos vistas o marca los puntos contaminados**: la curva sube en parte por el
+arranque en frío y eso no puede quedar en una nota. Queda como requisito
+**R-30.1** en SPEC §2, para que no se pierda al llegar a F9.
+
+### F8-a — Pausa tras un fallo (hecho)
+
+`benchmark_runner/workload.py`: tras un fallo, el worker espera
+`ERROR_BACKOFF_S = 1 s` antes de reintentar. Un **timeout no pausa**: ya tardó
+lo suyo y pausarlo falsearía el bucle cerrado.
+
+**El motivo principal no es el disco** (el crudo de 19 MB), sino que **455 504
+reintentos en 110 s son CPU del runner compitiendo con el motor dentro de la
+misma VM**, justo cuando el motor está en apuros por el OOM. El crudo grande es
+la consecuencia visible, no el problema.
+
+No cambia ninguna columna: los errores no cuentan para el throughput ni para los
+percentiles (A4), y la fila sigue siendo `oom`. Cambia solo el **número** de
+errores registrados, que hoy medía la velocidad del bucle de reintentos.
+Pruebas: `tests/test_workload.py::ErrorBackoffTest` (un motor que falla siempre
+produce menos de 100 errores en 4 s, no decenas de miles).
+
+### R-08 ampliado — Recuento del dataset después de cada OOM (hecho)
+
+Pedido de Alix: *"después de cada OOM, contar las filas antes de continuar. Si no
+son 500 000, parar"*, para no medir horas sobre un dataset dañado.
+
+- `benchmark_runner/runner.py`: cuando la fila sale `oom`, se cuentan las filas
+  (`count(*)` en Postgres, `count_documents({})` en Mongo) **fuera de la ventana**,
+  y el resultado va al crudo (`"dataset"`). No poder contar también cuenta como
+  "no intacto": si el motor no responde después de un OOM, seguir sería peor.
+- `benchmark_runner/cli.py`: si no son 500 000, lo dice y **sale con código 3**
+  sin correr las repeticiones siguientes.
+- `scripts/run_benchmarks.sh`: el código 3 **detiene la matriz en seco** (no
+  cuenta como "una celda con fallo, sigo con la siguiente"), e indica recargar con
+  `scripts/load_dataset.sh` y verificar con `scripts/run_gate.sh`.
+- Pruebas: `tests/test_pilot_f7.py::DatasetAfterOomTest`.
+
+La fila del OOM **sí se escribe**: es un resultado legítimo. Lo que se detiene es
+lo que venga después.
+
+### V7 — Regla de sudoers (diseño aprobado; la instalación la ejecuta Alix)
+
+Scripts hechos: `scripts/v7_install_sudoers.sh` y
+`scripts/v7_revert_sudoers.sh`. El runner ya funciona con las dos vías
+(`flush_caches.sh` elige, `sudo_ready()` acepta ambas, y el keepalive no arranca
+si la regla está puesta). Detalle y reversión en `docs/V7_SUDOERS.md`.
+
+**Pruebas tras estos cambios: 285/285** (`results/f7/tests_f8a_v7_20261102T144532Z.txt`).

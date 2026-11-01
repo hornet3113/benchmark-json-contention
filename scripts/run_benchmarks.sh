@@ -177,6 +177,14 @@ for L in "${CELDAS[@]}"; do
     HECHAS=$((HECHAS + 1)); SEGUIDOS=0
   else
     RC=$?
+    if [[ $RC -eq 3 ]]; then
+      # R-08: el dataset no está intacto tras un OOM. Parar en seco, no "seguir con la
+      # siguiente": todo lo que se midiera después sería sobre otro dataset.
+      echo "== DETENIDO: dataset dañado tras un OOM. Recarga con scripts/load_dataset.sh"
+      echo "   (DESTRUCTIVO), verifica con scripts/run_gate.sh y vuelve a lanzar."
+      FALLOS=$((FALLOS + 1))
+      break
+    fi
     echo "########## celda con fallo (exit $RC); se anota y se sigue con la siguiente"
     FALLOS=$((FALLOS + 1)); SEGUIDOS=$((SEGUIDOS + 1))
     if [[ $SEGUIDOS -ge $FALLOS_SEGUIDOS_MAX ]]; then

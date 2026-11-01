@@ -161,3 +161,49 @@ class ColdSweepUnitsTest(unittest.TestCase):
         self.assertEqual(r["primeras_que_pasan_del_calentamiento"], 1)      # solo la de 70 s
         self.assertFalse(r["cabe_en_el_calentamiento"])
         self.assertEqual(r["primeras_que_terminan_en_la_ventana"], 1)       # la de 70 s acaba en la ventana
+
+
+class DatasetAfterOomTest(unittest.TestCase):
+    """R-08 + petición de Alix (2026-11-02): tras un OOM se recuenta antes de seguir."""
+
+    def test_count_is_compared_with_500000(self):
+        from benchmark_runner.runner import DATASET_ROWS, count_dataset
+        self.assertEqual(DATASET_ROWS, 500_000)
+        # Sin motor levantado, la conexión falla: no se puede contar → NO intacto, y sin lanzar.
+        out = count_dataset("postgresql", {"POSTGRES_DB": "bench", "POSTGRES_USER": "bench",
+                                           "POSTGRES_PASSWORD": "x"})
+        self.assertIn("error", out)
+        self.assertIsNone(out["filas"])
+        self.assertFalse(out["intacto"])
+
+    def test_only_an_exact_count_is_intact(self):
+        from benchmark_runner.runner import DATASET_ROWS
+        for filas, intacto in ((DATASET_ROWS, True), (DATASET_ROWS - 1, False), (0, False), (None, False)):
+            self.assertEqual(filas == DATASET_ROWS, intacto)
+
+
+class V7HelperTest(unittest.TestCase):
+    """V7 (opción 3): con la regla instalada no hacen falta credenciales en caché."""
+
+    def test_missing_helper_means_not_installed(self):
+        from benchmark_runner import lifecycle
+        original = lifecycle.V7_HELPER
+        try:
+            lifecycle.V7_HELPER = "/no/existe/bench-drop-caches"
+            self.assertFalse(lifecycle.v7_helper_allowed())
+        finally:
+            lifecycle.V7_HELPER = original
+
+    def test_keepalive_does_not_run_when_the_rule_is_installed(self):
+        from benchmark_runner import lifecycle
+        original = lifecycle.v7_helper_allowed
+        try:
+            lifecycle.v7_helper_allowed = lambda: True
+            k = lifecycle.SudoKeepAlive(every_s=0.01)
+            self.assertTrue(k.innecesario)
+            k.start()
+            k.join(timeout=1)
+            # Con la regla, `sudo -n -v` falla siempre: el hilo no debe acumular fallos.
+            self.assertEqual(k.failures, 0)
+        finally:
+            lifecycle.v7_helper_allowed = original

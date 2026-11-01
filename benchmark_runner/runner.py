@@ -190,6 +190,38 @@ class EngineProbe:
         (self.conn if self.engine == "postgresql" else self.client).close()
 
 
+# R-08: el dataset son 500 000 documentos en los dos motores. Tras un OOM se vuelve a
+# contar (Alix, 2026-11-02): si el kernel mató al motor a mitad de algo y la colección o
+# la tabla quedaron dañadas, seguir midiendo horas sobre un dataset distinto no mediría
+# nada. Es una comprobación, no una medición: va FUERA de la ventana y no toca el CSV.
+DATASET_ROWS = 500_000
+
+
+def count_dataset(engine: str, env: dict) -> dict:
+    """Filas (Postgres) o documentos (Mongo) que hay ahora. Nunca lanza: lo que falle se informa."""
+    out: dict = {"esperadas": DATASET_ROWS, "motor": engine}
+    t0 = time.monotonic()
+    try:
+        if engine == "postgresql":
+            import psycopg
+            with psycopg.connect(host="127.0.0.1", port=5432, dbname=env["POSTGRES_DB"],
+                                 user=env["POSTGRES_USER"], password=env["POSTGRES_PASSWORD"],
+                                 autocommit=True, connect_timeout=30) as conn:
+                out["filas"] = int(conn.execute("SELECT count(*) FROM orders").fetchone()[0])
+        else:
+            from pymongo import MongoClient
+            client = MongoClient("mongodb://127.0.0.1:27017", maxPoolSize=1, serverSelectionTimeoutMS=30_000)
+            try:
+                out["filas"] = int(client[env["MONGO_DB"]]["orders"].count_documents({}))
+            finally:
+                client.close()
+    except Exception as exc:  # noqa: BLE001 — no poder contar también obliga a parar
+        out.update({"filas": None, "error": f"{type(exc).__name__}: {exc}"[:300]})
+    out["segundos"] = round(time.monotonic() - t0, 2)
+    out["intacto"] = out.get("filas") == DATASET_ROWS
+    return out
+
+
 def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Path | None,
             header_spaces: bool = False, matrix: int = 54, cpus=None, grace_s: float = 15.0,
             processes: int | None = None, activity_every_s: float | None = None,
@@ -277,6 +309,13 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
                                 container_running=bool(state.get("Running")))
     csv_writer.CsvWriter(csv_path, header_spaces=header_spaces, matrix=matrix).write(row)
 
+    # Tras un OOM, contar el dataset antes de seguir (Alix, F8-a ampliado). Si no son
+    # 500 000 filas, la matriz se detiene: el runner devuelve `parar` y la CLI sale con 3.
+    dataset = count_dataset(cell.engine, env) if row["status"] == "oom" else None
+    if dataset is not None and not dataset["intacto"]:
+        reasons.append(f"DATASET DAÑADO tras el OOM: {dataset.get('filas')} filas en vez de "
+                       f"{DATASET_ROWS}{' (' + dataset['error'] + ')' if dataset.get('error') else ''}")
+
     # F6-e: después del enfriamiento (run_load ya volvió), con margen alrededor de la ventana.
     tele = None
     if prometheus_get is not None:
@@ -324,8 +363,11 @@ def run_one(run: Run, *, windows, csv_path: Path, raw_dir: Path, explain_dir: Pa
         "muestras": [[s.start_ns, s.end_ns, int(s.ok), s.wid] for s in load.samples],
         # F6: resumen de la telemetría de Prometheus (las series, en results/…/telemetry/<run_id>.json).
         "telemetria": tele,
+        # Recuento del dataset, solo cuando hubo OOM (R-08).
+        "dataset": dataset,
     }
     raw_dir.mkdir(parents=True, exist_ok=True)
     (raw_dir / f"{run.run_id}.json").write_text(json.dumps(raw, ensure_ascii=False, default=str) + "\n")
     return {"row": row, "reasons": reasons, "raw": str(raw_dir / f"{run.run_id}.json"), "wall_s": load.wall_s,
-            "telemetria": tele}
+            "telemetria": tele, "dataset": dataset,
+            "parar": bool(dataset is not None and not dataset["intacto"])}

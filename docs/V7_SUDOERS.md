@@ -127,5 +127,49 @@ desborda a otros comandos.
 3. Si se instala, queda declarado en la sección 1 del reporte, con este
    documento como referencia, igual que las demás desviaciones del entorno.
 
-**No aplico nada hasta que lo apruebes explícitamente**, y cuando lo hagas, los
-comandos los ejecutas tú: no tengo (ni quiero tener) sudo sin tu presencia.
+## Aplicado: cómo instalarlo y cómo revertirlo (2026-11-02)
+
+Alix aprobó el diseño. **La instalación la ejecutas tú**, porque no tengo sudo:
+cada intento mío pide contraseña interactiva y falla. Dejé los dos scripts
+hechos, que hacen exactamente lo descrito arriba y nada más.
+
+```bash
+cd ~/benchmark-json-contention
+sudo scripts/v7_install_sudoers.sh      # instala y comprueba
+```
+
+El instalador crea el ayudante (`root:root`, `0755`), escribe la regla en un
+temporal, la **valida con `visudo -cqf` antes de ponerla en su sitio** —un
+archivo de sudoers con un error de sintaxis puede dejarte sin `sudo`— y la
+instala con `0440`. Al terminar comprueba, con tu usuario, las tres cosas que
+importan: que el flush corre sin contraseña, que **rechaza parámetros** y que
+**el resto de `sudo` sigue pidiendo contraseña**.
+
+### Revertir
+
+```bash
+sudo scripts/v7_revert_sudoers.sh
+```
+
+Borra los dos archivos, olvida las credenciales en caché y comprueba que la
+regla ya no aparece en `sudo -l`. No toca `/etc/sudoers` ni nada preexistente.
+`scripts/flush_caches.sh` vuelve solo a la ruta de siempre.
+
+### Qué cambia en el repo (ya hecho)
+
+- `scripts/flush_caches.sh` **elige solo**: si el ayudante está instalado y
+  permitido, lo llama; si no, hace el flush como siempre con `sudo -v`. La vía
+  usada queda registrada en el crudo de cada repetición (`"via"`), así que la
+  evidencia dice cómo se limpió la caché.
+- `lifecycle.sudo_ready()` acepta las dos vías. Hacía falta: con la regla
+  instalada, `sudo -n true` **sigue fallando** (el NOPASSWD cubre solo el
+  ayudante), y sin este cambio el runner se habría negado a arrancar y la regla
+  no habría servido para nada.
+- `SudoKeepAlive` no arranca cuando la regla está instalada: no hay credenciales
+  que renovar.
+- El repo sigue corriendo en una máquina sin la regla, así que el docente puede
+  reproducirlo sin instalar nada.
+- Pruebas: `tests/test_pilot_f7.py::V7HelperTest`.
+
+Si se instala, queda declarado en la sección 1 del reporte con este documento
+como referencia.

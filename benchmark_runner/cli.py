@@ -146,6 +146,17 @@ def main(argv: list[str] | None = None) -> int:
             for reason in res["reasons"]:
                 print(f"   - {reason}", flush=True)
             print(f"   crudo: {Path(res['raw']).relative_to(ROOT)}  · CSV: {csv_path.relative_to(ROOT)}", flush=True)
+            if res.get("dataset") is not None:
+                d = res["dataset"]
+                print(f"   dataset tras el OOM: {d.get('filas')} de {d['esperadas']} filas "
+                      f"({d['segundos']} s){'' if d['intacto'] else '  ← DAÑADO'}", flush=True)
+            if res.get("parar"):
+                # R-08: no se siguen midiendo horas sobre un dataset que ya no es el del experimento.
+                print("   DETENIDO: el dataset no está intacto tras el OOM. Recárgalo con "
+                      "scripts/load_dataset.sh (DESTRUCTIVO) y verifica con scripts/run_gate.sh "
+                      "antes de seguir.", file=sys.stderr, flush=True)
+                rc = 3
+                break
             tele = res.get("telemetria")
             if tele is not None:
                 print(f"   telemetría: {'FALLO' if tele['fallo'] else tele['estado_exportacion']}"

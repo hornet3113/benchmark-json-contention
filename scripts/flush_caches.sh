@@ -9,8 +9,12 @@
 #
 # V7: usa `sudo -n` (no interactivo). Si no hay credenciales en caché, falla al
 # instante en vez de quedarse esperando una contraseña y colgar una corrida
-# desatendida. Antes de correr: `sudo -v`. El runner las renueva con `sudo -n -v`.
-# NO se configura nada permanente en el sistema (sin reglas en /etc/sudoers.d).
+# desatendida. Dos caminos, y el script elige solo:
+#   - si está instalado /usr/local/sbin/bench-drop-caches (regla de V7 aprobada el
+#     2026-11-02, docs/V7_SUDOERS.md), lo llama: no hace falta contraseña ni `sudo -v`;
+#   - si no está, hace el flush como siempre, y entonces sí hay que ejecutar `sudo -v`
+#     antes (el runner las renueva con `sudo -n -v`).
+# Así el repo corre igual en una máquina sin la regla: el docente no tiene que instalar nada.
 #
 # Alcance (SPEC A5, L4): limpia el caché de páginas de la VM de WSL2, que comparten
 # los contenedores. NO limpia la caché de Windows sobre el .vhdx: el estado de
@@ -23,20 +27,23 @@ buffcache_kb() { awk '/^(Buffers|Cached|SReclaimable):/{s+=$2} END{print s}' /pr
 
 BEFORE=$(buffcache_kb)
 sync
-if sudo -n sh -c 'echo 3 > /proc/sys/vm/drop_caches' 2>/dev/null; then
-  SUDO=ok
+HELPER=/usr/local/sbin/bench-drop-caches
+if [[ -x $HELPER ]] && sudo -n -l "$HELPER" >/dev/null 2>&1; then
+  VIA=ayudante_v7
+  sudo -n "$HELPER" 2>/dev/null && SUDO=ok || SUDO=fallo
 else
-  SUDO=fallo
+  VIA=sudo_v
+  sudo -n sh -c 'echo 3 > /proc/sys/vm/drop_caches' 2>/dev/null && SUDO=ok || SUDO=fallo
 fi
 AFTER=$(buffcache_kb)
 DELTA=$(( BEFORE - AFTER ))
 
 OK=true; MOTIVO=""
 if [[ $SUDO != ok ]]; then
-  OK=false; MOTIVO="sudo -n falló: sin credenciales en caché (ejecuta sudo -v antes)"
+  OK=false; MOTIVO="sudo -n falló por la vía $VIA (si es sudo_v, ejecuta sudo -v antes)"
 elif (( BEFORE > MIN_KB && AFTER >= BEFORE )); then
   OK=false; MOTIVO="buff/cache no bajó"
 fi
-printf '{"buff_cache_antes_kb": %d, "buff_cache_despues_kb": %d, "liberado_kb": %d, "sudo": "%s", "ok": %s, "motivo": "%s"}\n' \
-  "$BEFORE" "$AFTER" "$DELTA" "$SUDO" "$OK" "$MOTIVO"
+printf '{"buff_cache_antes_kb": %d, "buff_cache_despues_kb": %d, "liberado_kb": %d, "sudo": "%s", "via": "%s", "ok": %s, "motivo": "%s"}\n' \
+  "$BEFORE" "$AFTER" "$DELTA" "$SUDO" "$VIA" "$OK" "$MOTIVO"
 [[ $OK == true ]]

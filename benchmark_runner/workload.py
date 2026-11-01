@@ -22,6 +22,15 @@ Cómo funciona una repetición (playbook.pdf §6; SPEC §2):
      cgroup, contadores de spill, muestreo de memoria).
   5. Al terminar el enfriamiento los workers dejan de lanzar consultas. Los
      que siguen en vuelo tienen `grace_s` para acabar; después se terminan.
+  6. Si una consulta falla, el worker espera ERROR_BACKOFF_S antes de reintentar
+     (F8-a, Alix 2026-11-02). Cuando el motor muere —en F7.3 el OOM de Postgres
+     en PROFILE_C con Q1 y c=50— la conexión queda rota y cada reintento falla
+     al instante: sin pausa fueron 455 504 reintentos en 110 s. El problema no
+     es el crudo de 19 MB, sino que esos reintentos son **CPU del runner
+     compitiendo con el motor dentro de la misma VM**, justo cuando el motor
+     está en apuros. Con la pausa el bucle sigue vivo (si el motor se recupera,
+     se ve), y la pausa no toca ninguna columna: los errores no cuentan para el
+     throughput ni para los percentiles (A4).
 
 Este módulo no sabe de motores ni de CSV: recibe una especificación del
 motor y unos ganchos. Por eso se prueba con el motor falso.
@@ -38,6 +47,7 @@ from benchmark_runner.metrics.window import Sample
 
 READY_TIMEOUT_S = 120
 MAX_PROCESSES = 10                # F5.5: 50 procesos llevaban la VM a swap
+ERROR_BACKOFF_S = 1.0             # F8-a: pausa tras un fallo (ver punto 6 de arriba)
 START_DELAY_NS = 300_000_000      # margen entre "todos listos" y el arranque común
 
 
@@ -59,7 +69,7 @@ def plan_workers(concurrency: int, processes: int | None = None) -> tuple[int, i
     return p, concurrency // p
 
 
-def _thread_loop(wid, cell, spec, timeout_s, go, stop_at, q) -> None:
+def _thread_loop(wid, cell, spec, timeout_s, go, stop_at, q, backoff_s: float = ERROR_BACKOFF_S) -> None:
     from benchmark_runner.engines.base import QueryFailed, QueryTimeout
     try:
         engine = build_engine(spec, cell, timeout_s)
@@ -84,6 +94,11 @@ def _thread_loop(wid, cell, spec, timeout_s, go, stop_at, q) -> None:
             kind, detail = "error", f"{type(exc).__name__}: {exc}"[:300]
         t1 = time.monotonic_ns()
         q.put(("sample", wid, (t0, t1, kind, detail)))
+        if kind == "error":
+            # F8-a: pausa tras un fallo, para no quemar CPU del runner con reintentos
+            # instantáneos mientras el motor agoniza. Un timeout NO pausa: ya tardó
+            # lo suyo, y la pausa falsearía el bucle cerrado.
+            time.sleep(min(backoff_s, max(0.0, (stop - time.monotonic_ns()) / 1e9)))
     try:
         engine.close()
     finally:
