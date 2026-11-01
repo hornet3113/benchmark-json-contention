@@ -148,3 +148,62 @@ tenían la comprobación: `run_benchmarks.sh` (la de arriba **y** la del bucle),
 Ahora cada corrida empieza diciendo por qué vía va: `== sudo para el flush: vía
 ayudante_v7`. Si algún día se revierte la regla, la misma función detecta
 `sudo_v` y vuelve a pedir `sudo -v`, sin tocar nada.
+
+### Bloque 1 — Mongo, c=1, los tres perfiles (2026-11-02, 16:13–18:12 UTC)
+
+`results/run_benchmarks_20261102T161337Z.txt`. 6 celdas, 18 repeticiones,
+**0 fallos**, CSV `VÁLIDO`, 6 planes capturados (R-31). 2 h de reloj.
+
+**Estabilidad: el entorno se porta mejor que en el piloto.**
+
+| Celda (Mongo, c=1) | CV qps | CV p50 | Tendencia | qps | p50 (ms) | Throttling (reposo) | `max_rss_mb` |
+|---|---|---|---|---|---|---|---|
+| A · Q1 | 1.8 % | 1.5 % | no | 0.291 | 3 414 | 0 s (0.2) | 824 MiB |
+| A · Q2_MEM_LOW | 2.0 % | 1.7 % | no | 0.730 | 1 352 | 0 s (0.2) | 832 MiB |
+| B · Q1 | 0.7 % | 0.6 % | no | 0.261 | 3 818 | 13 s (3.6) | 812 MiB |
+| B · Q2_MEM_LOW | 0.0 % | 1.0 % | no | 0.180 | 5 536 | 17 s (3.6) | 830 MiB |
+| C · Q1 | 3.0 % | 1.5 % | no | 0.193 | 5 505 | 158 s (26.7) | 588 MiB |
+| C · Q2_MEM_LOW | 0.0 % | 1.4 % | no | 0.053 | 19 329 | 183 s (26.7) | 612 MiB |
+
+**Los 6 criterios se cumplen:** 3 repeticiones por celda, CV muy por debajo del
+15 % (máximo 3.0 %) y **ninguna tendencia**. Todas las filas salieron `ok`.
+
+**Primer resultado del experimento (M1), y es fuerte.** De PROFILE_A a PROFILE_C
+con c=1, las dos queries del manual no se degradan igual en MongoDB:
+
+- **Q1** (unwind + group): de 0.291 a 0.193 qps → **1.5 veces más lento**.
+- **Q2** (sort top-K): de 0.730 a 0.053 qps → **13.7 veces más lento**.
+
+En PROFILE_A, Q2 es 2.5 veces más rápida que Q1; en PROFILE_C es 3.6 veces más
+lenta. La contención no castiga a las dos por igual, y eso es justo lo que M1
+pregunta. Falta ver si Postgres hace lo mismo (bloque 2) y qué pasa con la
+concurrencia (bloques 3–6) antes de interpretarlo en el reporte.
+
+**Otras observaciones:**
+
+- **`max_rss_mb` baja con el perfil** (830 → 600 MiB): WiredTiger dimensiona su
+  caché según el límite del contenedor, así que en C usa menos memoria porque
+  tiene menos, no porque necesite menos.
+- **El throttling de C es casi todo del benchmark:** 158–183 s por ventana,
+  frente a los ~27 s de reposo (F6.3). En B, 13–17 s frente a 3.6 s.
+- **Sin spill en ninguna celda**, como se esperaba con c=1 (A12 y F4).
+- **Baja densidad muestral en C · Q2** (16 muestras < 20; A4): declarada, no es
+  un fallo.
+- **Telemetría:** 0 fallos; 4 de 18 repeticiones perdieron **una** muestra de
+  ~300 en las series del contenedor (el salto de 2 s de cAdvisor ya visto en
+  F6.3 y F7.2). Quedan en `results/telemetria_eventos.jsonl`.
+- **Espacio:** 796 KB de crudos y 4.6 MB de telemetría para 18 repeticiones; la
+  tanda 1 completa cabe en ~30 MB, como se estimó.
+
+### Herramienta nueva: `scripts/checks/check_matrix.py`
+
+Se corre **después de cada bloque**, no solo al final: si el entorno se degrada a
+mitad de las 13 h, se ve en el bloque siguiente y no cuando ya no hay remedio.
+Por celda da el CV del throughput y del p50, la tendencia con el criterio F7-b,
+el throttling con su línea base en reposo al lado, y los avisos (baja densidad,
+percentiles invalidados por censura, suspensión de la VM, fallos de telemetría,
+dataset no intacto). Del conjunto: cuántas corridas faltan, las filas
+descartadas (R-27.1) y los planes capturados.
+
+Las celdas con filas `error` u `oom` se marcan como **no medibles** y su CV se
+informa sin exigirlo: con 4 muestras censuradas, un CV no significa nada (A4).

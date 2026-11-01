@@ -1,0 +1,99 @@
+== run_benchmarks.sh — 20261102T161337Z — loadavg 1.73 1.39 1.19
+host: bateria estado=2 carga=100%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## [1/6] mongodb · PROFILE_A_BASELINE · Q1 · c=1 · runs 1,2,3 — 16:13:38 UTC
+== mongodb_PROFILE_A_BASELINE_Q1_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.290000 p50/p95/p99=3414.341348/3744.3909666/4008.20272896 ms throttled=0.0 s rss=822.22265625 MiB spill=False (421.44 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q1_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q1_c1_r1.json)
+== mongodb_PROFILE_A_BASELINE_Q1_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.296667 p50/p95/p99=3362.962671/3549.7848358/3658.04204268 ms throttled=0.0 s rss=823.171875 MiB spill=False (423.07 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q1_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q1_c1_r2.json)
+== mongodb_PROFILE_A_BASELINE_Q1_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.286667 p50/p95/p99=3464.3950395000006/3933.8486462500005/4367.4242944 ms throttled=0.0 s rss=825.4375 MiB spill=False (423.33 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q1_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q1_c1_r3.json)
+
+########## [2/6] mongodb · PROFILE_A_BASELINE · Q2_MEM_LOW · c=1 · runs 1,2,3 — 16:35:52 UTC
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.746667 p50/p95/p99=1331.4302420000001/1504.5429723/1596.71379331 ms throttled=0.0 s rss=833.00390625 MiB spill=False (422.14 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: con_huecos  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r1.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.720000 p50/p95/p99=1348.9008775/1554.5533872499998/1955.69865705 ms throttled=0.0 s rss=830.59765625 MiB spill=False (421.44 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r2.json)
+== mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.723333 p50/p95/p99=1376.4135930000002/1519.730734/1559.1859608000002 ms throttled=0.0 s rss=832.15234375 MiB spill=False (422.49 s)
+   crudo: results/raw/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1_r3.json)
+
+########## [3/6] mongodb · PROFILE_B_MEDIUM · Q1 · c=1 · runs 1,2,3 — 16:57:56 UTC
+== mongodb_PROFILE_B_MEDIUM_Q1_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.260000 p50/p95/p99=3822.2313405/4025.3854135999995/4256.9896954999995 ms throttled=12.942607 s rss=809.921875 MiB spill=False (424.7 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q1_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q1_c1_r1.json)
+== mongodb_PROFILE_B_MEDIUM_Q1_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.260000 p50/p95/p99=3838.2410144999994/4047.8840867999997/4146.190595839999 ms throttled=12.20329 s rss=813.1875 MiB spill=False (424.0 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q1_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: con_huecos  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q1_c1_r2.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_B_MEDIUM_Q1_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.263333 p50/p95/p99=3794.449862/3982.3736127999996/4098.162020919999 ms throttled=13.268895 s rss=813.375 MiB spill=False (424.81 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q1_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q1_c1_r3.json)
+
+########## [4/6] mongodb · PROFILE_B_MEDIUM · Q2_MEM_LOW · c=1 · runs 1,2,3 — 17:20:11 UTC
+== mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.180000 p50/p95/p99=5515.895726000001/5854.80680655/6025.17945525 ms throttled=16.598009 s rss=833.31640625 MiB spill=False (426.66 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r1.json)
+== mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.180000 p50/p95/p99=5495.223365/5958.496506349999/6124.780792980001 ms throttled=17.426564 s rss=835.68359375 MiB spill=False (423.82 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r2.json)
+== mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.180000 p50/p95/p99=5597.911233999999/5987.81183205/6241.0038789499995 ms throttled=18.273131 s rss=820.26171875 MiB spill=False (421.78 s)
+   crudo: results/raw/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1_r3.json)
+
+########## [5/6] mongodb · PROFILE_C_SEVERE · Q1 · c=1 · runs 1,2,3 — 17:42:26 UTC
+== mongodb_PROFILE_C_SEVERE_Q1_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.186667 p50/p95/p99=5595.463532/6181.12374925/6375.43942955 ms throttled=160.335642 s rss=586.4375 MiB spill=False (423.42 s)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q1_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q1_c1_r1.json)
+== mongodb_PROFILE_C_SEVERE_Q1_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.196667 p50/p95/p99=5436.744327/5846.0308704/5893.70794554 ms throttled=155.919613 s rss=588.57421875 MiB spill=False (423.62 s)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q1_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q1_c1_r2.json)
+== mongodb_PROFILE_C_SEVERE_Q1_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.196667 p50/p95/p99=5483.313098/5841.291051800001/5976.3249621 ms throttled=158.275034 s rss=588.234375 MiB spill=False (422.89 s)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q1_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: con_huecos  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q1_c1_r3.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+
+########## [6/6] mongodb · PROFILE_C_SEVERE · Q2_MEM_LOW · c=1 · runs 1,2,3 — 18:04:41 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.053333 p50/p95/p99=19091.790098/20350.7331475/20543.2393495 ms throttled=182.457306 s rss=610.7109375 MiB spill=False (434.65 s)
+   - baja densidad muestral: 16 completadas en la ventana (A4)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r1.json)
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.053333 p50/p95/p99=19260.1746705/20416.118792499998/20683.644734499998 ms throttled=181.675517 s rss=610.27734375 MiB spill=False (434.51 s)
+   - baja densidad muestral: 16 completadas en la ventana (A4)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json  · CSV: results/measurements.csv
+   telemetría: con_huecos  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r2.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.053333 p50/p95/p99=19634.548486/20615.947079/20822.802983 ms throttled=185.940534 s rss=613.93359375 MiB spill=False (435.07 s)
+   - baja densidad muestral: 16 completadas en la ventana (A4)
+   crudo: results/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1_r3.json)
+
+########## Resumen de la sesión: 6 celda(s) completas, 0 con fallo
+VÁLIDO: results/measurements.csv
+Corte pedido con --max-celdas 6: vuelve a lanzar el mismo comando para seguir.
+Para ver qué queda:  scripts/run_benchmarks.sh --listar --todo
+Registro: results/run_benchmarks_20261102T161337Z.txt

@@ -1,0 +1,431 @@
+{
+ "descripcion": "estado de la matriz (F8): CV, tendencias y avisos por celda; verificación, no medición",
+ "csv": "results/measurements.csv",
+ "filas": 18,
+ "resumen_matriz": {
+  "matriz": 54,
+  "corridas_de_la_matriz": 162,
+  "hechas": 18,
+  "faltan": 144
+ },
+ "ajenas_a_esta_matriz": [],
+ "descartadas": [],
+ "planes": [
+  "mongodb_PROFILE_A_BASELINE_Q1_c1.json",
+  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1.json",
+  "mongodb_PROFILE_B_MEDIUM_Q1_c1.json",
+  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1.json",
+  "mongodb_PROFILE_C_SEVERE_Q1_c1.json",
+  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json"
+ ],
+ "celdas": {
+  "mongodb_PROFILE_A_BASELINE_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.29,
+    0.296667,
+    0.286667
+   ],
+   "p50_ms": [
+    3414.341,
+    3362.963,
+    3464.395
+   ],
+   "p95_ms": [
+    3744.391,
+    3549.785,
+    3933.849
+   ],
+   "p99_ms": [
+    4008.203,
+    3658.042,
+    4367.424
+   ],
+   "cpu_throttled_seconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "max_rss_mb": [
+    822.223,
+    823.172,
+    825.438
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.21,
+   "cv_throughput": 0.0175,
+   "cv_p50": 0.0149,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.0115,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0147,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.746667,
+    0.72,
+    0.723333
+   ],
+   "p50_ms": [
+    1331.43,
+    1348.901,
+    1376.414
+   ],
+   "p95_ms": [
+    1504.543,
+    1554.553,
+    1519.731
+   ],
+   "p99_ms": [
+    1596.714,
+    1955.699,
+    1559.186
+   ],
+   "cpu_throttled_seconds": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "max_rss_mb": [
+    833.004,
+    830.598,
+    832.152
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.21,
+   "cv_throughput": 0.0199,
+   "cv_p50": 0.0168,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.0313,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0338,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_B_MEDIUM_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.26,
+    0.26,
+    0.263333
+   ],
+   "p50_ms": [
+    3822.231,
+    3838.241,
+    3794.45
+   ],
+   "p95_ms": [
+    4025.385,
+    4047.884,
+    3982.374
+   ],
+   "p99_ms": [
+    4256.99,
+    4146.191,
+    4098.162
+   ],
+   "cpu_throttled_seconds": [
+    12.943,
+    12.203,
+    13.269
+   ],
+   "max_rss_mb": [
+    809.922,
+    813.188,
+    813.375
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 3.65,
+   "cv_throughput": 0.0074,
+   "cv_p50": 0.0058,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0128,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.0073,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.18,
+    0.18,
+    0.18
+   ],
+   "p50_ms": [
+    5515.896,
+    5495.223,
+    5597.911
+   ],
+   "p95_ms": [
+    5854.807,
+    5958.497,
+    5987.812
+   ],
+   "p99_ms": [
+    6025.179,
+    6124.781,
+    6241.004
+   ],
+   "cpu_throttled_seconds": [
+    16.598,
+    17.427,
+    18.273
+   ],
+   "max_rss_mb": [
+    833.316,
+    835.684,
+    820.262
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 3.65,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0098,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0149,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_C_SEVERE_Q1_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.186667,
+    0.196667,
+    0.196667
+   ],
+   "p50_ms": [
+    5595.464,
+    5436.744,
+    5483.313
+   ],
+   "p95_ms": [
+    6181.124,
+    5846.031,
+    5841.291
+   ],
+   "p99_ms": [
+    6375.439,
+    5893.708,
+    5976.325
+   ],
+   "cpu_throttled_seconds": [
+    160.336,
+    155.92,
+    158.275
+   ],
+   "max_rss_mb": [
+    586.438,
+    588.574,
+    588.234
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 26.67,
+   "cv_throughput": 0.0299,
+   "cv_p50": 0.0148,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0536,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.02,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_1": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.053333,
+    0.053333,
+    0.053333
+   ],
+   "p50_ms": [
+    19091.79,
+    19260.175,
+    19634.548
+   ],
+   "p95_ms": [
+    20350.733,
+    20416.119,
+    20615.947
+   ],
+   "p99_ms": [
+    20543.239,
+    20683.645,
+    20822.803
+   ],
+   "cpu_throttled_seconds": [
+    182.457,
+    181.676,
+    185.941
+   ],
+   "max_rss_mb": [
+    610.711,
+    610.277,
+    613.934
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 26.67,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0144,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0284,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [
+    "r1: baja densidad muestral (16 < 20; A4)",
+    "r2: baja densidad muestral (16 < 20; A4)",
+    "r3: baja densidad muestral (16 < 20; A4)"
+   ],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  }
+ },
+ "celdas_medibles": 6,
+ "celdas_con_criterio_incumplido": {}
+}
