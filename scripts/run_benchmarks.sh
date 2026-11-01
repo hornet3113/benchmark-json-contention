@@ -142,7 +142,10 @@ if [[ $LISTAR -eq 1 ]]; then
 fi
 
 # --- correr --------------------------------------------------------------------
-sudo -n true 2>/dev/null || { echo "Primero ejecuta:  sudo -v   (y vuelve a lanzar en la MISMA terminal)"; exit 2; }
+# V7: vale la regla instalada o `sudo -v`; la función conoce las dos vías.
+# shellcheck source=scripts/sudo_listo.sh
+source "$ROOT/scripts/sudo_listo.sh"
+sudo_listo || exit 2
 mkdir -p "$BASE"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="$BASE/run_benchmarks_${STAMP}.txt"
@@ -160,9 +163,11 @@ for L in "${CELDAS[@]}"; do
   echo; echo "########## [$I/${#CELDAS[@]}] $ENGINE · $PROFILE · $QID · c=$CONC · runs $RUNS — $(date -u +%H:%M:%S) UTC"
 
   # La caché de sudo caduca (~15 min). Comprobar ANTES de cada celda: si caducó, una
-  # repetición correría sin flush o colgada pidiendo contraseña (V7).
-  if ! sudo -n true 2>/dev/null; then
-    echo "== DETENIDO: la caché de sudo caducó. Ejecuta 'sudo -v' y vuelve a lanzar el mismo comando."
+  # repetición correría sin flush o colgada pidiendo contraseña (V7). Con la regla de
+  # V7 instalada no caduca nada, y `sudo_via` lo sabe.
+  if [[ "$(sudo_via)" == ninguna ]]; then
+    echo "== DETENIDO: ya no se puede limpiar la caché sin contraseña (la de sudo caducó)."
+    echo "   Ejecuta 'sudo -v' y vuelve a lanzar el mismo comando, o instala la regla de V7."
     break
   fi
 

@@ -19,7 +19,10 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-sudo -n true 2>/dev/null || { echo "Primero ejecuta:  sudo -v   (y vuelve a lanzar en la MISMA terminal)"; exit 2; }
+# V7: vale la regla instalada o `sudo -v`; la función conoce las dos vías.
+# shellcheck source=scripts/sudo_listo.sh
+source "$ROOT/scripts/sudo_listo.sh"
+sudo_listo || exit 2
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 [[ -e results/smoke ]] && mv results/smoke "results/smoke_anterior_${STAMP}" && echo "(results/smoke anterior → results/smoke_anterior_${STAMP})"

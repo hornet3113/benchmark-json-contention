@@ -24,9 +24,10 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-if ! sudo -n true 2>/dev/null; then
-  echo "Primero ejecuta:  sudo -v   (y vuelve a lanzar este script en la MISMA terminal)"; exit 2
-fi
+# V7: vale la regla instalada o `sudo -v`; la función conoce las dos vías.
+# shellcheck source=scripts/sudo_listo.sh
+source "$ROOT/scripts/sudo_listo.sh"
+sudo_listo || exit 2
 [[ -x .venv/bin/python ]] || { echo "Falta .venv (F5.1)"; exit 2; }
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"

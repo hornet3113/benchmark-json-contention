@@ -122,3 +122,29 @@ recorta la sesión antes de contar, y el listado dice lo que de verdad va a
 correr, con una línea que avisa de cuántas quedan para la próxima.
 
 **Pruebas tras F8-b: 292/292.**
+
+### Arreglo: los scripts no conocían la regla de V7 (2026-11-02)
+
+Alix lanzó el bloque 1 y el script se detuvo pidiendo `sudo -v`, aunque la regla
+de V7 estaba instalada y el flush no necesita contraseña.
+
+**Causa, y es un fallo mío:** al aplicar V7 arreglé la comprobación del runner
+(`lifecycle.sudo_ready()`) pero no la de los scripts de Bash, que seguían con un
+`sudo -n true` suelto. Con la regla instalada ese comando **sigue fallando**, y
+debe fallar: el NOPASSWD cubre solo el ayudante, no todo `sudo`. Así que los
+scripts pedían credenciales que ya no hacían falta.
+
+Peor aún: `run_benchmarks.sh` repite esa comprobación **antes de cada celda**, de
+modo que una matriz lanzada con la regla puesta se habría detenido en la primera.
+
+**Arreglo:** `scripts/sudo_listo.sh`, cargado con `source`, con dos funciones:
+`sudo_via` (devuelve `ayudante_v7`, `sudo_v` o `ninguna`) y `sudo_listo` (corta
+con un mensaje que explica las dos opciones). Misma lógica que
+`lifecycle.sudo_ready()`, en un solo sitio. Actualizados los 7 scripts que
+tenían la comprobación: `run_benchmarks.sh` (la de arriba **y** la del bucle),
+`run_pilot_f7.sh`, `run_cold_f73.sh`, `run_memory_f74.sh`, `smoke_f64.sh`,
+`smoke_f55.sh` y `smoke_f55b.sh`.
+
+Ahora cada corrida empieza diciendo por qué vía va: `== sudo para el flush: vía
+ayudante_v7`. Si algún día se revierte la regla, la misma función detecta
+`sudo_v` y vuelve a pedir `sudo -v`, sin tocar nada.
