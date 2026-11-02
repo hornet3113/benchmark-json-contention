@@ -487,3 +487,33 @@ descartes** (R-27.1).
 `Q2_MEM_LOW`: dos por CV (24.0 % y 20.9 %, las dos analizadas en el bloque 4) y
 cuatro solo por la tendencia del p50, que es lo que F8-e propone dejar como
 observación. Las demás 24 celdas medibles cumplen.
+
+### F8-c — Logs de spill y OOM correlacionados (2026-11-04)
+
+`scripts/build_logs_f8c.py` escribe una ficha por repetición afectada en
+`results/logs/`, más un `README.md` con la tabla índice. Cubre R-32 ("capturas o
+logs de spill/OOM como evidencia") y la casilla de PLAN F8 ("las celdas con
+`status=error` tienen su log correlacionado").
+
+Entran las repeticiones con `status` `error` u `oom` **y** las que tienen
+`disk_spill=true` aunque el status sea otro, porque la precedencia
+`oom` > `error` > `spill` puede tapar un volcado: **30 de las 108 filas**.
+
+Cada ficha lleva la fila del CSV entera, los motivos, la censura de A4, los
+contadores de OOM y de volcado, el estado del contenedor, el flush con su vía,
+la telemetría, `working_set` y `shmem` de la serie de 1 s, ejemplos de error del
+motor y punteros a la evidencia original. **No mide ni inventa nada**: se
+regenera del CSV y de `results/raw/`, así que no es una fuente de datos.
+
+**Dos lecturas que las fichas ahora advierten, porque es fácil citarlas mal:**
+
+1. **El OOM puede haber ocurrido antes de la ventana.** En 3 de las 5 filas `oom`
+   el contador `oom_kill` del cgroup **no se movió durante la ventana**: el motor
+   se quedó sin memoria durante el calentamiento. Como el contenedor se recrea en
+   cada repetición, la marca `OOMKilled` sí es de esa repetición.
+2. **Con 0 consultas completadas, las columnas de recursos describen un motor ya
+   colapsado.** En `postgresql · C · Q1 · c=50`, la fila dice
+   `cpu_throttled_seconds=0.035` y `max_rss_mb=8.2`. Eso **no** es "Postgres
+   consumió 8 MiB atendiendo 50 clientes": es que durante la ventana el motor no
+   estaba trabajando, y los ~15 000 "errores" son conexiones rechazadas, no
+   consultas ejecutadas. Citarlo sin esta nota sería engañoso.
