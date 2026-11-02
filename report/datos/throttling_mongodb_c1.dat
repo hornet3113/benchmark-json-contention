@@ -1,0 +1,9 @@
+# Throttling (s por ventana de 300 s) contra throughput (qps) de MongoDB con c=1. perfil_num 1=A 2=B 3=C; medible=0 son celdas con filas error u oom.
+# generado por scripts/build_report_data.py — no editar a mano
+throttling_s qps perfil_num medible colapsada
+0.0 0.2911 1 1 0
+0.0 0.73 1 1 0
+12.8 0.2611 2 1 0
+17.4 0.18 2 1 0
+158.2 0.1933 3 1 0
+183.4 0.0533 3 1 0

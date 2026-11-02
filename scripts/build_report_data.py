@@ -148,6 +148,21 @@ def celdas(filas: list[dict], crudos: dict) -> list[dict]:
     return out
 
 
+# Documentos que examina CADA consulta, tomados de los planes de results/explains/
+# (SPEC A11). La asimetría de Q2 es el hallazgo R14: Mongo usa su índice de
+# timestamp y examina la mitad; Postgres hace Seq Scan y examina la tabla entera.
+DOCS_EXAMINADOS = {
+    ("mongodb", "Q1"): 500_000,      # COLLSCAN: totalDocsExamined
+    ("mongodb", "Q2"): 250_207,      # IXSCAN sobre timestamp: totalDocsExamined
+    ("postgresql", "Q1"): 500_000,   # Seq Scan sobre la tabla entera
+    ("postgresql", "Q2"): 500_000,   # Seq Scan: el planner no usa el índice de expresión
+}
+
+
+def docs_examinados(engine: str, query_id: str) -> int:
+    return DOCS_EXAMINADOS[(engine, query_id)]
+
+
 def dat(nombre: str, columnas: list[str], filas: list[list], comentario: str) -> None:
     d = REPORT / "datos"
     d.mkdir(parents=True, exist_ok=True)
@@ -193,13 +208,20 @@ def main() -> int:
                     "de cada worker (R-30.1). censurada=1: percentiles invalidados por A4.")
 
     # --- figura 2: throttling contra throughput ------------------------------
-    dat("throttling_vs_qps.dat",
-        ["throttling_s", "qps", "concurrencia", "perfil_num", "motor_num", "medible"],
-        [[c["throttling"], c["qps"], c["concurrency"], "ABC".index(c["perfil"]) + 1,
-          1 if c["engine"] == "mongodb" else 2, int(c["medible"])]
-         for c in cs if c["throttling"] is not None and c["qps"] is not None],
-        "Throttling (s por ventana de 300 s) contra throughput (qps). perfil_num 1=A 2=B 3=C; "
-        "motor_num 1=MongoDB 2=PostgreSQL; medible=0 son celdas con filas error u oom.")
+    # Un archivo por motor y concurrencia: así la figura no necesita filtros de
+    # pgfplots (`discard if not`), que son frágiles y fáciles de romper.
+    for motor in ("mongodb", "postgresql"):
+        for conc in (1, 10, 50):
+            sel = [c for c in cs if c["engine"] == motor and c["concurrency"] == conc
+                   and c["throttling"] is not None and c["qps"] is not None]
+            dat(f"throttling_{motor}_c{conc}.dat",
+                ["throttling_s", "qps", "perfil_num", "medible", "colapsada"],
+                [[round(c["throttling"], 1), round(c["qps"], 4), "ABC".index(c["perfil"]) + 1,
+                  int(c["medible"]), int(c["colapsada"])]
+                 for c in sorted(sel, key=lambda c: c["perfil"])],
+                f"Throttling (s por ventana de 300 s) contra throughput (qps) de "
+                f"{MOTOR_CORTO[motor]} con c={conc}. perfil_num 1=A 2=B 3=C; "
+                "medible=0 son celdas con filas error u oom.")
 
     # --- figura 3: curva de RSS de la serie de 1 s ---------------------------
     for c in cs:
@@ -258,27 +280,41 @@ def main() -> int:
             "sí" if raw.get("estado_contenedor_final", {}).get("OOMKilled") else "no"]) + r" \\")
     tabla("oom.tex", "\n".join(oom_filas) + "\n")
 
-    # --- M3: huella por 1 000 documentos, con las dos memorias (A11) ---------
+    # --- M3: huella por 1 000 documentos examinados (A11) --------------------
+    # El denominador sale de los PLANES, como pide SPEC A11, no de una suposición:
+    #   MongoDB  → `totalDocsExamined` del explain;
+    #   PostgreSQL → las filas que recorre el Seq Scan (la tabla entera).
+    # Y ahí está la asimetría de R14: en Q2, Mongo examina 250 207 documentos porque
+    # usa su índice de timestamp, y Postgres 500 000 porque hace Seq Scan. Comparar
+    # "por documento" sin esto compararía dos trabajos distintos.
     m3 = []
     for c in cs:
         if not c["medible"] or not c["completadas_en_ventana"]:
             continue
+        docs = docs_examinados(c["engine"], c["query_id"])
         rid = f"{c['engine']}_{c['profile']}_{c['query_id']}_c{c['concurrency']}_r1"
         raw = crudos.get(rid)
-        ws = None
+        ws, cpu_s = None, None
         if raw and (raw.get("serie_cgroup_1s") or {}).get("filas"):
-            s = raw["serie_cgroup_1s"]
-            col = s["columnas"]
-            ws = max(f[col.index("memory_current")] - f[col.index("inactive_file")] for f in s["filas"]) / 2**20
-        docs_mil = c["completadas_en_ventana"] * 500_000 / 1000     # documentos examinados por consulta
-        m3.append([c["motor"], c["perfil"], c["query_id"], c["concurrency"],
-                   round(c["throttling"] / docs_mil, 6) if c["throttling"] else None,
+            serie = raw["serie_cgroup_1s"]
+            col, fls = serie["columnas"], serie["filas"]
+            ws = max(f[col.index("memory_current")] - f[col.index("inactive_file")] for f in fls) / 2**20
+            cpu_s = (fls[-1][col.index("usage_usec")] - fls[0][col.index("usage_usec")]) / 1e6
+        completadas_r1 = (raw or {}).get("censura", {}).get("completadas_en_ventana") or 0
+        miles = completadas_r1 * docs / 1000
+        m3.append([c["motor"], c["perfil"], c["query_id"], c["concurrency"], docs, completadas_r1,
+                   round(cpu_s, 1) if cpu_s else None,
+                   round(cpu_s / miles * 1000, 4) if (cpu_s and miles) else None,
                    round(c["rss"], 1) if c["rss"] else None, round(ws, 1) if ws else None])
-    dat("m3_huella.dat", ["motor", "perfil", "query", "concurrencia", "throttling_por_mil_docs",
-                          "max_rss_mb", "working_set_mib"],
+    dat("m3_huella.dat",
+        ["motor", "perfil", "query", "concurrencia", "docs_examinados_por_consulta",
+         "consultas_r1", "cpu_s_r1", "cpu_ms_por_mil_docs", "max_rss_mb", "working_set_mib"],
         [[v if not isinstance(v, str) else v.replace(" ", "") for v in f] for f in m3],
-        "M3: huella por 1 000 documentos examinados. Se dan las DOS memorias: max_rss_mb (anon, "
-        "excluye los shared_buffers de Postgres) y working_set, con el que se calcula M3 (A11, F6-A3).")
+        "M3: huella por 1 000 documentos EXAMINADOS, con el denominador tomado de los planes "
+        "(A11): Mongo Q1 500000, Mongo Q2 250207 (usa el índice), Postgres 500000 en las dos "
+        "(Seq Scan). cpu_s_r1 es el tiempo de CPU del cgroup en la ventana de la repetición 1. "
+        "Se dan las DOS memorias: max_rss_mb (anon, excluye los shared_buffers de Postgres) y "
+        "working_set, que es con el que se interpreta la memoria (A11, F6-A3).")
 
     # --- cifras sueltas para el texto ---------------------------------------
     estados = {}

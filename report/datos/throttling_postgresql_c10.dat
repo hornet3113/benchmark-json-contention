@@ -1,0 +1,9 @@
+# Throttling (s por ventana de 300 s) contra throughput (qps) de PostgreSQL con c=10. perfil_num 1=A 2=B 3=C; medible=0 son celdas con filas error u oom.
+# generado por scripts/build_report_data.py — no editar a mano
+throttling_s qps perfil_num medible colapsada
+826.9 0.1444 1 1 0
+907.7 2.3511 1 1 0
+1535.2 0.1 2 1 0
+1379.2 1.1478 2 1 0
+1829.8 0.0333 3 1 0
+1622.2 0.6 3 1 0

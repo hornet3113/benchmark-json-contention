@@ -1,4 +1,80 @@
-% A2-limitaciones.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% A2-limitaciones.tex — Anexo: integridad experimental. Lo que no se pudo medir,
+% lo que quedó sin explicar y lo que se descartó. Va aquí y no escondido: es un
+% criterio del propio proyecto (CLAUDE.md: no declarar nada sin evidencia).
 
+\section{Anexo: integridad experimental}
+\label{sec:integridad}
+
+\subsection{Repeticiones descartadas}
+
+Se descartaron \textbf{\cifraDescartadas{}} repeticiones. Ninguna. La herramienta
+para descartarlas existe (\texttt{scripts/descartar\_repeticion.py}), exige un
+motivo escrito y deja la fila descartada registrada en un archivo aparte junto con
+su crudo, precisamente para que descartar no pueda ser silencioso. No hizo falta
+usarla: el equipo no se suspendió durante ninguna ventana y ninguna repetición
+quedó inservible.
+
+\subsection{Lo que quedó sin explicar}
+
+\paragraph{Una celda con dispersión alta y sin causa identificada.}
+En \textbf{MongoDB · perfil B · \texttt{Q2} · \mbox{c=50}} el throughput cayó un
+33~\% entre la primera repetición y las otras dos, con un coeficiente de variación
+del 24~\%. Las tres repeticiones gastaron \emph{el mismo} tiempo de CPU (598.6~s) y
+la frecuencia del procesador estuvo plana (83.4~\%, 81.7~\%, 84.6~\%). Es decir: el
+mismo procesador, a la misma velocidad, hizo un 33~\% menos de trabajo. La caché de
+Windows sobre el disco virtual —que \texttt{drop\_caches} no alcanza— es el
+sospechoso natural, pero \textbf{no hay medición que lo demuestre} y no se presenta
+como explicación. La celda se reporta con su dispersión a la vista.
+
+\paragraph{La frecuencia del procesador no se puede medir desde dentro.}
+WSL2 no expone \texttt{cpufreq} y \texttt{/proc/cpuinfo} informa siempre la
+frecuencia nominal. Se midió desde Windows con el contador «\% de rendimiento del
+procesador», que es un indicador agregado del sistema, no una lectura por núcleo
+sincronizada con cada ventana. Sirve para detectar que la frecuencia baja; no para
+atribuir con precisión cuánto de cada medición se debe a ello.
+
+\subsection{Lo que el entorno no permite afirmar}
+
+Las cinco limitaciones del entorno están en la sección~\ref{sec:limitaciones-entorno}.
+La que más afecta a la interpretación: \textbf{el estado de partida de cada
+repetición es repetible, no frío}. La caché de páginas de la VM se limpia y se mide
+cuánto se liberó, pero la caché de Windows sobre el \texttt{.vhdx} no es
+alcanzable. Un experimento en un host dedicado podría dar números distintos; lo que
+este experimento garantiza es que \textbf{las dos mediciones que se comparan
+partieron del mismo estado}, no que partieran de disco frío.
+
+\subsection{Lo que sí se verificó antes de medir}
+
+Para que lo anterior no se lea como una cadena de excusas, conviene recordar qué
+quedó comprobado con evidencia antes de la primera medición:
+
+\begin{itemize}
+  \item los límites de los seis perfiles, leídos del cgroup, no solo declarados;
+  \item que \texttt{memory.swap.max = 0} en los seis, así que no hay \emph{swap}
+        que enmascare la presión de memoria;
+  \item que los dos motores contienen los mismos \num{500000} documentos,
+        comparados en tres direcciones contra el archivo fuente;
+  \item que las dos consultas devuelven el mismo resultado que una referencia
+        calculada en Python con aritmética exacta;
+  \item que el instrumento \emph{sabe} ver lo que afirma medir: con sondas
+        dedicadas se forzaron throttling, volcado en los dos motores y OOM, y se
+        comprobó que los mismos detectores y el mismo clasificador del runner los
+        registran. Esas sondas viven aparte y \textbf{no producen filas del CSV}:
+        mezclarlas con los resultados sería fabricar evidencia;
+  \item que las dos fuentes de telemetría miden lo mismo (el \texttt{rss} de
+        cAdvisor es exactamente la memoria anónima del cgroup, comprobado con el
+        contenedor congelado);
+  \item una celda piloto completa con tres repeticiones, antes de gastar las horas
+        de la matriz, con el criterio de dispersión fijado \emph{de antemano}.
+\end{itemize}
+
+\subsection{Reproducibilidad}
+
+Todo lo necesario para repetir el experimento está en el repositorio: el
+\emph{compose} parametrizado por perfiles, el generador con su semilla, las
+consultas tal como se copiaron del manual, el runner, el recorrido de la matriz
+—reanudable— y las \cifraFilasCsv{} filas con su archivo crudo por repetición. Las
+imágenes están fijadas por \emph{digest}, no por etiqueta, de modo que un
+\texttt{docker pull} futuro no cambie las versiones medidas. El dataset de
+\num{500000} documentos no se versiona por tamaño, pero se regenera byte a byte con
+la semilla 42, y su huella SHA-256 está registrada.

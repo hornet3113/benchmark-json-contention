@@ -1,4 +1,35 @@
-% 04-graficas.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 04-graficas.tex — Sección 4: análisis gráfico (R-30). Las tres figuras
+% obligatorias, dibujadas por pgfplots desde report/datos/*.dat.
 
+\section{Análisis gráfico}
+\label{sec:graficas}
+
+Las tres figuras las dibuja LaTeX leyendo los archivos de
+\texttt{report/datos/}, que genera \texttt{scripts/build\_report\_data.py} del
+CSV y de \texttt{results/raw/}. Así cada punto es rastreable hasta su fila.
+
+\input{figuras/p99-concurrencia}
+
+La figura~\ref{fig:p99-concurrencia} lleva \textbf{dos series por panel} y no una
+nota al pie, porque la diferencia entre ellas no es un detalle: el calentamiento
+de 60~s que fija el manual no alcanza cuando 50 clientes empiezan a la vez con la
+caché recién limpiada. Se midió una por una la primera consulta de cada cliente
+y, con \mbox{c=50}, \textbf{no cabe en los 60~s en 14 de las 18 combinaciones};
+solo cabe en el perfil~A con \texttt{Q2} (de 39 a 52~s). En los perfiles B y C
+llega a 110~s, y en algunas celdas ninguna consulta terminó siquiera en los 110~s
+que dura toda la corrida de prueba.
+
+El caso extremo aparece en la figura: en \textbf{MongoDB, perfil~C,
+\texttt{Q2}, \mbox{c=50}} las \num{150} consultas que terminaron dentro de la
+ventana son \emph{todas} la primera de su cliente, así que no existe un P99 «en
+régimen» que dibujar y la serie punteada se interrumpe. Decir que el P99 de esa
+celda es de 228~s sin esta advertencia sería atribuirle al motor el costo de
+arrancar en frío.
+
+\input{figuras/throttling-qps}
+
+\input{figuras/curva-rss}
+
+La figura~\ref{fig:curva-rss} es la que obliga a tener cuidado con la columna
+\texttt{max\_rss\_mb}, y por eso lleva dos series: véase la
+sección~\ref{sec:memoria}.

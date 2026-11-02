@@ -1,4 +1,62 @@
-% 05-planes.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 05-planes.tex — Sección 5: planes de ejecución. Responde la pregunta 6 del
+% revisor y declara la asimetría de planes (riesgo R14 del PLAN).
 
+\section{Planes de ejecución}
+\label{sec:planes}
+
+Se capturó el plan de cada combinación de motor, consulta y perfil con
+\texttt{explain} en modo \texttt{executionStats} (MongoDB) y
+\texttt{EXPLAIN (ANALYZE, BUFFERS)} (PostgreSQL). Los 12 planes crudos están en
+\texttt{results/explains/}.
+
+\subsection{Dos avisos para leerlos}
+
+\paragraph{Los planes se capturan con un solo cliente.}
+Se toman en las celdas de \mbox{c=1} y \textbf{fuera} de la ventana de medición,
+para no alterar lo que se mide. Eso tiene una consecuencia que hay que declarar:
+\textbf{el plan de \mbox{c=1} no es el que se ejecuta con \mbox{c=50}}. Con 50
+clientes simultáneos, PostgreSQL agota los procesos de trabajo paralelos
+disponibles y los clientes que llegan después ejecutan la consulta sin
+paralelismo. El plan documenta la \emph{forma} de resolver la consulta, no el
+grado de paralelismo que tuvo cada cliente bajo carga.
+
+\paragraph{En \texttt{EXPLAIN (BUFFERS)} los contadores incluyen a los hijos.}
+El total es el del nodo raíz. Sumar los nodos cuenta lo mismo varias veces: al
+verificar las consultas se registraron 8310 bloques donde en realidad eran 1662.
+
+\subsection{La asimetría de planes, declarada}
+\label{sec:asimetria-planes}
+
+\texttt{Q2} filtra por \texttt{timestamp} y ordena por \texttt{final\_total}. Los
+dos motores la resuelven de forma distinta:
+
+\begin{itemize}
+  \item \textbf{MongoDB} usa su índice sobre \texttt{timestamp} para el
+        \texttt{\$match}.
+  \item \textbf{PostgreSQL} hace \texttt{Seq Scan}. El índice de expresión existe
+        —se creó sobre el \texttt{timestamp} extraído como texto, sin modificar la
+        consulta del manual— pero el planificador no lo usa, porque la mitad de la
+        tabla pasa el filtro y recorrerla entera le sale más barato que saltar por
+        el índice.
+\end{itemize}
+
+Esto es importante al interpretar las latencias: \textbf{en parte se están
+comparando dos planes distintos}, no solo dos motores. No se «arregló» forzando
+el índice, porque eso significaría medir una consulta que no es la del manual.
+
+\subsection{Lo que el plan explica del cuello de botella (pregunta 6)}
+
+\paragraph{\texttt{Q1} en PostgreSQL: el plan explica el volcado.}
+El plan muestra el ordenamiento con \texttt{Sort Method: external merge} y
+\texttt{Sort Space Type: Disk}, que es exactamente lo que registran los
+contadores \texttt{temp\_bytes} de la sección~\ref{sec:spill}. Las dos fuentes
+coinciden: no es una conjetura sobre por qué \texttt{Q1} es lenta en PostgreSQL.
+
+\paragraph{\texttt{Q2} en los dos motores: el plan explica por qué \emph{no} hay volcado.}
+El \texttt{LIMIT 1000} convierte el ordenamiento en un \emph{top-K}: no hace falta
+ordenar las \num{175049} filas que pasan el filtro, solo mantener las 1000
+mejores. PostgreSQL lo resuelve con \texttt{top-N heapsort} y
+\texttt{Sort Space Used: 273}~kB \textbf{en memoria}. Esa cifra es la clave de la
+sección~\ref{sec:variantes}: 273~kB caben de sobra tanto en los 4~MB de
+\texttt{work\_mem} de la variante restrictiva como en los 64~MB de la permisiva,
+y por eso las dos variantes de \texttt{Q2} no se diferencian.

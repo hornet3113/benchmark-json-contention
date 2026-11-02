@@ -1,4 +1,209 @@
-% 06-interpretacion.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 06-interpretacion.tex — Sección 6: interpretación. Responde M1, M2 y M3 con
+% datos, y aplica las tres decisiones de Alix: R-29.1 (distinguir dónde ocurrió
+% cada OOM), R-29.2 (nota al pie de la celda colapsada) y R-16.1 (la premisa del
+% manual sobre las variantes de Q2, con la cobertura parcial declarada).
 
+\section{Interpretación}
+\label{sec:interpretacion}
+
+\subsection{M1: ¿cómo se degrada cada motor al apretar los recursos?}
+\label{sec:m1}
+
+El resultado no se parte por motor, se parte \textbf{por consulta}, y es
+consistente en los tres perfiles y en las tres concurrencias.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Quién gana cada celda, en throughput (media de 3 repeticiones). El
+           factor es cuántas veces más consultas por segundo completa el ganador.}
+  \label{tab:m1}
+  \small
+  \begin{tabular}{llrrr}
+    \toprule
+    Consulta & Perfil & c=1 & c=10 & c=50 \\
+    \midrule
+    \texttt{Q1} & A & Mongo $\times$2.2 & Mongo $\times$3.8 & PostgreSQL no completa\tnotaCensurada{} \\
+    \texttt{Q1} & B & Mongo $\times$2.4 & Mongo $\times$3.3 & Mongo $\times$25 \\
+    \texttt{Q1} & C & Mongo $\times$3.4 & Mongo $\times$5.4 & los dos fallan\tnotaColapsada{} \\
+    \texttt{Q2} & A & PostgreSQL $\times$2.6 & PostgreSQL $\times$1.2 & Mongo $\times$1.4\tnotaBajaDensidad{} \\
+    \texttt{Q2} & B & PostgreSQL $\times$6.0 & PostgreSQL $\times$2.8 & PostgreSQL $\times$2.8 \\
+    \texttt{Q2} & C & PostgreSQL $\times$10.7 & PostgreSQL $\times$6.0 & PostgreSQL $\times$3.4 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{\texttt{Q1} (desanidar y agrupar): MongoDB gana siempre.}
+Y la ventaja \textbf{crece} al apretar los recursos: de $\times$2.2 en el perfil A
+a $\times$3.4 en el C con un cliente. La razón está en el plan y en el disco: para
+PostgreSQL, \texttt{Q1} exige un ordenamiento que no cabe en \texttt{work\_mem} y
+termina en disco \textbf{en los tres perfiles} (sección~\ref{sec:spill}), mientras
+MongoDB la resuelve sin tocar disco.
+
+\paragraph{\texttt{Q2} (ordenar y quedarse con el Top-1000): PostgreSQL gana, y la ventaja crece al apretar.}
+De $\times$2.6 a $\times$10.7 con un cliente al pasar del perfil A al C. Visto al
+revés: entre el perfil A y el C, MongoDB se vuelve \textbf{13.7 veces} más lento
+en \texttt{Q2} y solo 1.5 veces más lento en \texttt{Q1}. La sensibilidad a la
+contención depende más de la consulta que del motor.
+
+\paragraph{La única excepción, y por qué no se usa.}
+La celda \texttt{Q2} · perfil~A · \mbox{c=50} es la única de \texttt{Q2} que gana
+MongoDB, y es también \textbf{una de las dos celdas con dispersión por encima del
+15~\%} (sección~\ref{sec:estabilidad}): su medición de PostgreSQL cayó un 34~\%
+entre la primera y la tercera repetición mientras el procesador bajaba de
+frecuencia. Esa inversión no se usa para sostener nada.
+
+\subsection{M2: ¿hubo volcado a disco y OOM, y dónde?}
+\label{sec:spill}
+
+\paragraph{Volcado: sí, masivo, y solo en PostgreSQL con \texttt{Q1}.}
+\cifraFilasConSpill{} de las \cifraFilasCsv{} filas tienen
+\texttt{disk\_spill = true}, y \textbf{todas son de PostgreSQL con \texttt{Q1}}:
+8 de sus 9 celdas (la novena no volcó porque el motor murió antes). En total,
+\textbf{\cifraTempTotalTB{}~TB} de archivos temporales escritos a lo largo de la
+matriz. Con un solo cliente en el perfil A son unos 32~GB por ventana de 300~s,
+es decir \textbf{unos 0.8~GB por consulta}.
+
+\textbf{MongoDB no volcó en ninguna celda}, ni siquiera con
+\texttt{allowDiskUse: true} (anexo~\ref{sec:variantes}).
+
+\paragraph{OOM: cinco filas, y hay que distinguir dónde ocurrió cada uno.}
+Son \cifraFilasOom{} filas con \texttt{status = oom}, todas de PostgreSQL con
+\texttt{Q1} y \mbox{c=50} en los perfiles B y C. Presentarlas como «cinco OOM» sin
+más sería impreciso:
+
+\begin{itemize}
+  \item \textbf{\cifraOomEnVentana{} ocurrieron dentro de la ventana de medición}:
+        el contador \texttt{oom\_kill} del cgroup se movió mientras se medía.
+  \item \textbf{\cifraOomEnCalentamiento{} ocurrieron durante el calentamiento}: el
+        contador ya estaba en su valor final al abrirse la ventana. El motor llegó
+        a la medición \emph{ya} sin memoria.
+\end{itemize}
+
+La distinción importa porque cambia lo que la fila mide. Las tres de la segunda
+clase no describen «un motor que se queda sin memoria atendiendo la carga medida»,
+sino «un motor que ya se había quedado sin memoria antes de empezar a medir». El
+detalle de cada una está en \texttt{results/logs/}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Las \cifraFilasOom{} repeticiones con \texttt{status = oom}. La columna
+           «$\Delta$ \texttt{oom\_kill}» es cuántos procesos mató el kernel
+           \emph{durante la ventana}: un cero con \texttt{OOMKilled = sí}
+           significa que el OOM ocurrió antes, en el calentamiento (R-29.1).}
+  \label{tab:oom}
+  \small
+  \begin{tabular}{lllrrrlrl}
+    \toprule
+    Motor & Perfil & Consulta & c & Rep. & $\Delta$ \texttt{oom\_kill} & Cuándo &
+    Completadas & \texttt{OOMKilled} \\
+    \midrule
+    \input{tablas/oom}
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{La peor celda, y cómo no leerla.}
+En \textbf{PostgreSQL · perfil C · \texttt{Q1} · \mbox{c=50}} no se completó
+\emph{ninguna} consulta en las tres repeticiones: el throughput es 0.000. La fila
+registra \texttt{cpu\_throttled\_seconds = 0.035} y
+\texttt{max\_rss\_mb = 8.2}\tnotaColapsada{}, y esos dos números \textbf{no
+significan que PostgreSQL atendiera 50 clientes con 8~MiB de memoria}: significan
+que durante la ventana el motor estaba colapsado y no trabajaba. Sus
+\num{15000} errores registrados son \textbf{conexiones rechazadas}, no consultas
+ejecutadas. Por eso esa celda lleva nota al pie en todas las tablas de este
+reporte.
+
+\paragraph{Respuesta a M2.} El volcado a disco es real, sistemático y enorme, pero
+está concentrado en una sola combinación: PostgreSQL con \texttt{Q1}. El OOM
+aparece solo donde se juntan la consulta más pesada, la concurrencia más alta y
+los perfiles con menos memoria. MongoDB no volcó ni fue matado por el kernel en
+ninguna celda.
+
+\subsection{La premisa del manual sobre las dos variantes de \texttt{Q2}}
+\label{sec:variantes}
+
+El manual pide dos variantes de estrés de memoria para \texttt{Q2}
+(\texttt{work\_mem} de 4~MB frente a 64~MB en PostgreSQL;
+\texttt{allowDiskUse} falso frente a verdadero en MongoDB) \textbf{dando por
+supuesto que se diferenciarían}. Se midieron las dos en el perfil con menos
+memoria y \textbf{no se diferencian}: ni en throughput más allá de la dispersión
+propia de cada celda, ni en volcado, que no aparece en ninguna de las dos.
+
+La explicación está en el plan (sección~\ref{sec:planes}): el
+\texttt{LIMIT 1000} convierte el ordenamiento en un \emph{top-K} de
+\textbf{273~kB}, que caben de sobra en los 4~MB de la variante restrictiva. El
+parámetro que el manual varía nunca llega a ser el límite. El detalle de la
+comparación está en el anexo~\ref{sec:variantes-anexo}, con la cobertura parcial
+declarada.
+
+\subsection{M3: huella de CPU y memoria por cada 1000 documentos}
+\label{sec:memoria}
+
+El CSV no tiene un denominador, así que se toma de los \textbf{planes de
+ejecución}, como corresponde: los documentos que cada consulta examina de verdad.
+Y ahí aparece una asimetría que hay que declarar antes de dividir:
+
+\begin{center}
+  \small
+  \begin{tabular}{llr}
+    \toprule
+    Motor & Consulta & Documentos examinados por consulta \\
+    \midrule
+    MongoDB    & \texttt{Q1} & \num{500000} (recorrido completo) \\
+    MongoDB    & \texttt{Q2} & \num{250207} (usa su índice de \texttt{timestamp}) \\
+    PostgreSQL & \texttt{Q1} & \num{500000} \\
+    PostgreSQL & \texttt{Q2} & \num{500000} (\texttt{Seq Scan}: no usa el índice) \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\paragraph{CPU por 1000 documentos (perfil A, un cliente).}
+MongoDB gasta 8.6~ms en \texttt{Q1} y PostgreSQL 25.6~ms: \textbf{MongoDB es unas
+tres veces más eficiente en CPU} para esa consulta. En \texttt{Q2} se invierte:
+PostgreSQL gasta 3.5~ms y MongoDB 6.6~ms. Y al apretar los recursos la brecha de
+\texttt{Q2} se abre hasta ser de \textbf{74.7~ms frente a 3.6~ms} en el perfil~C,
+unas 21 veces.
+
+\paragraph{La memoria depende de cuál de las dos memorias se mire, y esto es importante.}
+\texttt{max\_rss\_mb} mide la memoria \emph{anónima} del contenedor. Los
+\texttt{shared\_buffers} de PostgreSQL son memoria \textbf{compartida}, que el
+kernel no cuenta como anónima; el caché de WiredTiger de MongoDB sí lo es. El
+efecto es grande:
+
+\begin{center}
+  \small
+  \begin{tabular}{lrrrr}
+    \toprule
+    & \multicolumn{2}{c}{\texttt{max\_rss\_mb} (anónima)} & \multicolumn{2}{c}{\texttt{working\_set}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    Perfil A, c=1 & \texttt{Q1} & \texttt{Q2} & \texttt{Q1} & \texttt{Q2} \\
+    \midrule
+    MongoDB    & 824 & 832 & 1042 & 1058 \\
+    PostgreSQL & 104 & 16  & 1630 & 891 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+Leyendo solo \texttt{max\_rss\_mb}, PostgreSQL parecería de 8 a 50 veces más
+eficiente en memoria. Leyendo \texttt{working\_set} —que sí incluye la memoria
+compartida y es la que cuenta contra el límite del contenedor— \textbf{la relación
+se invierte en \texttt{Q1}}: 1630~MiB de PostgreSQL frente a 1042 de MongoDB. Por
+eso M3 se responde con \texttt{working\_set}, y la figura~\ref{fig:curva-rss}
+muestra las dos curvas juntas.
+
+\paragraph{Un matiz honesto sobre \texttt{working\_set}.}
+Incluye también la caché de páginas de los archivos de datos que se le atribuye al
+contenedor. PostgreSQL depende de ella por diseño —lee a través de la caché del
+sistema operativo— y cuenta contra su \texttt{memory.max}, así que es memoria que
+el motor necesita bajo el límite; pero no es «memoria del proceso». Las dos
+lecturas están en los datos (\texttt{report/datos/m3\_huella.dat}) para que
+cualquiera pueda rehacer la cuenta con el criterio que prefiera.
+
+\subsection{Y la conclusión que el throttling deja clara}
+
+El throttling confirma que los perfiles del manual \textbf{aprietan de verdad}:
+hasta \num{2086}~s acumulados en una ventana de 300~s. Pero no es lo que
+diferencia a los motores. Lo que los diferencia es si la consulta cabe en memoria:
+donde cabe (\texttt{Q2}, por el \emph{top-K}), gana el motor con el plan más
+eficiente; donde no cabe (\texttt{Q1} en PostgreSQL), el disco domina y la CPU
+pasa a segundo plano.

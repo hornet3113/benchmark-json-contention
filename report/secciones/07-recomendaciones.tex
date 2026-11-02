@@ -1,4 +1,59 @@
-% 07-recomendaciones.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 07-recomendaciones.tex — Sección 7: recomendaciones técnicas, derivadas de los
+% datos de este experimento, no de opiniones generales sobre los motores.
 
+\section{Recomendaciones técnicas para despliegues documentales en la nube}
+\label{sec:recomendaciones}
+
+Las recomendaciones salen de lo medido aquí, con sus límites: un solo conjunto de
+datos de \num{500000} documentos, dos consultas y un host virtualizado. No son
+afirmaciones generales sobre los dos motores.
+
+\paragraph{1. Elegir el motor por la forma de la consulta, no por el motor.}
+Es el resultado más claro: MongoDB gana \texttt{Q1} en las nueve celdas y
+PostgreSQL gana \texttt{Q2} en ocho de nueve. Si la carga dominante desanida
+arreglos y agrupa, MongoDB rinde de 2 a 5 veces más; si ordena y se queda con un
+Top-K, PostgreSQL rinde de 1.2 a 10.7 veces más. Un despliegue que haga las dos
+cosas no se resuelve eligiendo motor, sino decidiendo qué consulta importa más.
+
+\paragraph{2. Dimensionar \texttt{work\_mem} mirando el plan, no el tamaño de la tabla.}
+\texttt{Q2} ordena \num{175049} filas y necesita \textbf{273~kB}, porque el
+\texttt{LIMIT} la convierte en un \emph{top-K}. \texttt{Q1} sobre los mismos datos
+necesita unos 0.8~GB \textbf{por consulta} y vuelca a disco con cualquier valor
+razonable de \texttt{work\_mem}. Subir el parámetro de 4 a 64~MB no cambió nada
+medible en \texttt{Q2} y no habría salvado a \texttt{Q1}: lo que decide es la forma
+del plan.
+
+\paragraph{3. En PostgreSQL, vigilar \texttt{temp\_bytes} como métrica de primera línea.}
+El volcado no se nota en la CPU ni en el RSS: se nota en \textbf{\cifraTempTotalTB{}~TB}
+escritos en disco a lo largo del experimento. Una consulta que vuelca degrada por
+una vía que el throttling de CPU y la memoria residente no muestran, y
+\texttt{pg\_stat\_database.temp\_bytes} la delata de inmediato.
+
+\paragraph{4. No usar la memoria residente para dimensionar un contenedor de PostgreSQL.}
+\texttt{max\_rss\_mb} no cuenta los \texttt{shared\_buffers}, que son memoria
+compartida. En este experimento PostgreSQL aparece con 16~MiB residentes y un
+conjunto de trabajo de 891~MiB en la misma celda. Un límite de memoria fijado con
+la primera cifra mataría el contenedor de inmediato. La métrica útil es
+\texttt{working\_set} (o \texttt{memory.current} menos la caché recuperable).
+
+\paragraph{5. Con límites de CPU bajos, el calentamiento tiene que ser largo.}
+Con 50 clientes y la caché limpia, la primera consulta de cada cliente tarda de
+69 a 110~s en los perfiles B y C. Un calentamiento de 60~s deja ese costo dentro
+de la ventana de medición y contamina los percentiles de cola: medido, hasta el
+91~\% de las consultas de una ventana eran primeras consultas. Quien mida latencia
+de cola bajo contención debe comprobar que su calentamiento cubre la primera
+consulta, no suponerlo.
+
+\paragraph{6. Un límite de memoria sin \emph{swap} convierte la saturación en caída, no en lentitud.}
+Con \texttt{memory.swap.max = 0}, PostgreSQL con \texttt{Q1} y 50 clientes no se
+degradó: fue \textbf{matado por el kernel}, y en tres de las cinco veces antes de
+empezar a medir. Para un servicio en producción eso es la diferencia entre
+responder despacio y no responder. Si el objetivo es degradar en vez de caer, hace
+falta limitar la concurrencia en la capa de conexión antes de que el motor agote su
+límite.
+
+\paragraph{7. Medir en un portátil obliga a declarar la frecuencia del procesador.}
+Durante la matriz el rendimiento del procesador osciló entre el 86~\% y el
+60.8~\% de la frecuencia nominal, y la mayor dispersión observada coincide con una
+de esas caídas. En un host dedicado esto no aparecería; en un entorno como este,
+hay que medirlo y declararlo, no suponer que la CPU es constante.

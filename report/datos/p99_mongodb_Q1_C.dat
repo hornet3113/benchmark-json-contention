@@ -1,0 +1,6 @@
+# P99 (ms) de MongoDB · Q1 · C. p99_csv = columna del CSV; p99_sin_frias = recalculado sin la primera consulta de cada worker (R-30.1). censurada=1: percentiles invalidados por A4.
+# generado por scripts/build_report_data.py — no editar a mano
+concurrencia p99_csv p99_sin_frias frias censurada colapsada
+1 6081.8240000000005 6081.824112396666 0 0 0
+10 64473.29866666667 63783.11814164333 20 0 0
+50 298965.497 nan 122 1 0

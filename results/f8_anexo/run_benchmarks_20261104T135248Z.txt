@@ -10,3 +10,92 @@ GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
    - telemetría: comprobación previa: Prometheus no responde: URLError: <urlopen error [Errno 111] Connection refused> → recuperada
    - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
 == mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.046667 p50/p95/p99=21184.189789500004/25652.78474285/27673.44076777 ms throttled=202.0249 s rss=592.390625 MiB spill=False (435.86 s)
+   - baja densidad muestral: 14 completadas en la ventana (A4)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: con_huecos  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.046667 p50/p95/p99=20898.800094000002/24883.38213425/28466.802221250004 ms throttled=199.637063 s rss=586.69921875 MiB spill=False (430.83 s)
+   - baja densidad muestral: 14 completadas en la ventana (A4)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3.json)
+
+########## [2/6] mongodb · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=10 · runs 1,2,3 — 14:16:02 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.100000 p50/p95/p99=104189.16773149998/117598.55103214999/117599.88567671999 ms throttled=1847.4441 s rss=561.99609375 MiB spill=False (422.89 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: con_huecos  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.100000 p50/p95/p99=101153.1473625/118805.05276069998/118806.61556637999 ms throttled=1861.264606 s rss=559.36328125 MiB spill=False (436.65 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2.json)
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.100000 p50/p95/p99=94894.32309/108804.30918479999/108805.20471835001 ms throttled=1863.156208 s rss=561.359375 MiB spill=False (436.29 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3.json)
+
+########## [3/6] mongodb · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=50 · runs 1,2,3 — 14:38:40 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.166667 p50/p95/p99=225901.17309250002/226062.31867540002/226074.25561480998 ms throttled=1996.981187 s rss=670.109375 MiB spill=False (436.46 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: con_huecos  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.166667 p50/p95/p99=252876.838138/262439.21139915/281828.62396914 ms throttled=2056.835681 s rss=679.359375 MiB spill=False (436.5 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2.json)
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.166667 p50/p95/p99=254637.4260335/273470.36673515/286648.42037335003 ms throttled=2057.342698 s rss=673.625 MiB spill=False (436.46 s)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3.json)
+
+########## [4/6] postgresql · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=1 · runs 1,2,3 — 15:01:27 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.670000 p50/p95/p99=1475.0235390000003/1697.717793/1787.562146 ms throttled=850.556221 s rss=16.1953125 MiB spill=False (420.93 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.656667 p50/p95/p99=1496.851423/1775.2340195999998/1891.1207152 ms throttled=877.66398 s rss=16.6796875 MiB spill=False (421.6 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.660000 p50/p95/p99=1491.6695405/1703.2043130999998/1795.60007298 ms throttled=869.415264 s rss=16.51953125 MiB spill=False (421.67 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r3.json)
+
+########## [5/6] postgresql · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=10 · runs 1,2,3 — 15:23:16 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.626667 p50/p95/p99=12799.337808500002/27160.63120315/28216.119821160002 ms throttled=1630.115411 s rss=43.63671875 MiB spill=False (427.7 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.620000 p50/p95/p99=12850.053225500002/27302.057029249998/28498.110460549997 ms throttled=1616.14061 s rss=43.703125 MiB spill=False (429.06 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r2.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.620000 p50/p95/p99=11399.932456/27503.928139999996/28435.3342162 ms throttled=1594.449074 s rss=43.75 MiB spill=False (426.87 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c10_r3.json)
+
+########## [6/6] postgresql · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=50 · runs 1,2,3 — 15:45:22 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.566667 p50/p95/p99=97198.917399/118158.9875634/124152.70177221 ms throttled=1870.231721 s rss=126.82421875 MiB spill=False (436.87 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.570000 p50/p95/p99=97011.963785/124447.48599399999/134633.7635755 ms throttled=1898.565278 s rss=126.92578125 MiB spill=False (436.96 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: con_huecos  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r2.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.586667 p50/p95/p99=93540.655033/127955.598691/131376.29917475002 ms throttled=1889.675805 s rss=127.05859375 MiB spill=False (436.89 s)
+   crudo: results/f8_anexo/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: completa  (results/f8_anexo/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_HIGH_c50_r3.json)
+
+########## Resumen de la sesión: 6 celda(s) completas, 0 con fallo
+Rendimiento del procesador: media 83.4 % (min 33.5, max 86) = 1913 MHz de media (min 769, max 1974), nominal 2296, de 426 muestras
+VÁLIDO: results/f8_anexo/measurements.csv
+Para ver qué queda:  scripts/run_benchmarks.sh --listar --salida f8_anexo --todo
+Registro: results/f8_anexo/run_benchmarks_20261104T135248Z.txt

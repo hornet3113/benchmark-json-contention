@@ -1,4 +1,117 @@
-% 03-resultados.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 03-resultados.tex — Sección 3: resultados consolidados.
+% Responde las preguntas 2 y 3 del revisor. Las cifras vienen de cifras/cifras.tex
+% y el cuerpo de la tabla de tablas/resultados.tex: nada escrito a mano.
 
+\section{Resultados consolidados}
+\label{sec:resultados}
+
+\subsection{Qué se consiguió medir}
+
+La matriz son \cifraCeldas{} celdas (2 motores $\times$ 3 perfiles $\times$ 2
+consultas $\times$ 3 concurrencias) con 3 repeticiones cada una:
+\cifraFilasCsv{} filas, todas en \texttt{results/measurements.csv}, validadas
+contra el esquema exacto de 14 columnas del manual. Ninguna combinación falta ni
+está repetida, y se descartaron \cifraDescartadas{} repeticiones.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Reparto de las \cifraFilasCsv{} filas por \texttt{status}. La
+           precedencia es \texttt{oom} > \texttt{error} > \texttt{spill} >
+           \texttt{ok}, así que una fila \texttt{oom} puede tener además volcado a
+           disco: por eso \cifraFilasConSpill{} filas tienen
+           \texttt{disk\_spill = true} y solo \cifraFilasSpill{} salen con
+           \texttt{status = spill}.}
+  \label{tab:estados}
+  \small
+  \begin{tabular}{lrl}
+    \toprule
+    \texttt{status} & Filas & Qué significa \\
+    \midrule
+    \texttt{ok}    & \cifraFilasOk{}    & la celda se midió sin incidencias \\
+    \texttt{spill} & \cifraFilasSpill{} & hubo volcado a disco durante la ventana \\
+    \texttt{error} & \cifraFilasError{} & percentiles invalidados por censura (A4) \\
+    \texttt{oom}   & \cifraFilasOom{}   & el kernel mató algún proceso del motor \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+De las \cifraCeldas{} celdas, \cifraCeldasMedibles{} son \textbf{medibles} (sus
+tres repeticiones salieron \texttt{ok} o \texttt{spill}). Las otras cuatro
+contienen filas \texttt{error} u \texttt{oom}: en ellas el motor no completó
+trabajo suficiente como para que un percentil signifique algo, y
+\textbf{eso es el resultado}, no un fallo del instrumento.
+
+\subsection{Tabla consolidada}
+
+\begin{longtable}{llllrrrrrrll}
+  \caption{Resultados por celda: media de las 3 repeticiones. Latencias en ms,
+           throttling en segundos por ventana de 300~s, \texttt{max\_rss\_mb} en
+           MiB.\label{tab:resultados}}\\
+  \toprule
+  Motor & Perfil & Consulta & c & qps & P50 & P95 & P99 & Throttl. & RSS & Spill & \texttt{status} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Motor & Perfil & Consulta & c & qps & P50 & P95 & P99 & Throttl. & RSS & Spill & \texttt{status} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  \input{tablas/resultados}
+\end{longtable}
+
+\leyendaNotas{}
+
+\subsection{Throttling de CPU (pregunta 3 del revisor)}
+
+Sí hubo throttling, y es la métrica que más fácil se malinterpreta. Dos
+advertencias necesarias para leer la columna:
+
+\begin{enumerate}
+  \item \textbf{Puede superar la duración de la ventana.} El kernel suma el tiempo
+        de throttling de \textbf{cada CPU} en la que el cgroup tenía hilos listos
+        para correr. Con 4 CPUs y una cuota de 1, cada segundo de reloj puede
+        acumular hasta 4 segundos de throttling. El máximo observado es de
+        \textbf{2086~s en una ventana de 300~s}. No es un error de medida: cAdvisor
+        reporta la misma suma, y las dos fuentes coinciden al 1~\%.
+  \item \textbf{Una parte no la causa el benchmark.} Se midió el throttling de cada
+        motor \textbf{en reposo}, sin consultas, por perfil: MongoDB acumula unos
+        27~s por ventana de 300~s en el perfil~C y 3.6~s en el~B, mientras
+        PostgreSQL se queda por debajo de 0.5~s en todos. Esa línea base está en
+        \texttt{results/f6/f6\_3/baseline/} y aparece en la
+        figura~\ref{fig:throttling-qps}.
+\end{enumerate}
+
+\subsection{Estabilidad de las mediciones}
+\label{sec:estabilidad}
+
+Antes de gastar las horas de la matriz se corrió una celda piloto completa y se
+exigió que el coeficiente de variación del throughput entre las tres repeticiones
+fuera menor del 15~\%; salió del 4.2~\% en MongoDB y del 3.8~\% en PostgreSQL.
+Sobre la matriz entera, \textbf{la dispersión se mantuvo baja en casi todas las
+celdas}, pero no en todas, y conviene decir cuáles:
+
+\begin{itemize}
+  \item \textbf{Dos celdas superan el 15~\%}, las dos de \texttt{Q2} con
+        \mbox{c=50}: PostgreSQL en el perfil~A (20.9~\%, con una caída del 34~\%
+        entre la primera y la tercera repetición) y MongoDB en el perfil~B
+        (24.0~\%, con una caída del 33~\%).
+  \item En la de \textbf{PostgreSQL} la causa es medible: las tres repeticiones
+        gastaron \emph{el mismo} tiempo de CPU (1197~s) y el rendimiento del
+        procesador cayó del 75.9~\% al 65.2~\% justo en la repetición que pierde el
+        34~\%. El mismo CPU, más lento, hace menos trabajo.
+  \item En la de \textbf{MongoDB} la causa \textbf{no está identificada}: el
+        tiempo de CPU es idéntico (598.6~s) y el reloj está plano (83.4~\%,
+        81.7~\%, 84.6~\%). La caché de Windows sobre el disco virtual, que
+        \texttt{drop\_caches} no alcanza, es el sospechoso natural, pero no hay
+        medición que lo demuestre y no se presenta como explicación.
+  \item Se comprobó que \textbf{no hay un sesgo sistemático} de «la primera
+        repetición es más rápida»: ocurre en 6 de las 30 celdas con las tres
+        repeticiones comparables, cuando por azar serían unas 10.
+\end{itemize}
+
+La consecuencia práctica es que la celda de \texttt{Q2} con \mbox{c=50} en el
+perfil~A es la \textbf{única} en la que MongoDB supera a PostgreSQL en
+\texttt{Q2}, y es también una de las dos celdas con dispersión alta. Esa
+comparación concreta no se usa para sostener ninguna conclusión
+(sección~\ref{sec:interpretacion}).

@@ -1,4 +1,70 @@
-% A1-anexo-variantes.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% A1-anexo-variantes.tex — Anexo: las dos variantes de estrés de memoria de Q2.
+% Requisito R-16.1: cobertura parcial, decidida y justificada, FUERA del CSV de
+% 36 celdas, que no se toca.
 
+\section{Anexo: las dos variantes de estrés de memoria de \texttt{Q2}}
+\label{sec:variantes-anexo}
+
+\subsection{Por qué este anexo existe, y por qué es parcial}
+
+El manual (§5.2) pide ejecutar \texttt{Q2} con dos configuraciones de memoria. El
+conteo de escenarios que fija el propio manual son 36 celdas, y con 36 el esquema
+del CSV \textbf{no tiene ninguna columna donde distinguir la variante}: añadir una
+está prohibido explícitamente. Las dos exigencias no caben juntas.
+
+La decisión tomada fue medir la segunda variante \textbf{en anexo}, fuera del CSV
+de las 36 celdas, y solo en \textbf{\texttt{PROFILE\_C\_SEVERE}}: los dos motores y
+las tres concurrencias, 6 celdas y 18 repeticiones. El razonamiento:
+
+\begin{itemize}
+  \item \texttt{PROFILE\_C} es el perfil con \textbf{menos memoria} (1~GiB). Si las
+        dos variantes no se diferencian ahí, no se diferencian en ninguno.
+  \item Por el plan ya se sabía que el ordenamiento de \texttt{Q2} ocupa
+        \textbf{273~kB} (sección~\ref{sec:planes}), muy por debajo tanto de los
+        4~MB de la variante restrictiva como de los 64~MB de la permisiva.
+\end{itemize}
+
+\textbf{La cobertura es parcial y se declara como tal}: no se midió
+\texttt{Q2\_MEM\_HIGH} en los perfiles A y B. Los datos están en
+\texttt{results/f8\_anexo/measurements.csv} (18 filas, validadas con el mismo
+esquema de 14 columnas).
+
+\subsection{Resultado: las dos variantes no se diferencian}
+
+\begin{table}[htbp]
+  \centering
+  \caption{\texttt{Q2} en \texttt{PROFILE\_C\_SEVERE}: variante restrictiva
+           (\texttt{work\_mem} 4~MB / \texttt{allowDiskUse} falso) frente a
+           permisiva (64~MB / verdadero). Throughput medio de 3 repeticiones.}
+  \label{tab:variantes}
+  \small
+  \begin{tabular}{lrrrrl}
+    \toprule
+    Motor & c & Restrictiva & Permisiva & Diferencia & Volcado \\
+    \midrule
+    MongoDB    & 1  & 0.0533 & 0.0444 & $-16.7$~\% & ninguno en ninguna \\
+    MongoDB    & 10 & 0.1000 & 0.1000 & $0.0$~\%   & ninguno en ninguna \\
+    MongoDB    & 50 & 0.1667 & 0.1667 & $0.0$~\%   & ninguno en ninguna \\
+    PostgreSQL & 1  & 0.5722 & 0.6622 & $+15.7$~\% & ninguno en ninguna \\
+    PostgreSQL & 10 & 0.6000 & 0.6222 & $+3.7$~\%  & ninguno en ninguna \\
+    PostgreSQL & 50 & 0.5611 & 0.5744 & $+2.4$~\%  & ninguno en ninguna \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Las dos diferencias mayores (un $-16.7$~\% en MongoDB y un $+15.7$~\% en
+PostgreSQL, las dos con un cliente) \textbf{apuntan en direcciones opuestas}, que
+es la forma que tiene el ruido, no un efecto del parámetro. Las otras cuatro están
+entre el 0 y el 3.7~\%, por debajo de la dispersión propia de esas celdas. Las 18
+repeticiones salieron \texttt{ok} y \textbf{ninguna volcó a disco}, ni con
+\texttt{allowDiskUse: true} en MongoDB ni con 4~MB de \texttt{work\_mem} en
+PostgreSQL.
+
+\subsection{Conclusión}
+
+\textbf{La premisa del manual no se cumple.} Se esperaba que la variante
+restrictiva forzara volcado a disco y que las dos configuraciones dieran resultados
+distintos; medidas las dos en el perfil más exigente, no se diferencian y ninguna
+vuelca. La causa está en el plan y no en el parámetro: el \texttt{LIMIT 1000}
+acota el ordenamiento a 273~kB, así que el límite de memoria que el manual varía
+nunca se alcanza. Se reporta como hallazgo, no como fallo del experimento.

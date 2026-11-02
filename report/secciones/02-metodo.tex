@@ -1,4 +1,159 @@
-% 02-metodo.tex — pendiente: se escribe con los datos ya generados.
-%
-% NINGÚN número a mano: usar \input de tablas/ y las macros de cifras/.
+% 02-metodo.tex — Sección 2: método de medición y verificación del baseline.
+% Responde las preguntas 1, 2 y 5 del revisor (diapo 11/13) y declara las
+% decisiones de SPEC §5 en vez de esconderlas (criterio de PLAN F9).
 
+\section{Método de medición y verificación del baseline}
+\label{sec:metodo}
+
+\subsection{El conjunto de datos es el mismo para los dos motores}
+\label{sec:baseline}
+
+Los \num{500000} documentos se generan con
+\texttt{generator/synthetic\_data\_generator.py} con \textbf{semilla fija 42}, de
+modo que el archivo es reproducible byte a byte. Su huella SHA-256 empieza por
+\texttt{0cd7fadb} y termina en \texttt{0414}, y queda registrada en
+\texttt{results/dataset\_stats.json} junto con las distribuciones obtenidas.
+
+Que los dos motores contengan lo mismo no se supone: se verificó en tres
+direcciones (archivo~$\to$~motor, motor~$\to$~archivo y motor~$\to$~motor) con
+\texttt{scripts/verify\_gate.py}, comparando los documentos exportados de cada
+motor contra la fuente en \emph{streaming}. Dos decisiones del esquema son las
+que hacen que la comparación sea válida:
+
+\begin{itemize}
+  \item \texttt{payment.final\_total} se almacena como \textbf{número} JSON, no
+        como cadena. Si fuera cadena, MongoDB ordenaría lexicográficamente
+        (\texttt{"9.5" > "100.0"}) y PostgreSQL numéricamente: los Top-1000 no
+        coincidirían y la comparación quedaría invalidada \emph{en silencio}.
+  \item \texttt{timestamp} se almacena como cadena ISO-8601 en los dos motores.
+        Como \texttt{Date} en MongoDB, el \texttt{\$gte} contra un literal de
+        texto no haría \emph{match}.
+\end{itemize}
+
+\subsection{Las consultas se leen del disco, no están dentro del código}
+
+Las cuatro consultas (\texttt{Q1} y \texttt{Q2}, para cada motor) se copiaron
+\textbf{literalmente} del manual a \texttt{queries/} y el runner las lee de ahí en
+cada ejecución, con una comprobación de integridad al arrancar. El revisor puede
+compararlas con el PDF sin leer código.
+
+Su equivalencia se verificó antes de medir: \texttt{scripts/check\_equivalence.py}
+calcula el resultado de referencia en Python con aritmética exacta
+(\texttt{Decimal}) y lo compara con lo que devuelve cada motor. Coinciden en todas
+las variantes. El orden \emph{dentro} del Top-1000 de \texttt{Q2} no es
+determinista —hay valores repetidos y la consulta no tiene desempate—, así que se
+compara como conjunto.
+
+\subsection{Qué es una repetición}
+
+\begin{enumerate}
+  \item Se baja el motor que estuviera arriba. \textbf{Solo un motor corre a la
+        vez}: con los dos arriba competirían por la caché de páginas de la VM y la
+        comparación dejaría de ser válida.
+  \item Se limpia la caché y \textbf{se mide el efecto} (cuánto bajó
+        \texttt{buff/cache}), no solo el código de salida del comando. Entre 0.7 y
+        1.8~GB liberados por repetición, registrados en el archivo crudo.
+  \item Se levanta el motor con el perfil de la celda y se espera su
+        \emph{healthcheck}.
+  \item \textbf{Se verifican los límites leyendo el cgroup} y se comparan con los
+        esperados del perfil. Si no coinciden, la repetición se aborta sin
+        escribir fila.
+  \item Ventanas de \textbf{60~s de calentamiento, 300~s de medición y 60~s de
+        enfriamiento}, como fija el manual. Los clientes trabajan en bucle cerrado,
+        sin pausa entre consultas.
+\end{enumerate}
+
+La concurrencia 50 se reparte en \textbf{10 procesos de 5 hilos}, cada hilo con su
+propia conexión. Se verificó que el motor ve los 50 clientes simultáneos
+igual que con 50 procesos, y se eligió este reparto porque con 50 procesos el
+runner ocupaba unos 2~GB y empujaba la VM a \emph{swap}, frente a unos 460~MB con
+10 procesos. La decisión se apoya en el P50, el throughput, la concurrencia vista
+por el motor, las conexiones y la memoria; \textbf{no} en el P95, que quedó
+contaminado por el arranque en frío.
+
+\subsection{Cómo se resumen las repeticiones (pregunta 5 del revisor)}
+\label{sec:resumen}
+
+\textbf{Tres repeticiones por celda}, y las tablas de este reporte dan la
+\textbf{media} de las tres. Se eligió la media y no la mediana porque con tres
+valores la mediana es simplemente el del medio y descarta los otros dos. Para que
+el promedio no esconda dispersión, cada celda se acompaña de su coeficiente de
+variación, y las celdas cuya dispersión supera el 15~\% o que muestran una
+tendencia monótona se señalan una por una en la sección~\ref{sec:resultados}.
+
+\subsection{Cómo se calculan los percentiles (pregunta 2 del revisor)}
+
+Se reportan \textbf{P50, P95 y P99}, no promedios de latencia. Se calculan con
+interpolación lineal (\texttt{statistics.quantiles} con
+\texttt{method="inclusive"}, el mismo método que \texttt{numpy} usa por defecto)
+sobre las latencias de las consultas \textbf{completadas dentro de la ventana de
+medición}. Las latencias crudas de cada consulta se conservan en
+\texttt{results/raw/}, así que los percentiles se pueden recalcular con otro
+método sin volver a medir.
+
+\paragraph{Los \emph{timeouts} son datos censurados, no ceros.}
+Una consulta que agota el límite de 300~s no se descarta ni se cuenta como un
+valor: es un dato \textbf{censurado por la derecha}, del que solo se sabe que su
+latencia es mayor que el límite. Por eso, cuando la fracción de \emph{timeouts}
+dentro de la ventana alcanza el 1~\%, la fila se marca con
+\texttt{status = error} y \textbf{cada percentil se declara válido o no}: el P99
+solo vale si los \emph{timeouts} son menos del 1~\%, el P95 menos del 5~\% y el
+P50 menos del 50~\%. Esa validez va fila por fila en \texttt{results/raw/}. En
+este experimento \cifraCeldasCensuradas{} celdas quedaron con percentiles
+invalidados, y se marcan en todas las tablas.
+
+\paragraph{Celdas con pocas muestras.}
+Con 300~s de ventana y consultas de 20~s, una celda puede completar 15
+consultas. Se marcan como \textbf{baja densidad muestral} (menos de 20
+completadas) y su P99 se lee con esa reserva, en vez de presentarlo como si
+viniera de cientos de muestras.
+
+\subsection{De dónde sale cada columna del CSV}
+
+Las 14 columnas se miden directamente, y \textbf{ninguna se rellena con un cero
+inventado}: si una lectura falta, la celda queda vacía y la fila sale con
+\texttt{status} \texttt{error} u \texttt{oom}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Origen de las columnas que no son identificadores.}
+  \label{tab:origen-columnas}
+  \small
+  \begin{tabularx}{\linewidth}{lX}
+    \toprule
+    \texttt{throughput\_qps} & consultas completadas en la ventana $\div$ 300~s \\
+    \texttt{latency\_p50/p95/p99\_ms} & percentiles de las completadas en la ventana \\
+    \texttt{cpu\_throttled\_seconds} & $\Delta$ \texttt{throttled\_usec} de
+      \texttt{cpu.stat} del cgroup $\div$ \num{1e6} \\
+    \texttt{max\_rss\_mb} & máximo de \texttt{anon} de \texttt{memory.stat},
+      muestreado cada segundo durante la ventana \\
+    \texttt{disk\_spill} & $\Delta$ \texttt{temp\_bytes} (PostgreSQL) o
+      contadores de \emph{spill} de \texttt{serverStatus} (MongoDB) \\
+    \texttt{status} & \texttt{oom} > \texttt{error} > \texttt{spill} > \texttt{ok} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+El cgroup se lee \textbf{desde fuera del contenedor}, en
+\texttt{/sys/fs/cgroup/docker/}, y no con \texttt{docker exec}: se midió que cada
+lectura por \texttt{exec} cuesta unos 250~ms y gasta CPU \emph{del motor}, y
+muestrear así cada segundo en el perfil C se comería un 8~\% de su cuota. Es
+decir, mediríamos la medición.
+
+\paragraph{Jerarquía de fuentes.}
+Las columnas del CSV salen del cgroup y de los motores. Prometheus, cAdvisor y
+node\_exporter (con \texttt{scrape\_interval: 1s}) alimentan las curvas y sirven
+de control cruzado, pero \textbf{no} producen ninguna columna. Se verificó que
+las dos fuentes miden lo mismo: \texttt{container\_memory\_rss} de cAdvisor es
+exactamente \texttt{anon} del cgroup —comprobado con el contenedor congelado, donde
+ningún proceso puede alterar la memoria— y el throttling de las dos fuentes
+difiere menos del 1~\% bajo carga.
+
+\subsection{Detección de suspensión del equipo}
+
+Si el equipo se suspende durante una ventana, la VM se congela: las consultas en
+vuelo se detienen y el reloj de pared avanza sin que corra nada. Esa ventana ya no
+mide lo que dice medir. El runner lo detecta comparando el reloj de pared con el
+monótono durante la ventana y marca la repetición como \texttt{error}. En esta
+matriz \textbf{no ocurrió ninguna vez}, y el número de repeticiones descartadas
+por cualquier motivo es \cifraDescartadas{} (sección~\ref{sec:integridad}).
