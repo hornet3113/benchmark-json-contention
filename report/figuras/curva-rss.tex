@@ -2,41 +2,77 @@
 %
 % Dos series por panel, y la diferencia entre ellas es el hallazgo F6-A3:
 %   anon        = lo que mide la columna `max_rss_mb` del CSV;
-%   working_set = memory.current − inactive_file, que SÍ incluye la memoria
+%   working_set = memory.current menos inactive_file, que SÍ incluye la memoria
 %                 compartida (`shared_buffers`) de PostgreSQL.
 % Los `shared_buffers` son `shmem`, no `anon`, así que con `max_rss_mb` PostgreSQL
 % sale artificialmente eficiente (SPEC §4 y A11). M3 se interpreta con working_set.
 %
 % Fuente: la serie de 1 s del cgroup que el runner guarda en results/raw/
 % (serie_cgroup_1s), es decir las MISMAS lecturas de las que sale la columna.
+%
+% Los paneles van escritos uno a uno, sin un macro con parámetros: dentro de un
+% \newcommand los parámetros chocan con el analizador de claves de pgfplots.
 
-\newcommand{\rssPanel}[4]{%
-  % #1 archivo .dat · #2 título · #3 color · #4 "leyenda" para mostrarla
+\begin{figure}[htbp]
+  \centering
   \begin{tikzpicture}
     \begin{axis}[
-        title={#2}, title style={font=\small},
+        title={MongoDB · perfil A · Q2 · c=50}, title style={font=\small},
         xlabel={Segundo de la ventana de medición}, ylabel={Memoria (MiB)},
         xmin=0, xmax=300, ymin=0,
         width=0.47\linewidth, height=5cm,
         legend pos=south east, legend cell align=left,
       ]
-      \addplot[color=#3, thick, no marks] table [x=t_s, y=working_set_mib] {#1};
-      \addplot[color=#3!55, thick, densely dashed, no marks]
-        table [x=t_s, y=anon_mib] {#1};
-      \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {#1};
-      \ifthenelse{\equal{#4}{leyenda}}%
-        {\legend{\texttt{working\_set}, \texttt{anon}, \texttt{shmem}}}{}%
+      \addplot[color=blue!60!black, thick, no marks] table [x=t_s, y=working_set_mib] {datos/rss_mongodb_A_Q2_c50.dat};
+      \addplot[color=blue!60!black!55, thick, densely dashed, no marks]
+        table [x=t_s, y=anon_mib] {datos/rss_mongodb_A_Q2_c50.dat};
+      \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {datos/rss_mongodb_A_Q2_c50.dat};
+      \legend{\texttt{working\_set}, \texttt{anon}, \texttt{shmem}}
     \end{axis}
-  \end{tikzpicture}%
-}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · perfil A · Q2 · c=50}, title style={font=\small},
+        xlabel={Segundo de la ventana de medición}, ylabel={Memoria (MiB)},
+        xmin=0, xmax=300, ymin=0,
+        width=0.47\linewidth, height=5cm,
+        legend pos=south east, legend cell align=left,
+      ]
+      \addplot[color=red!60!black, thick, no marks] table [x=t_s, y=working_set_mib] {datos/rss_postgresql_A_Q2_c50.dat};
+      \addplot[color=red!60!black!55, thick, densely dashed, no marks]
+        table [x=t_s, y=anon_mib] {datos/rss_postgresql_A_Q2_c50.dat};
+      \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {datos/rss_postgresql_A_Q2_c50.dat};
+    \end{axis}
+  \end{tikzpicture}
 
-\begin{figure}[htbp]
-  \centering
-  \rssPanel{rss_mongodb_A_Q2_c50.dat}{MongoDB · perfil A · Q2 · c=50}{blue!60!black}{leyenda}\hfill
-  \rssPanel{rss_postgresql_A_Q2_c50.dat}{PostgreSQL · perfil A · Q2 · c=50}{red!60!black}{}
-
-  \rssPanel{rss_mongodb_C_Q2_c50.dat}{MongoDB · perfil C · Q2 · c=50}{blue!60!black}{}\hfill
-  \rssPanel{rss_postgresql_C_Q2_c50.dat}{PostgreSQL · perfil C · Q2 · c=50}{red!60!black}{}
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={MongoDB · perfil C · Q2 · c=50}, title style={font=\small},
+        xlabel={Segundo de la ventana de medición}, ylabel={Memoria (MiB)},
+        xmin=0, xmax=300, ymin=0,
+        width=0.47\linewidth, height=5cm,
+        legend pos=south east, legend cell align=left,
+      ]
+      \addplot[color=blue!60!black, thick, no marks] table [x=t_s, y=working_set_mib] {datos/rss_mongodb_C_Q2_c50.dat};
+      \addplot[color=blue!60!black!55, thick, densely dashed, no marks]
+        table [x=t_s, y=anon_mib] {datos/rss_mongodb_C_Q2_c50.dat};
+      \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {datos/rss_mongodb_C_Q2_c50.dat};
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · perfil C · Q2 · c=50}, title style={font=\small},
+        xlabel={Segundo de la ventana de medición}, ylabel={Memoria (MiB)},
+        xmin=0, xmax=300, ymin=0,
+        width=0.47\linewidth, height=5cm,
+        legend pos=south east, legend cell align=left,
+      ]
+      \addplot[color=red!60!black, thick, no marks] table [x=t_s, y=working_set_mib] {datos/rss_postgresql_C_Q2_c50.dat};
+      \addplot[color=red!60!black!55, thick, densely dashed, no marks]
+        table [x=t_s, y=anon_mib] {datos/rss_postgresql_C_Q2_c50.dat};
+      \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {datos/rss_postgresql_C_Q2_c50.dat};
+    \end{axis}
+  \end{tikzpicture}
 
   \caption[Curva de memoria durante la ventana]{%
     \textbf{Memoria del contenedor durante la ventana, muestreada cada segundo.}

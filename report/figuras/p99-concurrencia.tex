@@ -2,44 +2,76 @@
 %
 % R-30.1 (decisión de Alix, al aprobar F7-e): la figura muestra LAS DOS VISTAS, no
 % una nota al pie. Con c=50 en los perfiles B y C, hasta el 91 % de las consultas
-% de la ventana son la primera consulta en frío de cada worker (F7.3), así que
+% de la ventana son la primera consulta en frío de cada cliente (F7.3), así que
 % parte de la subida de la curva es arranque en frío y no latencia del motor.
 %   - línea continua: el P99 de la columna del CSV (lo que mide el manual);
-%   - línea punteada: el P99 recalculado sin la primera consulta de cada worker,
+%   - línea punteada: el P99 recalculado sin la primera consulta de cada cliente,
 %     desde results/raw/, que es la vista en régimen.
 % Donde el .dat trae `nan` no hay vista en régimen porque TODAS las consultas de
 % la ventana eran primeras consultas: la línea punteada se interrumpe ahí
 % (unbounded coords=jump, en el preámbulo).
 %
-% El macro incluye \begin{axis} y \end{axis}: partir un entorno entre el macro y
-% quien lo llama rompe pgfplots, que necesita recoger el cuerpo completo.
+% Los cuatro paneles van escritos uno a uno, SIN un macro con parámetros: dentro
+% de un \newcommand, los '#' del cuerpo chocan con el analizador de claves de
+% pgfplots ("Illegal parameter number in definition of \pgfkeys@..."). Es más
+% largo, pero no depende de cómo pgfkeys reinterprete el cuerpo.
 
-\newcommand{\p99Panel}[4]{%
-  % #1 archivo .dat · #2 título · #3 color · #4 "leyenda" para mostrarla
+\begin{figure}[htbp]
+  \centering
   \begin{tikzpicture}
     \begin{axis}[
-        title={#2}, title style={font=\small},
+        title={MongoDB · Q2 · perfil A}, title style={font=\small},
         xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
         xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
         ymin=0, width=0.47\linewidth, height=5cm,
         legend pos=north west, legend cell align=left,
       ]
-      \addplot[color=#3, mark=*, thick] table [x=concurrencia, y=p99_csv] {#1};
-      \addplot[color=#3, mark=o, densely dotted, thick]
-        table [x=concurrencia, y=p99_sin_frias] {#1};
-      \ifthenelse{\equal{#4}{leyenda}}%
-        {\legend{P99 del CSV, Sin la 1.\textsuperscript{a} en frío}}{}%
+      \addplot[color=blue!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_mongodb_Q2_A.dat};
+      \addplot[color=blue!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_mongodb_Q2_A.dat};
+      \legend{P99 del CSV, Sin la 1.\textsuperscript{a} en frío}
     \end{axis}
-  \end{tikzpicture}%
-}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · Q2 · perfil A}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left,
+      ]
+      \addplot[color=red!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_postgresql_Q2_A.dat};
+      \addplot[color=red!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_postgresql_Q2_A.dat};
+    \end{axis}
+  \end{tikzpicture}
 
-\begin{figure}[htbp]
-  \centering
-  \p99Panel{p99_mongodb_Q2_A.dat}{MongoDB · Q2 · perfil A}{blue!60!black}{leyenda}\hfill
-  \p99Panel{p99_postgresql_Q2_A.dat}{PostgreSQL · Q2 · perfil A}{red!60!black}{}
-
-  \p99Panel{p99_mongodb_Q2_C.dat}{MongoDB · Q2 · perfil C}{blue!60!black}{}\hfill
-  \p99Panel{p99_postgresql_Q2_C.dat}{PostgreSQL · Q2 · perfil C}{red!60!black}{}
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={MongoDB · Q2 · perfil C}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left,
+      ]
+      \addplot[color=blue!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_mongodb_Q2_C.dat};
+      \addplot[color=blue!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_mongodb_Q2_C.dat};
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · Q2 · perfil C}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left,
+      ]
+      \addplot[color=red!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_postgresql_Q2_C.dat};
+      \addplot[color=red!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_postgresql_Q2_C.dat};
+    \end{axis}
+  \end{tikzpicture}
 
   \caption[P99 contra concurrencia, en dos vistas]{%
     \textbf{P99 contra concurrencia, en dos vistas (R-30.1).} La línea continua es

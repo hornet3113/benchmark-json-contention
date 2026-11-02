@@ -23,17 +23,17 @@
         height=7.5cm, width=\linewidth,
       ]
       \addplot[only marks, mark=*,       mark size=1.6pt, blue!65!black]
-        table [x=throttling_s, y=qps] {throttling_mongodb_c1.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_mongodb_c1.dat};
       \addplot[only marks, mark=*,       mark size=2.6pt, blue!65!black]
-        table [x=throttling_s, y=qps] {throttling_mongodb_c10.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_mongodb_c10.dat};
       \addplot[only marks, mark=*,       mark size=3.6pt, blue!65!black]
-        table [x=throttling_s, y=qps] {throttling_mongodb_c50.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_mongodb_c50.dat};
       \addplot[only marks, mark=square*, mark size=1.6pt, red!65!black]
-        table [x=throttling_s, y=qps] {throttling_postgresql_c1.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_postgresql_c1.dat};
       \addplot[only marks, mark=square*, mark size=2.6pt, red!65!black]
-        table [x=throttling_s, y=qps] {throttling_postgresql_c10.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_postgresql_c10.dat};
       \addplot[only marks, mark=square*, mark size=3.6pt, red!65!black]
-        table [x=throttling_s, y=qps] {throttling_postgresql_c50.dat};
+        table [x=throttling_s, y=qps] {datos/throttling_postgresql_c50.dat};
       \legend{MongoDB c=1, MongoDB c=10, MongoDB c=50,
               PostgreSQL c=1, PostgreSQL c=10, PostgreSQL c=50}
       % F6.3: línea base de throttling en reposo de MongoDB en el perfil C.

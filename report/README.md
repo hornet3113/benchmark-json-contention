@@ -54,3 +54,11 @@ exactamente lo que pide el criterio de trazabilidad. Un PNG sería opaco.
    archivos con TeX, donde el carácter de comentario es `%`. Una línea que empiece
    por `#` intentaría leerse como datos. Lo genera así
    `scripts/build_report_data.py`.
+3. **Nada de `\newcommand` con parámetros dentro de una figura.** pgfplots
+   reinterpreta el cuerpo de la figura con su analizador de claves, y los `#` de
+   los parámetros del macro lo rompen: *«Illegal parameter number in definition
+   of \pgfkeys@...»*, y de nuevo sin PDF. Los paneles de las figuras están
+   escritos uno a uno a propósito: es más largo, pero no depende de cómo pgfkeys
+   reinterprete el cuerpo.
+4. **Cada figura nombra sus datos con la ruta completa** (`datos/xxx.dat`) en vez
+   de apoyarse en la clave `table/search path`. Una dependencia menos.

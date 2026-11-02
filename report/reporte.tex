@@ -26,15 +26,14 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{siunitx}
-\usepackage{ifthen}   % \ifthenelse en las macros de las figuras
 \sisetup{group-separator={\,}, group-minimum-digits=4, detect-weight}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.18}
 
-% Las figuras leen los .dat de report/datos/
+% Las figuras nombran sus datos con la ruta completa (datos/xxx.dat) en vez de
+% apoyarse en `table/search path`: una clave menos de la que depender.
 \pgfplotsset{
-  table/search path={datos},
   % Un `nan` en un .dat es un punto que NO existe: en Mongo · C · Q2 · c=50 TODAS
   % las consultas de la ventana son primeras consultas, así que no hay P99 "en
   % régimen". Con unbounded coords=jump pgfplots corta la línea ahí, en vez de
@@ -45,7 +44,6 @@
     width=0.92\linewidth, height=6cm, unbounded coords=jump,
   },
 }
-\pgfplotstableset{search path={datos}}
 
 \hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black,
             pdftitle={Benchmarking de MongoDB frente a PostgreSQL JSONB bajo contención}}
