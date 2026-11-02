@@ -1,5 +1,5 @@
-# M3: huella por 1 000 documentos EXAMINADOS, con el denominador tomado de los planes (A11): Mongo Q1 500000, Mongo Q2 250207 (usa el índice), Postgres 500000 en las dos (Seq Scan). cpu_s_r1 es el tiempo de CPU del cgroup en la ventana de la repetición 1. Se dan las DOS memorias: max_rss_mb (anon, excluye los shared_buffers de Postgres) y working_set, que es con el que se interpreta la memoria (A11, F6-A3).
-# generado por scripts/build_report_data.py — no editar a mano
+% M3: huella por 1 000 documentos EXAMINADOS, con el denominador tomado de los planes (A11): Mongo Q1 500000, Mongo Q2 250207 (usa el índice), Postgres 500000 en las dos (Seq Scan). cpu_s_r1 es el tiempo de CPU del cgroup en la ventana de la repetición 1. Se dan las DOS memorias: max_rss_mb (anon, excluye los shared_buffers de Postgres) y working_set, que es con el que se interpreta la memoria (A11, F6-A3).
+% generado por scripts/build_report_data.py — no editar a mano
 motor perfil query concurrencia docs_examinados_por_consulta consultas_r1 cpu_s_r1 cpu_ms_por_mil_docs max_rss_mb working_set_mib
 MongoDB A Q1 1 500000 87 372.4 8.5605 823.6 1042.3
 MongoDB A Q1 10 500000 166 1197.3 14.4251 872.9 1093.2

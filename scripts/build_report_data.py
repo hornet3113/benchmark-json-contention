@@ -166,7 +166,9 @@ def docs_examinados(engine: str, query_id: str) -> int:
 def dat(nombre: str, columnas: list[str], filas: list[list], comentario: str) -> None:
     d = REPORT / "datos"
     d.mkdir(parents=True, exist_ok=True)
-    cuerpo = [f"# {comentario}", "# generado por scripts/build_report_data.py — no editar a mano",
+    # El comentario va con '%', no con '#': pgfplots lee el archivo con TeX y '%' es
+    # su carácter de comentario. Con '#' intentaría leer esa línea como datos.
+    cuerpo = [f"% {comentario}", "% generado por scripts/build_report_data.py — no editar a mano",
               " ".join(columnas)]
     cuerpo += [" ".join("nan" if c is None else str(c) for c in f) for f in filas]
     (d / nombre).write_text("\n".join(cuerpo) + "\n")

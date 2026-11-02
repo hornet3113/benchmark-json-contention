@@ -43,3 +43,14 @@ exactamente lo que pide el criterio de trazabilidad. Un PNG sería opaco.
 - **A11 / F6-A3**: M3 se calcula con `working_set`, no con `max_rss_mb`.
 - **R-27.1**: el reporte incluye la tabla de repeticiones descartadas; si fueron
   cero, lo dice.
+
+## Dos trampas de LaTeX que ya están resueltas (no reintroducirlas)
+
+1. **`\ldots` pegado a una letra.** `\ldots{}d07a` es correcto; `\ldots d07a` sin
+   llaves hace que LaTeX lea `\ldotsd` como un comando inexistente y la
+   compilación **no produce PDF**. Pasó con los digests de la sección 1. Las
+   llaves vacías cierran el comando venga detrás letra o dígito.
+2. **Los comentarios de los `.dat` van con `%`, no con `#`.** pgfplots lee esos
+   archivos con TeX, donde el carácter de comentario es `%`. Una línea que empiece
+   por `#` intentaría leerse como datos. Lo genera así
+   `scripts/build_report_data.py`.

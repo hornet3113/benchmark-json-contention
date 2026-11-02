@@ -1,5 +1,5 @@
-# Curva de memoria de MongoDB · B · Q2 · c=50 · r1, de la serie de 1 s del cgroup. anon es lo que mide max_rss_mb; working_set incluye la memoria compartida de Postgres (F6-A3, A11).
-# generado por scripts/build_report_data.py — no editar a mano
+% Curva de memoria de MongoDB · B · Q2 · c=50 · r1, de la serie de 1 s del cgroup. anon es lo que mide max_rss_mb; working_set incluye la memoria compartida de Postgres (F6-A3, A11).
+% generado por scripts/build_report_data.py — no editar a mano
 t_s anon_mib working_set_mib shmem_mib
 0.0 737.4 1178.2 0.0
 1.0 738.7 1178.9 0.0
