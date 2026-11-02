@@ -1,0 +1,68 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Especificaciones del host y del entorno Docker}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Host y máquina virtual}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Motores, fijados por digest}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Perfiles de recursos}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Limitaciones del entorno, declaradas}{4}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Consecuencia para la limpieza de caché: permiso de \emph {root}}{4}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Método de medición y verificación del baseline}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}El conjunto de datos es el mismo para los dos motores}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Las consultas se leen del disco, no están dentro del código}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Qué es una repetición}{5}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Cómo se resumen las repeticiones (pregunta 5 del revisor)}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Cómo se calculan los percentiles (pregunta 2 del revisor)}{5}{subsection.2.5}%
+\contentsline {paragraph}{Los \emph {timeouts} son datos censurados, no ceros.}{6}{section*.2}%
+\contentsline {paragraph}{Celdas con pocas muestras.}{6}{section*.3}%
+\contentsline {subsection}{\numberline {2.6}De dónde sale cada columna del CSV}{6}{subsection.2.6}%
+\contentsline {paragraph}{Jerarquía de fuentes.}{6}{section*.4}%
+\contentsline {subsection}{\numberline {2.7}Detección de suspensión del equipo}{6}{subsection.2.7}%
+\contentsline {section}{\numberline {3}Resultados consolidados}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Qué se consiguió medir}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Tabla consolidada}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Throttling de CPU (pregunta 3 del revisor)}{8}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Estabilidad de las mediciones}{8}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Análisis gráfico}{8}{section.4}%
+\contentsline {section}{\numberline {5}Planes de ejecución}{10}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Dos avisos para leerlos}{10}{subsection.5.1}%
+\contentsline {paragraph}{Los planes se capturan con un solo cliente.}{10}{section*.5}%
+\contentsline {paragraph}{En \texttt {EXPLAIN (BUFFERS)} los contadores incluyen a los hijos.}{10}{section*.6}%
+\contentsline {subsection}{\numberline {5.2}La asimetría de planes, declarada}{10}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Lo que el plan explica del cuello de botella (pregunta 6)}{12}{subsection.5.3}%
+\contentsline {paragraph}{\texttt {Q1} en PostgreSQL: el plan explica el volcado.}{12}{section*.7}%
+\contentsline {paragraph}{\texttt {Q2} en los dos motores: el plan explica por qué \emph {no} hay volcado.}{12}{section*.8}%
+\contentsline {section}{\numberline {6}Interpretación}{12}{section.6}%
+\contentsline {subsection}{\numberline {6.1}M1: ¿cómo se degrada cada motor al apretar los recursos?}{12}{subsection.6.1}%
+\contentsline {paragraph}{\texttt {Q1} (desanidar y agrupar): MongoDB gana siempre.}{12}{section*.9}%
+\contentsline {paragraph}{\texttt {Q2} (ordenar y quedarse con el Top-1000): PostgreSQL gana, y la ventaja crece al apretar.}{12}{section*.10}%
+\contentsline {paragraph}{La única excepción, y por qué no se usa.}{12}{section*.11}%
+\contentsline {subsection}{\numberline {6.2}M2: ¿hubo volcado a disco y OOM, y dónde?}{12}{subsection.6.2}%
+\contentsline {paragraph}{Volcado: sí, masivo, y solo en PostgreSQL con \texttt {Q1}.}{12}{section*.12}%
+\contentsline {paragraph}{OOM: cinco filas, y hay que distinguir dónde ocurrió cada uno.}{13}{section*.13}%
+\contentsline {paragraph}{La peor celda, y cómo no leerla.}{13}{section*.14}%
+\contentsline {paragraph}{Respuesta a M2.}{13}{section*.15}%
+\contentsline {subsection}{\numberline {6.3}La premisa del manual sobre las dos variantes de \texttt {Q2}}{13}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}M3: huella de CPU y memoria por cada 1000 documentos}{13}{subsection.6.4}%
+\contentsline {paragraph}{CPU por 1000 documentos (perfil A, un cliente).}{14}{section*.16}%
+\contentsline {paragraph}{La memoria depende de cuál de las dos memorias se mire, y esto es importante.}{14}{section*.17}%
+\contentsline {paragraph}{Un matiz honesto sobre \texttt {working\_set}.}{14}{section*.18}%
+\contentsline {subsection}{\numberline {6.5}Y la conclusión que el throttling deja clara}{14}{subsection.6.5}%
+\contentsline {section}{\numberline {7}Recomendaciones técnicas para despliegues documentales en la nube}{14}{section.7}%
+\contentsline {paragraph}{1. Elegir el motor por la forma de la consulta, no por el motor.}{14}{section*.19}%
+\contentsline {paragraph}{2. Dimensionar \texttt {work\_mem} mirando el plan, no el tamaño de la tabla.}{14}{section*.20}%
+\contentsline {paragraph}{3. En PostgreSQL, vigilar \texttt {temp\_bytes} como métrica de primera línea.}{14}{section*.21}%
+\contentsline {paragraph}{4. No usar la memoria residente para dimensionar un contenedor de PostgreSQL.}{14}{section*.22}%
+\contentsline {paragraph}{5. Con límites de CPU bajos, el calentamiento tiene que ser largo.}{15}{section*.23}%
+\contentsline {paragraph}{6. Un límite de memoria sin \emph {swap} convierte la saturación en caída, no en lentitud.}{15}{section*.24}%
+\contentsline {paragraph}{7. Medir en un portátil obliga a declarar la frecuencia del procesador.}{15}{section*.25}%
+\contentsline {section}{\numberline {A}Anexo: las dos variantes de estrés de memoria de \texttt {Q2}}{15}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Por qué este anexo existe, y por qué es parcial}{15}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Resultado: las dos variantes no se diferencian}{15}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Conclusión}{15}{subsection.A.3}%
+\contentsline {section}{\numberline {B}Anexo: integridad experimental}{16}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Repeticiones descartadas}{16}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Lo que quedó sin explicar}{16}{subsection.B.2}%
+\contentsline {paragraph}{Una celda con dispersión alta y sin causa identificada.}{16}{section*.26}%
+\contentsline {paragraph}{La frecuencia del procesador no se puede medir desde dentro.}{16}{section*.27}%
+\contentsline {subsection}{\numberline {B.3}Lo que el entorno no permite afirmar}{16}{subsection.B.3}%
+\contentsline {subsection}{\numberline {B.4}Lo que sí se verificó antes de medir}{16}{subsection.B.4}%
+\contentsline {subsection}{\numberline {B.5}Reproducibilidad}{16}{subsection.B.5}%

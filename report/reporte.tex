@@ -14,7 +14,15 @@
 
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[spanish,es-tabla]{babel}
+% El documento compila con o sin los paquetes de español y de unidades. Si falta
+% alguno, se avisa al compilar y se sigue: así el reporte se puede reconstruir en
+% una instalación mínima de LaTeX (R-33, reproducibilidad), aunque con peor
+% tipografía. Para tenerlos bien:
+%   sudo apt install texlive-lang-spanish texlive-science
+\IfFileExists{babel-spanish.ldf}%
+  {\usepackage[spanish,es-tabla]{babel}}%
+  {\usepackage[english]{babel}%
+   \GenericWarning{}{AVISO: falta texlive-lang-spanish; sin guionado en español}}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -25,8 +33,11 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{xcolor}
-\usepackage{siunitx}
-\sisetup{group-separator={\,}, group-minimum-digits=4, detect-weight}
+\IfFileExists{siunitx.sty}%
+  {\usepackage{siunitx}%
+   \sisetup{group-separator={\,}, group-minimum-digits=4, detect-weight}}%
+  {\newcommand{\num}[1]{##1}%   (doble almohadilla: esto va dentro de \IfFileExists)
+   \GenericWarning{}{AVISO: falta siunitx; los miles van sin separador}}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.18}

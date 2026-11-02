@@ -174,10 +174,17 @@ def dat(nombre: str, columnas: list[str], filas: list[list], comentario: str) ->
     (d / nombre).write_text("\n".join(cuerpo) + "\n")
 
 
-def tabla(nombre: str, cuerpo: str) -> None:
+def tabla(nombre: str, cuerpo: str, cierra: str = "") -> None:
+    """Cuerpo de tabla para \\input. SIN `\\\\` en la última fila: ese salto abre una
+    fila vacía y \\bottomrule, que es un \\noalign, cae dentro de ella."""
     d = REPORT / "tablas"
     d.mkdir(parents=True, exist_ok=True)
-    (d / nombre).write_text("% generado por scripts/build_report_data.py — no editar a mano\n" + cuerpo)
+    cuerpo = cuerpo.rstrip()
+    if cierra:
+        cuerpo += "\n" + cierra
+    # El archivo TERMINA en '%' para que el salto de línea final no entre en la tabla.
+    (d / nombre).write_text("% generado por scripts/build_report_data.py — no editar a mano\n"
+                            + cuerpo + "%\n")
 
 
 def cifras(valores: dict) -> None:
@@ -280,7 +287,9 @@ def main() -> int:
             "en la ventana" if dentro else "en el calentamiento",
             str((raw.get("censura", {}) or {}).get("completadas_en_ventana")),
             "sí" if raw.get("estado_contenedor_final", {}).get("OOMKilled") else "no"]) + r" \\")
-    tabla("oom.tex", "\n".join(oom_filas) + "\n")
+    # \\bottomrule va DENTRO del archivo: con \\input en un tabular, ponerlo después
+    # del \\input da "Misplaced \\noalign" (comprobado en aislado con pdflatex).
+    tabla("oom.tex", "\n".join(oom_filas), cierra="\\bottomrule")
 
     # --- M3: huella por 1 000 documentos examinados (A11) --------------------
     # El denominador sale de los PLANES, como pide SPEC A11, no de una suposición:

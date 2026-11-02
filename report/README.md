@@ -62,3 +62,20 @@ exactamente lo que pide el criterio de trazabilidad. Un PNG sería opaco.
    reinterprete el cuerpo.
 4. **Cada figura nombra sus datos con la ruta completa** (`datos/xxx.dat`) en vez
    de apoyarse en la clave `table/search path`. Una dependencia menos.
+5. **`\input` dentro de un `tabular` no admite `\bottomrule` después.** Da
+   *«Misplaced \noalign»* (comprobado en aislado con pdflatex). Por eso el cuerpo
+   generado de la tabla de OOM **cierra él mismo con `\bottomrule`** y la sección
+   solo hace `\input`. En la tabla grande no hace falta, porque en un `longtable`
+   el `\bottomrule` va dentro de `\endfoot`, antes del cuerpo.
+6. **Dentro de `\IfFileExists` los `#` se duplican.** LaTeX guarda las dos ramas
+   en una definición, así que el respaldo de `\num` se escribe `{##1}`.
+
+## Paquetes necesarios
+
+```sh
+sudo apt install texlive-lang-spanish texlive-science   # babel español y siunitx
+```
+
+Sin ellos el documento **compila igual** —el preámbulo lo detecta y avisa— pero
+sale con «Abstract» y «Contents» en inglés, sin guionado español y con los miles
+sin separador.
