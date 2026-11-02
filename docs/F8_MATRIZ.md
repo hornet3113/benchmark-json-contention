@@ -437,3 +437,53 @@ las dos celdas de arriba son sucesos puntuales, no un defecto del protocolo.
   Segunda evidencia de OOM en una query del manual, ahora en PROFILE_B, no solo en C.
 - Mongo con c=50 en PROFILE_C **no dio OOM** (pendiente abierto desde F5): la
   celda de Q2 salió `ok` ×3 con CV 0 %.
+
+### Bloque 5 — las 10 corridas que faltaban (2026-11-03, 08:24–09:40 UTC)
+
+`results/run_benchmarks_20261103T082456Z.txt`. 4 celdas, 10 repeticiones,
+**0 fallos**. El recuento del dataset tras cada OOM funcionó con el arreglo del
+reintento: ninguna parada en falso.
+
+| Celda (Postgres, c=50) | status | qps | CV |
+|---|---|---|---|
+| B · Q1 | `oom`, `oom`, `error` | 0.013 ×3 | 0 % |
+| B · Q2_MEM_LOW | `ok` ×3 | 0.953 / 1.127 / 1.087 | 8.6 % |
+| C · Q1 | **`oom` ×3** | **0.000** ×3 | — |
+| C · Q2_MEM_LOW | `ok` ×3 | 0.563 / 0.567 / 0.553 | 1.2 % |
+
+**`postgresql · C · Q1 · c=50` no completó ni una consulta en las 3
+repeticiones**: throughput 0.000 y `oom` en todas. Es el extremo del
+experimento: 50 clientes haciendo `$unwind` sobre 500 000 documentos con 1 CPU y
+1 GiB. Con `throughput_qps = 0` y las latencias vacías, la fila dice exactamente
+lo que pasó (A4), sin inventar nada.
+
+Frecuencia de la sesión: media 83.7 %, mínimo 60.9 % (1 922 y 1 398 MHz).
+
+## TANDA 1 COMPLETA — 108 de 108 corridas (2026-11-03)
+
+`results/measurements.csv`: **108 filas, 36 celdas, `VÁLIDO`** con
+`--expect-rows 108`. Ninguna combinación falta ni está repetida. **Cero
+descartes** (R-27.1).
+
+| `status` | Filas |
+|---|---|
+| `ok` | 78 |
+| `spill` | 18 |
+| `error` | 7 |
+| `oom` | **5** |
+
+24 filas con `disk_spill=true` (las 18 de `status=spill` más 6 donde `oom` o
+`error` tienen precedencia). **Las 24 son de Postgres con Q1**; ninguna de Mongo.
+
+**Estado de los criterios de aceptación de PLAN F8:**
+
+- 108 filas con el conteo de A2 (tanda 1), sin faltar ni duplicar: **cumplido**.
+- Todas pasan `validate_csv.py`: **cumplido**.
+- Evidencia del flush en cada repetición, con su vía: **cumplido**.
+- Planes de las celdas de c=1 (R-31): 12 archivos en `results/explains/`: **cumplido**.
+- Logs correlacionados de las filas `error`/`oom` en `results/logs/`: **pendiente (F8-c)**.
+
+**Seis celdas medibles incumplen algún criterio de estabilidad**, todas de
+`Q2_MEM_LOW`: dos por CV (24.0 % y 20.9 %, las dos analizadas en el bloque 4) y
+cuatro solo por la tendencia del p50, que es lo que F8-e propone dejar como
+observación. Las demás 24 celdas medibles cumplen.

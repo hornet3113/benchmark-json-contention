@@ -1,0 +1,75 @@
+== run_benchmarks.sh — 20261103T082456Z — loadavg 0.16 0.20 0.37
+host: bateria estado=2 carga=95%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## [1/4] postgresql · PROFILE_B_MEDIUM · Q1 · c=50 · runs 3 — 08:24:59 UTC
+== postgresql_PROFILE_B_MEDIUM_Q1_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=error qps=0.013333 p50/p95/p99=219361.98482349998/283268.26483935/292150.31366786995 ms throttled=1536.634205 s rss=1802.17578125 MiB spill=True (437.1 s)
+   - baja densidad muestral: 4 completadas en la ventana (A4)
+   - 46 consulta(s) fallidas o con timeout dentro de la ventana
+   - datos censurados por la derecha: 92.0% de timeouts a 300 s (≥ 1%); percentiles válidos: ninguno
+   crudo: results/raw/postgresql_PROFILE_B_MEDIUM_Q1_c50_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_B_MEDIUM_Q1_c50_r3.json)
+
+########## [2/4] postgresql · PROFILE_B_MEDIUM · Q2_MEM_LOW · c=50 · runs 1,2,3 — 08:32:49 UTC
+== postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.953333 p50/p95/p99=55896.1989025/67572.31883475/69716.88649805 ms throttled=1642.346559 s rss=127.3359375 MiB spill=False (436.69 s)
+   crudo: results/raw/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json  · CSV: results/measurements.csv
+   telemetría: con_huecos  (results/telemetry/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r1.json)
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.126667 p50/p95/p99=49291.74877149999/55092.885844749995/61081.014788869994 ms throttled=1624.747479 s rss=127.48828125 MiB spill=False (436.56 s)
+   crudo: results/raw/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r2.json)
+== postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=1.086667 p50/p95/p99=49557.75977700001/54606.78249425001/56971.97620025 ms throttled=1635.85588 s rss=127.06640625 MiB spill=False (436.6 s)
+   crudo: results/raw/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c50_r3.json)
+
+########## [3/4] postgresql · PROFILE_C_SEVERE · Q1 · c=50 · runs 1,2,3 — 08:55:25 UTC
+== postgresql_PROFILE_C_SEVERE_Q1_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=oom qps=0.000000 p50/p95/p99=None/None/None ms throttled=0.03548 s rss=8.234375 MiB spill=False (421.92 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   - 14992 consulta(s) fallidas o con timeout dentro de la ventana
+   - 19401 consulta(s) con error (no timeout) en toda la repetición
+   - OOM: oom_kill +0, OOMKilled=True
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q1_c50_r1.json  · CSV: results/measurements.csv
+   dataset tras el OOM: 500000 de 500000 filas (1.1 s)
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q1_c50_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q1_c50_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=oom qps=0.000000 p50/p95/p99=None/None/None ms throttled=39.565322 s rss=719.83984375 MiB spill=False (422.27 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   - 14781 consulta(s) fallidas o con timeout dentro de la ventana
+   - 17959 consulta(s) con error (no timeout) en toda la repetición
+   - OOM: oom_kill +1, OOMKilled=True
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q1_c50_r2.json  · CSV: results/measurements.csv
+   dataset tras el OOM: 500000 de 500000 filas (1.0 s)
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q1_c50_r2.json)
+== postgresql_PROFILE_C_SEVERE_Q1_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=oom qps=0.000000 p50/p95/p99=None/None/None ms throttled=276.79617 s rss=697.36328125 MiB spill=False (422.46 s)
+   - 0 muestra(s) completada(s) en la ventana; se necesitan al menos 2 para un percentil (A4)
+   - 13427 consulta(s) fallidas o con timeout dentro de la ventana
+   - 16618 consulta(s) con error (no timeout) en toda la repetición
+   - OOM: oom_kill +6, OOMKilled=True
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q1_c50_r3.json  · CSV: results/measurements.csv
+   dataset tras el OOM: 500000 de 500000 filas (1.01 s)
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q1_c50_r3.json)
+
+########## [4/4] postgresql · PROFILE_C_SEVERE · Q2_MEM_LOW · c=50 · runs 1,2,3 — 09:17:18 UTC
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.563333 p50/p95/p99=98506.04282200002/125539.9545682/131834.01516096 ms throttled=1892.055054 s rss=127.06640625 MiB spill=False (437.64 s)
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r1.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.566667 p50/p95/p99=101550.72495749999/120359.52751745/132591.59687371002 ms throttled=1894.135464 s rss=126.88671875 MiB spill=False (436.87 s)
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r2.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r2.json)
+== postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r3  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.553333 p50/p95/p99=100795.88197450001/127995.07246000001/139284.90345855002 ms throttled=1886.648876 s rss=127.06640625 MiB spill=False (436.87 s)
+   crudo: results/raw/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r3.json  · CSV: results/measurements.csv
+   telemetría: completa  (results/telemetry/postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c50_r3.json)
+
+########## Resumen de la sesión: 4 celda(s) completas, 0 con fallo
+Rendimiento del procesador: media 83.7 % (min 60.9, max 86) = 1922 MHz de media (min 1398, max 1974), nominal 2296, de 212 muestras
+VÁLIDO: results/measurements.csv
+Para ver qué queda:  scripts/run_benchmarks.sh --listar --todo
+Registro: results/run_benchmarks_20261103T082456Z.txt

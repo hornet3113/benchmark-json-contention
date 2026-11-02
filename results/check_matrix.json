@@ -1,14 +1,393 @@
 {
  "descripcion": "estado de la matriz (F8): CV, tendencias y avisos por celda; verificación, no medición",
  "csv": "results/measurements.csv",
- "filas": 98,
+ "filas": 108,
  "resumen_matriz": {
-  "matriz": 54,
-  "corridas_de_la_matriz": 162,
-  "hechas": 98,
-  "faltan": 64
+  "matriz": 36,
+  "corridas_de_la_matriz": 108,
+  "hechas": 54,
+  "faltan": 54
  },
- "ajenas_a_esta_matriz": [],
+ "ajenas_a_esta_matriz": [
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "mongodb",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_A_BASELINE",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_B_MEDIUM",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   1,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   10,
+   3
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   1
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   2
+  ],
+  [
+   "postgresql",
+   "PROFILE_C_SEVERE",
+   "Q2_MEM_LOW",
+   50,
+   3
+  ]
+ ],
  "descartadas": [],
  "planes": [
   "mongodb_PROFILE_A_BASELINE_Q1_c1.json",
@@ -1777,55 +2156,75 @@
    "medible": true
   },
   "postgresql_PROFILE_B_MEDIUM_Q1_50": {
-   "repeticiones": 2,
+   "repeticiones": 3,
    "status": [
     "oom",
-    "oom"
+    "oom",
+    "error"
    ],
    "throughput_qps": [
+    0.013333,
     0.013333,
     0.013333
    ],
    "p50_ms": [
     179392.337,
-    225384.192
+    225384.192,
+    219361.985
    ],
    "p95_ms": [
     233865.987,
-    271569.485
+    271569.485,
+    283268.265
    ],
    "p99_ms": [
     241555.427,
-    278084.866
+    278084.866,
+    292150.314
    ],
    "cpu_throttled_seconds": [
     1529.231,
-    582.005
+    582.005,
+    1536.634
    ],
    "max_rss_mb": [
     1806.062,
-    1791.723
+    1791.723,
+    1802.176
    ],
    "disk_spill": [
+    "true",
     "true",
     "true"
    ],
    "throttling_en_reposo_estimado_s": 0.0,
-   "cv_throughput": null,
-   "cv_p50": null,
-   "tendencia_throughput": null,
-   "tendencia_p50": null,
-   "workers_cortados_al_final": 0,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.1202,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.2228,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 50,
    "avisos": [
     "r1: baja densidad muestral (4 < 20; A4)",
     "r1: percentiles invalidados por censura (p50, p95, p99; A4): 92% de timeouts",
     "r2: baja densidad muestral (4 < 20; A4)",
     "r2: percentiles invalidados por censura (p50, p95, p99; A4): 92% de timeouts",
-    "r2: DATASET NO INTACTO tras el OOM (None filas)"
+    "r2: DATASET NO INTACTO tras el OOM (None filas)",
+    "r3: baja densidad muestral (4 < 20; A4)",
+    "r3: percentiles invalidados por censura (p50, p95, p99; A4): 92% de timeouts"
    ],
    "checks": {
-    "3_repeticiones": false,
-    "cv_throughput_<15%": false,
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
     "sin_tendencia_throughput": true,
     "sin_tendencia_p50": true
    },
@@ -1962,6 +2361,73 @@
     "cv_throughput_<15%": true,
     "sin_tendencia_throughput": true,
     "sin_tendencia_p50": false
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_50": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.953333,
+    1.126667,
+    1.086667
+   ],
+   "p50_ms": [
+    55896.199,
+    49291.749,
+    49557.76
+   ],
+   "p95_ms": [
+    67572.319,
+    55092.886,
+    54606.782
+   ],
+   "p99_ms": [
+    69716.886,
+    61081.015,
+    56971.976
+   ],
+   "cpu_throttled_seconds": [
+    1642.347,
+    1624.747,
+    1635.856
+   ],
+   "max_rss_mb": [
+    127.336,
+    127.488,
+    127.066
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.086,
+   "cv_p50": 0.0725,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.1399,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.1134,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 111,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
    },
    "medible": true
   },
@@ -2107,6 +2573,74 @@
    },
    "medible": true
   },
+  "postgresql_PROFILE_C_SEVERE_Q1_50": {
+   "repeticiones": 3,
+   "status": [
+    "oom",
+    "oom",
+    "oom"
+   ],
+   "throughput_qps": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "p50_ms": [
+    null,
+    null,
+    null
+   ],
+   "p95_ms": [
+    null,
+    null,
+    null
+   ],
+   "p99_ms": [
+    null,
+    null,
+    null
+   ],
+   "cpu_throttled_seconds": [
+    0.035,
+    39.565,
+    276.796
+   ],
+   "max_rss_mb": [
+    8.234,
+    719.84,
+    697.363
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": null,
+   "cv_p50": null,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": null,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": null,
+   "workers_cortados_al_final": 0,
+   "avisos": [
+    "r1: baja densidad muestral (0 < 20; A4)",
+    "r1: percentiles invalidados por censura (p50, p95, p99; A4): 0% de timeouts",
+    "r2: baja densidad muestral (0 < 20; A4)",
+    "r2: percentiles invalidados por censura (p50, p95, p99; A4): 0% de timeouts",
+    "r3: baja densidad muestral (0 < 20; A4)",
+    "r3: percentiles invalidados por censura (p50, p95, p99; A4): 0% de timeouts"
+   ],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": false,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": false
+  },
   "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_1": {
    "repeticiones": 3,
    "status": [
@@ -2240,9 +2774,76 @@
     "sin_tendencia_p50": false
    },
    "medible": true
+  },
+  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_50": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.563333,
+    0.566667,
+    0.553333
+   ],
+   "p50_ms": [
+    98506.043,
+    101550.725,
+    100795.882
+   ],
+   "p95_ms": [
+    125539.955,
+    120359.528,
+    127995.072
+   ],
+   "p99_ms": [
+    131834.015,
+    132591.597,
+    139284.903
+   ],
+   "cpu_throttled_seconds": [
+    1892.055,
+    1894.135,
+    1886.649
+   ],
+   "max_rss_mb": [
+    127.066,
+    126.887,
+    127.066
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": 0.0124,
+   "cv_p50": 0.0158,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.0178,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0232,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 111,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
   }
  },
- "celdas_medibles": 30,
+ "celdas_medibles": 32,
  "celdas_con_criterio_incumplido": {
   "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_50": [
    "cv_throughput_<15%",
