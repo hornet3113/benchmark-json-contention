@@ -1,0 +1,99 @@
+% reporte.tex — Benchmarking de MongoDB frente a PostgreSQL JSONB bajo contención
+% Bases de Datos en la Nube · IT2iD · Universidad Politécnica de Chiapas · 2026
+%
+% CÓMO SE COMPILA
+%   Overleaf: subir la carpeta report/ completa y compilar con pdfLaTeX.
+%   Local:    latexmk -pdf reporte.tex   (necesita pgfplots, de TeX Live)
+%
+% NINGÚN NÚMERO SE ESCRIBE AQUÍ A MANO (criterio de PLAN F9). Todo sale de:
+%   cifras/cifras.tex   macros con las cifras del CSV   (\cifraFilasCsv, …)
+%   tablas/*.tex        cuerpos de tabla ya formateados
+%   datos/*.dat         series que pgfplots dibuja
+% Los tres los genera  scripts/build_report_data.py  desde results/measurements.csv
+% y results/raw/. Si cambian los datos, se regenera y el reporte queda al día.
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\sisetup{group-separator={\,}, group-minimum-digits=4, detect-weight}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+
+% Las figuras leen los .dat de report/datos/
+\pgfplotsset{
+  table/search path={datos},
+  every axis/.append style={
+    grid=major, grid style={gray!25}, tick label style={font=\small},
+    label style={font=\small}, legend style={font=\small, draw=gray!40},
+    width=0.92\linewidth, height=6cm,
+  },
+}
+\pgfplotstableset{search path={datos}}
+
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black,
+            pdftitle={Benchmarking de MongoDB frente a PostgreSQL JSONB bajo contención}}
+
+% Notas al pie de las tablas. R-29.2 (decisión de Alix): la celda colapsada lleva
+% nota al pie en TODA tabla donde aparezca, no una sola vez en el texto.
+\newcommand{\tnotaColapsada}{\textsuperscript{\dag}}
+\newcommand{\tnotaCensurada}{\textsuperscript{\ddag}}
+\newcommand{\tnotaBajaDensidad}{\textsuperscript{*}}
+\newcommand{\leyendaNotas}{%
+  \footnotesize
+  \tnotaColapsada{}~El motor estaba \textbf{colapsado} durante la ventana: sus
+  errores son conexiones rechazadas, no consultas ejecutadas, y su
+  \texttt{max\_rss\_mb} \textbf{no es eficiencia} (R-29.2).\par
+  \tnotaCensurada{}~Percentiles invalidados por censura por la derecha: la
+  fracción de \emph{timeouts} supera el límite de A4.\par
+  \tnotaBajaDensidad{}~Baja densidad muestral: menos de 20 consultas completadas
+  en la ventana (A4).\par
+}
+
+\input{cifras/cifras}
+
+\title{\textbf{Benchmarking de MongoDB frente a PostgreSQL JSONB\\bajo contención de CPU y memoria}}
+\author{Alix Montesinos\\\small Bases de Datos en la Nube · IT2iD\\\small Universidad Politécnica de Chiapas}
+\date{Noviembre de 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Se comparan MongoDB y PostgreSQL con \texttt{JSONB} sobre el mismo conjunto de
+\num{500000} documentos sintéticos, con dos consultas de agregación y tres
+perfiles de recursos aplicados con \emph{cgroups} v2, a tres niveles de
+concurrencia y con tres repeticiones por celda: \cifraFilasCsv{} mediciones en
+\cifraCeldas{} celdas. El experimento mide lo que ocurre de verdad bajo
+contención, incluidos los casos en los que un motor deja de responder, y declara
+las limitaciones del entorno virtualizado en el que se ejecutó.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\input{secciones/01-entorno}
+\input{secciones/02-metodo}
+\input{secciones/03-resultados}
+\input{secciones/04-graficas}
+\input{secciones/05-planes}
+\input{secciones/06-interpretacion}
+\input{secciones/07-recomendaciones}
+
+\appendix
+\input{secciones/A1-anexo-variantes}
+\input{secciones/A2-limitaciones}
+
+\end{document}

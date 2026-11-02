@@ -1,0 +1,12 @@
+== run_benchmarks.sh — 20261104T135248Z — loadavg 0.16 0.18 0.20
+host: bateria estado=1 carga=43%
+GUID de plan de energ�a: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+########## [1/6] mongodb · PROFILE_C_SEVERE · Q2_MEM_HIGH · c=1 · runs 1,2,3 — 13:52:49 UTC
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]
+   status=ok qps=0.040000 p50/p95/p99=26846.5661455/30310.6270737/31751.500426740004 ms throttled=225.969626 s rss=576.6171875 MiB spill=False (421.59 s)
+   - baja densidad muestral: 12 completadas en la ventana (A4)
+   crudo: results/f8_anexo/raw/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1.json  · CSV: results/f8_anexo/measurements.csv
+   telemetría: con_huecos  (results/f8_anexo/telemetry/mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r1.json)
+   - telemetría: comprobación previa: Prometheus no responde: URLError: <urlopen error [Errno 111] Connection refused> → recuperada
+   - telemetría: huecos en 7 serie(s); el mayor de 2.0 s
+== mongodb_PROFILE_C_SEVERE_Q2_MEM_HIGH_c1_r2  ventanas {'warmup_s': 60, 'measure_s': 300, 'cooldown_s': 60}  CPUs del runner [8, 9, 10, 11]

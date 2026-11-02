@@ -1,0 +1,65 @@
+% curva-rss.tex — Figura obligatoria 3 (R-30): curva de RSS durante la ventana.
+%
+% Dos series por panel, y la diferencia entre ellas es el hallazgo F6-A3:
+%   anon         = lo que mide la columna `max_rss_mb` del CSV;
+%   working_set  = memory.current − inactive_file, que SÍ incluye la memoria
+%                  compartida (`shared_buffers`) de PostgreSQL.
+% Los `shared_buffers` son `shmem`, no `anon`, así que con `max_rss_mb` PostgreSQL
+% sale artificialmente eficiente (SPEC §4 y A11). M3 se calcula con working_set.
+%
+% Los datos son la serie de 1 s del cgroup que el runner guarda en results/raw/
+% (serie_cgroup_1s), no de Prometheus: son las mismas lecturas de las que sale la
+% columna del CSV.
+%
+% Uso:  \input{figuras/curva-rss}
+
+\newcommand{\rssPanel}[3]{%
+  % #1 archivo .dat · #2 título · #3 color base
+  \begin{axis}[
+      title={#2}, title style={font=\small},
+      xlabel={Segundo de la ventana de medición}, ylabel={Memoria (MiB)},
+      xmin=0, xmax=300, ymin=0,
+      width=0.46\linewidth, height=5cm,
+      legend pos=south east, legend cell align=left,
+    ]
+    \addplot[color=#3, thick, no marks] table [x=t_s, y=working_set_mib] {#1};
+    \addplot[color=#3!55, thick, densely dashed, no marks]
+      table [x=t_s, y=anon_mib] {#1};
+    \addplot[color=gray!60, thin, dotted, no marks] table [x=t_s, y=shmem_mib] {#1};
+    \legend{\texttt{working\_set}, \texttt{anon} (= \texttt{max\_rss\_mb}), \texttt{shmem}}
+}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \rssPanel{rss_mongodb_A_Q2_c50.dat}{MongoDB · perfil A · Q2 · c=50}{blue!60!black}
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \rssPanel{rss_postgresql_A_Q2_c50.dat}{PostgreSQL · perfil A · Q2 · c=50}{red!60!black}
+    \end{axis}
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \rssPanel{rss_mongodb_C_Q2_c50.dat}{MongoDB · perfil C · Q2 · c=50}{blue!60!black}
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \rssPanel{rss_postgresql_C_Q2_c50.dat}{PostgreSQL · perfil C · Q2 · c=50}{red!60!black}
+    \end{axis}
+  \end{tikzpicture}
+
+  \caption[Curva de memoria durante la ventana]{%
+    \textbf{Memoria del contenedor durante la ventana, muestreada cada segundo.}
+    La línea discontinua (\texttt{anon}) es exactamente lo que resume la columna
+    \texttt{max\_rss\_mb}; la continua (\texttt{working\_set}) incluye además la
+    memoria compartida. \textbf{En PostgreSQL la distancia entre las dos es
+    \texttt{shared\_buffers}}: son \texttt{shmem}, no \texttt{anon}, así que
+    \texttt{max\_rss\_mb} no cuenta su búfer principal y lo hace parecer
+    artificialmente eficiente frente a MongoDB, cuyo caché de WiredTiger sí es
+    \texttt{anon} (F6-A3, SPEC §4 y A11). Por eso M3 se calcula con
+    \texttt{working\_set}. Fuente: serie de 1 s del cgroup en
+    \texttt{results/raw/} (\texttt{serie\_cgroup\_1s}), las mismas lecturas de las
+    que sale la columna.}
+  \label{fig:curva-rss}
+\end{figure}

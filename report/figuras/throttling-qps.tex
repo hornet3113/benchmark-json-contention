@@ -1,0 +1,51 @@
+% throttling-qps.tex — Figura obligatoria 2 (R-30): throttling contra throughput.
+%
+% Lo que hay que saber para leer el eje (medido en F6.2 y declarado en SPEC §4):
+% `cpu_throttled_seconds` es la SUMA por CPU del tiempo que el cgroup tuvo hilos
+% listos y no pudo correr. Por eso puede superar la duración de la ventana: con 4
+% CPUs y una cuota de 1, cada segundo de reloj acumula hasta 4 de throttling. El
+% eje NO se acota a 300 s.
+%
+% Además (F6.3): parte del throttling de MongoDB en el perfil C ocurre en reposo,
+% sin benchmark (~27 s por ventana de 300 s). La línea de referencia lo marca.
+%
+% Uso:  \input{figuras/throttling-qps}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Throttling de CPU en la ventana (s)},
+        ylabel={Throughput (consultas/s)},
+        ymode=log, log basis y=10,
+        legend pos=north east, legend cell align=left,
+        height=7cm,
+      ]
+      % Un color por motor; el tamaño de la marca crece con la concurrencia.
+      \addplot[only marks, mark=*, blue!60!black, visualization depends on={
+                 \thisrow{concurrencia}/14 \as \perpointmarksize},
+               scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize+1.2}]
+        table [x=throttling_s, y=qps, discard if not={motor_num}{1}] {throttling_vs_qps.dat};
+      \addplot[only marks, mark=square*, red!60!black, visualization depends on={
+                 \thisrow{concurrencia}/14 \as \perpointmarksize},
+               scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize+1.2}]
+        table [x=throttling_s, y=qps, discard if not={motor_num}{2}] {throttling_vs_qps.dat};
+      \legend{MongoDB, PostgreSQL}
+      % F6.3: línea base de throttling en reposo de MongoDB en el perfil C.
+      \draw[dashed, gray!70] (axis cs:26.7,\pgfkeysvalueof{/pgfplots/ymin})
+                          -- (axis cs:26.7,\pgfkeysvalueof{/pgfplots/ymax});
+      \node[gray!70, font=\tiny, anchor=west, rotate=90] at (axis cs:26.7,0.02)
+        {MongoDB · C en reposo (F6.3)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption[Throttling contra throughput]{%
+    \textbf{Throttling de CPU contra throughput.} Cada punto es una celda (media de
+    sus 3 repeticiones); el tamaño de la marca crece con la concurrencia.
+    \textbf{El eje horizontal puede superar los 300~s de la ventana} porque
+    \texttt{cpu\_throttled\_seconds} suma el tiempo de cada CPU en la que el cgroup
+    tenía hilos listos (medido en F6.2, declarado en SPEC §4). La línea vertical
+    marca el throttling que MongoDB acumula \textbf{en reposo} en el perfil C, sin
+    benchmark (F6.3): a su izquierda no hay contención atribuible a la carga.
+    Datos: \texttt{report/datos/throttling\_vs\_qps.dat}.}
+  \label{fig:throttling-qps}
+\end{figure}

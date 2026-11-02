@@ -1,0 +1,129 @@
+% 01-entorno.tex — Sección 1 del manual (playbook.pdf §8.3): especificaciones del
+% host y del entorno Docker. Incluye las limitaciones del entorno virtualizado,
+% que van declaradas aquí y no escondidas (SPEC §6, L1–L7).
+
+\section{Especificaciones del host y del entorno Docker}
+\label{sec:entorno}
+
+\subsection{Host y máquina virtual}
+
+Las mediciones se ejecutaron en un portátil con Windows~11, WSL2 y Docker
+Desktop. El repositorio y los volúmenes viven en el sistema de archivos de WSL2,
+nunca bajo \texttt{/mnt/c/}, para no medir la capa de traducción de Windows.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Host y máquina virtual. Capturado por \texttt{scripts/capture\_env.py}
+           en cada repetición; evidencia en \texttt{results/env/}.}
+  \label{tab:host}
+  \small
+  \begin{tabularx}{\linewidth}{lX}
+    \toprule
+    Procesador & AMD Ryzen~5 PRO 5675U: 6 núcleos físicos, 12 hilos \\
+    Memoria del host & 14.8~GiB \\
+    Sistema & Windows~11 + WSL2 (distribución \texttt{Ubuntu}) + Docker Desktop \\
+    VM de WSL2 & 12 CPUs lógicas y 7.159~GiB visibles \\
+    \emph{cgroups} & v2, confirmado leyendo el cgroup desde dentro del contenedor \\
+    Reparto de CPUs & motor en las lógicas 0--7; runner y telemetría en 8--11, sin
+                      compartir núcleo físico (decisión F5-c, topología medida) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Motores, fijados por digest}
+
+Las imágenes no se referencian por etiqueta sino por \emph{digest}: una etiqueta
+como \texttt{mongo:8.2} es móvil y un \texttt{docker pull} posterior podría traer
+otra versión, lo que rompería la reproducibilidad (R-33).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Motores y telemetría. Digests completos en \texttt{docker/images.env} y
+           en \texttt{results/env/f1/}.}
+  \label{tab:imagenes}
+  \small
+  \begin{tabularx}{\linewidth}{llX}
+    \toprule
+    Componente & Versión & Digest (abreviado) \\
+    \midrule
+    MongoDB & 8.2.12 (wiredTiger) & \texttt{sha256:e0ce8c35\ldots4bd3} \\
+    PostgreSQL & 18.6 & \texttt{sha256:3a426452\ldots4b81} \\
+    Prometheus & v3.15.1 & \texttt{sha256:fa330227\ldots91a2} \\
+    cAdvisor & v0.60.6 & \texttt{sha256:b8e7d109\ldotsd07a} \\
+    node\_exporter & v1.12.1 & \texttt{sha256:1b4e4438\ldots1be0} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Perfiles de recursos}
+
+Los tres perfiles del manual se aplican con \emph{cgroups} v2 y se
+\textbf{verifican leyendo el cgroup} antes de cada repetición, no se dan por
+puestos (\texttt{scripts/verify\_limits.sh}).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Perfiles y límites reales observados en el cgroup. Los seis
+           (3 perfiles $\times$ 2 motores) se verificaron en F1.}
+  \label{tab:perfiles}
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    Perfil & CPU & Memoria & \texttt{memory.swap.max} \\
+    \midrule
+    \texttt{PROFILE\_A\_BASELINE} & 4.0 & 4096~m & 0 \\
+    \texttt{PROFILE\_B\_MEDIUM}   & 2.0 & 2048~m & 0 \\
+    \texttt{PROFILE\_C\_SEVERE}   & 1.0 & 1024~m & 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\texttt{memory.swap.max = 0} en los seis casos: cuando un motor agota su límite
+de memoria no tiene \emph{swap} donde escapar, y el kernel lo mata. Esa es la
+garantía que sustituye a \texttt{mem\_swappiness}, que \textbf{no existe en
+cgroups~v2}: el manual lo pide y se declara en el \emph{compose}, pero Docker lo
+descarta con un aviso, así que no es un fallo de la configuración (SPEC~A7, V8).
+
+\subsection{Limitaciones del entorno, declaradas}
+\label{sec:limitaciones-entorno}
+
+El manual supone un host dedicado. Este no lo es, y conviene decirlo antes de los
+resultados y no después:
+
+\begin{enumerate}
+  \item \textbf{La limpieza de caché no llega hasta el disco.}
+        \texttt{drop\_caches} vacía la caché de páginas de la VM de WSL2, pero
+        \textbf{no la de Windows sobre el \texttt{.vhdx}} donde viven los
+        volúmenes. Lo alcanzable es un estado de partida \emph{repetible}, no
+        frío. Se midió el efecto en cada repetición (entre 0.7 y 1.8~GB
+        liberados), no solo el código de salida del comando.
+  \item \textbf{El perfil A no es un baseline holgado.} La VM tiene 7.159~GiB en
+        total; con 4~GiB para el motor quedan unos 3~GiB para el runner, la
+        telemetría y la caché de páginas. Se midió: en el peor caso quedaron
+        3.2~GiB libres, sin \emph{swap}, pero con 120 de 300~s en espera por
+        memoria (F7.4).
+  \item \textbf{Las 4 CPUs del perfil A no son 4 núcleos físicos.} La VM expone 12
+        lógicas sobre 6 físicos; el reparto 0--7 para el motor usa 4 núcleos
+        físicos completos, medidos con \texttt{thread\_siblings\_list}.
+  \item \textbf{La frecuencia del procesador baja bajo carga sostenida.} Medido
+        durante la matriz: el rendimiento del procesador osciló entre el 86~\% y
+        el \textbf{60.8~\%} de la frecuencia nominal (de 2296 a 1396~MHz). No se
+        puede leer desde WSL2 —no hay \texttt{cpufreq}— y se midió desde Windows
+        con el contador «\% de rendimiento del procesador». Es la causa probable
+        de la mayor de las dispersiones observadas (sección~\ref{sec:resultados}).
+  \item \textbf{cAdvisor observa la VM, no el equipo.} Las curvas de telemetría
+        describen el contenedor dentro de WSL2.
+\end{enumerate}
+
+\subsection{Consecuencia para la limpieza de caché: permiso de \emph{root}}
+
+El flush por repetición necesita \emph{root}. Para que una corrida de horas no se
+detuviera a pedir contraseña se instaló una regla de \texttt{sudo} acotada a
+\textbf{un único ejecutable} (\texttt{/usr/local/sbin/bench-drop-caches}),
+propiedad de \texttt{root}, que no acepta parámetros y solo hace \texttt{sync} y
+\texttt{drop\_caches}. Vive fuera del repositorio a propósito: si estuviera dentro,
+donde el usuario puede editarlo, la regla equivaldría a \emph{root} sin
+contraseña. El resto de \texttt{sudo} sigue pidiéndola, y la regla se deshace con
+un script. Cada repetición registra por qué vía se limpió la caché
+(\texttt{"via"} en el archivo crudo). Diseño y reversión en
+\texttt{docs/V7\_SUDOERS.md}.
