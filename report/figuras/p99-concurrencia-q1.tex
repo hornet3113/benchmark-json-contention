@@ -1,0 +1,85 @@
+% p99-concurrencia-q1.tex — P99 de Q1, el complemento de la figura de Q2.
+%
+% Q1 es donde están los hallazgos fuertes (volcado masivo en PostgreSQL, OOM,
+% MongoDB ganando siempre), así que tiene sus propios paneles.
+%
+% Tercera serie: los puntos cuya fila salió con los percentiles invalidados por
+% censura (A4). Se marcan con un cuadrado hueco en vez de ocultarlos: el valor
+% existe en el CSV, pero no es comparable con los demás.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={MongoDB · Q1 · perfil A}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left, legend style={font=\tiny},
+      ]
+      \addplot[color=blue!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_mongodb_Q1_A.dat};
+      \addplot[color=blue!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_mongodb_Q1_A.dat};
+      \addplot[only marks, mark=square, mark size=4pt, red!80!black, thick]
+        table [x=concurrencia, y=p99_censurado] {datos/p99_mongodb_Q1_A.dat};
+      \legend{P99 del CSV, Sin la 1.\textsuperscript{a} en frío, Censurado (A4)}
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · Q1 · perfil A}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left, legend style={font=\tiny},
+      ]
+      \addplot[color=red!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_postgresql_Q1_A.dat};
+      \addplot[color=red!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_postgresql_Q1_A.dat};
+      \addplot[only marks, mark=square, mark size=4pt, red!80!black, thick]
+        table [x=concurrencia, y=p99_censurado] {datos/p99_postgresql_Q1_A.dat};
+    \end{axis}
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={MongoDB · Q1 · perfil C}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left, legend style={font=\tiny},
+      ]
+      \addplot[color=blue!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_mongodb_Q1_C.dat};
+      \addplot[color=blue!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_mongodb_Q1_C.dat};
+      \addplot[only marks, mark=square, mark size=4pt, red!80!black, thick]
+        table [x=concurrencia, y=p99_censurado] {datos/p99_mongodb_Q1_C.dat};
+    \end{axis}
+  \end{tikzpicture}\hfill
+  \begin{tikzpicture}
+    \begin{axis}[
+        title={PostgreSQL · Q1 · perfil C}, title style={font=\small},
+        xlabel={Concurrencia (clientes)}, ylabel={P99 (ms)},
+        xmode=log, log basis x=10, xtick={1,10,50}, xticklabels={1,10,50},
+        ymin=0, width=0.47\linewidth, height=5cm,
+        legend pos=north west, legend cell align=left, legend style={font=\tiny},
+      ]
+      \addplot[color=red!60!black, mark=*, thick] table [x=concurrencia, y=p99_csv] {datos/p99_postgresql_Q1_C.dat};
+      \addplot[color=red!60!black, mark=o, densely dotted, thick]
+        table [x=concurrencia, y=p99_sin_frias] {datos/p99_postgresql_Q1_C.dat};
+      \addplot[only marks, mark=square, mark size=4pt, red!80!black, thick]
+        table [x=concurrencia, y=p99_censurado] {datos/p99_postgresql_Q1_C.dat};
+    \end{axis}
+  \end{tikzpicture}
+
+  \caption[P99 de Q1 contra concurrencia]{%
+    \textbf{P99 de \texttt{Q1} contra concurrencia.} Mismas dos vistas que la
+    figura~\ref{fig:p99-concurrencia}. Los \textbf{cuadrados huecos} marcan los
+    puntos cuya fila tiene los percentiles \textbf{invalidados por censura}
+    (A4): ahí la mayoría de las consultas agotaron el límite de 300~s, así que
+    el P99 que aparece en el CSV es una cota inferior y no se puede comparar con
+    los demás puntos. En PostgreSQL con \mbox{c=50} esa es la situación en los
+    tres perfiles, y en el~C no se completó ninguna consulta
+    (sección~\ref{sec:spill}). Datos: \texttt{report/datos/p99\_*\_Q1\_*.dat}.}
+  \label{fig:p99-q1}
+\end{figure}

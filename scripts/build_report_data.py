@@ -208,9 +208,14 @@ def main() -> int:
                 p = [c for c in sel if c["profile"] == perfil]
                 if not p:
                     continue
+                # p99_censurado repite el valor SOLO donde los percentiles quedaron
+                # invalidados por censura (A4), para marcarlos en la figura sin
+                # ocultarlos: el número existe en el CSV, pero no es comparable.
                 dat(f"p99_{motor}_{q}_{PERFIL_CORTO[perfil]}.dat",
-                    ["concurrencia", "p99_csv", "p99_sin_frias", "frias", "censurada", "colapsada"],
-                    [[c["concurrency"], c["p99"], c["p99_sin_frias"], c["frias_en_ventana"],
+                    ["concurrencia", "p99_csv", "p99_sin_frias", "p99_censurado", "frias",
+                     "censurada", "colapsada"],
+                    [[c["concurrency"], c["p99"], c["p99_sin_frias"],
+                      c["p99"] if c["censurada"] else None, c["frias_en_ventana"],
                       int(c["censurada"]), int(c["colapsada"])] for c in sorted(p, key=lambda c: c["concurrency"])],
                     f"P99 (ms) de {MOTOR_CORTO[motor]} · {q} · {PERFIL_CORTO[perfil]}. "
                     "p99_csv = columna del CSV; p99_sin_frias = recalculado sin la primera consulta "

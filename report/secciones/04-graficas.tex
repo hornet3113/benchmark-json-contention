@@ -26,6 +26,15 @@ régimen» que dibujar y la serie punteada se interrumpe. Decir que el P99 de es
 celda es de 228~s sin esta advertencia sería atribuirle al motor el costo de
 arrancar en frío.
 
+\input{figuras/p99-concurrencia-q1}
+
+La figura~\ref{fig:p99-q1} hace lo mismo con \texttt{Q1}, que es donde están los
+hallazgos más fuertes del experimento: el volcado masivo de PostgreSQL, los OOM y
+la ventaja constante de MongoDB (secciones~\ref{sec:m1} y~\ref{sec:spill}). Ahí
+aparece además el límite del instrumento: con \mbox{c=50}, las filas de PostgreSQL
+quedan censuradas por A4 y sus puntos se marcan como tales en vez de dibujarse como
+si fueran comparables.
+
 \input{figuras/throttling-qps}
 
 \input{figuras/curva-rss}

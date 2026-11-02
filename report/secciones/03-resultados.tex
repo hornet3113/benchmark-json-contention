@@ -43,6 +43,9 @@ trabajo suficiente como para que un percentil signifique algo, y
 
 \subsection{Tabla consolidada}
 
+% La tabla mide 517 pt con la separación por defecto y la caja de texto son 455:
+% por eso la separación entre columnas baja a 3 pt (medido: queda en 445 pt).
+{\setlength{\tabcolsep}{3pt}
 \begin{longtable}{llllrrrrrrll}
   \caption{Resultados por celda: media de las 3 repeticiones. Latencias en ms,
            throttling en segundos por ventana de 300~s, \texttt{max\_rss\_mb} en
@@ -58,7 +61,7 @@ trabajo suficiente como para que un percentil signifique algo, y
   \bottomrule
   \endfoot
   \input{tablas/resultados}
-\end{longtable}
+\end{longtable}}
 
 \leyendaNotas{}
 

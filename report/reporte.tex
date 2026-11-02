@@ -12,7 +12,7 @@
 % Los tres los genera  scripts/build_report_data.py  desde results/measurements.csv
 % y results/raw/. Si cambian los datos, se regenera y el reporte queda al día.
 
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper,titlepage]{article}   % titlepage: la portada va sola
 
 % El documento compila con o sin los paquetes de español y de unidades. Si falta
 % alguno, se avisa al compilar y se sigue: así el reporte se puede reconstruir en
@@ -78,12 +78,17 @@
 \input{cifras/cifras}
 
 \title{\textbf{Benchmarking de MongoDB frente a PostgreSQL JSONB\\bajo contención de CPU y memoria}}
-\author{Alix Montesinos\\\small Bases de Datos en la Nube · IT2iD\\\small Universidad Politécnica de Chiapas}
+\author{Alix Anahi Montesinos Grajales\\[2pt]
+        \small Matrícula 243777\\[6pt]
+        \small Bases de Datos en la Nube · IT2iD\\
+        \small Universidad Politécnica de Chiapas}
 \date{Noviembre de 2026}
 
 \begin{document}
 \maketitle
 
+% La portada queda sola; el resumen empieza en la página siguiente y el índice en
+% la suya (petición de Alix).
 \begin{abstract}
 \noindent
 Se comparan MongoDB y PostgreSQL con \texttt{JSONB} sobre el mismo conjunto de
@@ -94,6 +99,7 @@ concurrencia y con tres repeticiones por celda: \cifraFilasCsv{} mediciones en
 contención, incluidos los casos en los que un motor deja de responder, y declara
 las limitaciones del entorno virtualizado en el que se ejecutó.
 \end{abstract}
+\newpage
 
 \tableofcontents
 \newpage

@@ -119,7 +119,8 @@ resultados y no después:
 
 El flush por repetición necesita \emph{root}. Para que una corrida de horas no se
 detuviera a pedir contraseña se instaló una regla de \texttt{sudo} acotada a
-\textbf{un único ejecutable} (\texttt{/usr/local/sbin/bench-drop-caches}),
+\textbf{un único ejecutable}
+(\texttt{/usr/local/sbin/\allowbreak bench-drop-caches}),
 propiedad de \texttt{root}, que no acepta parámetros y solo hace \texttt{sync} y
 \texttt{drop\_caches}. Vive fuera del repositorio a propósito: si estuviera dentro,
 donde el usuario puede editarlo, la regla equivaldría a \emph{root} sin

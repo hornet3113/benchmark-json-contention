@@ -19,6 +19,8 @@
         xlabel={Throttling de CPU en la ventana de 300~s (s)},
         ylabel={Throughput (consultas/s)},
         ymode=log, log basis y=10,
+        xmin=0,   % el throttling no puede ser negativo
+        enlarge x limits={upper, value=0.05},
         legend pos=south west, legend cell align=left, legend columns=2,
         height=7.5cm, width=\linewidth,
       ]

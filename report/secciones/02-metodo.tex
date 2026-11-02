@@ -5,7 +5,7 @@
 \section{Método de medición y verificación del baseline}
 \label{sec:metodo}
 
-\subsection{El conjunto de datos es el mismo para los dos motores}
+\subsection{El conjunto de datos es el mismo para los dos motores (pregunta 1 del revisor)}
 \label{sec:baseline}
 
 Los \num{500000} documentos se generan con
@@ -107,6 +107,25 @@ Con 300~s de ventana y consultas de 20~s, una celda puede completar 15
 consultas. Se marcan como \textbf{baja densidad muestral} (menos de 20
 completadas) y su P99 se lee con esa reserva, en vez de presentarlo como si
 viniera de cientos de muestras.
+
+\subsection{Una aclaración sobre la etiqueta de \texttt{Q2}}
+\label{sec:reetiquetado}
+
+El manual admite dos lecturas del número de escenarios (36 o 54), y de esa
+decisión depende cómo se llama la columna \texttt{query\_id}. Mientras estuvo
+abierta, las mediciones se etiquetaron \texttt{Q2\_MEM\_LOW} para dejar
+constancia de qué variante se estaba ejecutando. Al confirmarse el conteo de
+\textbf{36 escenarios}, en el que \texttt{Q2} es una sola, las filas se
+reetiquetaron a \texttt{Q2}.
+
+El cambio afectó a la etiqueta y a nada más: se hizo con un script
+(\texttt{scripts/reetiquetar\_q2.py}), con copia de seguridad, con un registro
+del mapa completo de nombres y de forma reversible, y \textbf{cada archivo crudo
+conserva sus \texttt{opciones}}, que es donde consta la configuración realmente
+medida (\texttt{work\_mem = 4MB} y \texttt{allowDiskUse: false}). Por eso, si se
+abre un archivo de \texttt{results/raw/} anterior al cambio, su nombre puede
+mencionar la etiqueta antigua: no es una inconsistencia, es el rastro del
+reetiquetado.
 
 \subsection{De dónde sale cada columna del CSV}
 

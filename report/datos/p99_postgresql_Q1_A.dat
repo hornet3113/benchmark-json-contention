@@ -1,6 +1,6 @@
 % P99 (ms) de PostgreSQL · Q1 · A. p99_csv = columna del CSV; p99_sin_frias = recalculado sin la primera consulta de cada worker (R-30.1). censurada=1: percentiles invalidados por A4.
 % generado por scripts/build_report_data.py — no editar a mano
-concurrencia p99_csv p99_sin_frias frias censurada colapsada
-1 9029.986333333332 9029.9861459 0 0 0
-10 98180.19099999999 88022.09807462666 30 0 0
-50 284371.453 nan 2 1 0
+concurrencia p99_csv p99_sin_frias p99_censurado frias censurada colapsada
+1 9029.986333333332 9029.9861459 nan 0 0 0
+10 98180.19099999999 88022.09807462666 nan 30 0 0
+50 284371.453 nan 284371.453 2 1 0

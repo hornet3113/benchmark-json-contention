@@ -17,14 +17,11 @@ quedó inservible.
 \subsection{Lo que quedó sin explicar}
 
 \paragraph{Una celda con dispersión alta y sin causa identificada.}
-En \textbf{MongoDB · perfil B · \texttt{Q2} · \mbox{c=50}} el throughput cayó un
-33~\% entre la primera repetición y las otras dos, con un coeficiente de variación
-del 24~\%. Las tres repeticiones gastaron \emph{el mismo} tiempo de CPU (598.6~s) y
-la frecuencia del procesador estuvo plana (83.4~\%, 81.7~\%, 84.6~\%). Es decir: el
-mismo procesador, a la misma velocidad, hizo un 33~\% menos de trabajo. La caché de
-Windows sobre el disco virtual —que \texttt{drop\_caches} no alcanza— es el
-sospechoso natural, pero \textbf{no hay medición que lo demuestre} y no se presenta
-como explicación. La celda se reporta con su dispersión a la vista.
+Es la de \textbf{MongoDB · perfil B · \texttt{Q2} · \mbox{c=50}}, descrita con sus
+números en la sección~\ref{sec:estabilidad}: el mismo tiempo de CPU y la misma
+frecuencia produjeron un 33~\% menos de trabajo. La caché de Windows sobre el disco
+virtual —que \texttt{drop\_caches} no alcanza— es el sospechoso natural, pero
+\textbf{no hay medición que lo demuestre} y no se presenta como explicación.
 
 \paragraph{La frecuencia del procesador no se puede medir desde dentro.}
 WSL2 no expone \texttt{cpufreq} y \texttt{/proc/cpuinfo} informa siempre la
@@ -45,8 +42,7 @@ partieron del mismo estado}, no que partieran de disco frío.
 
 \subsection{Lo que sí se verificó antes de medir}
 
-Para que lo anterior no se lea como una cadena de excusas, conviene recordar qué
-quedó comprobado con evidencia antes de la primera medición:
+Quedó comprobado con evidencia, antes de la primera medición:
 
 \begin{itemize}
   \item los límites de los seis perfiles, leídos del cgroup, no solo declarados;
