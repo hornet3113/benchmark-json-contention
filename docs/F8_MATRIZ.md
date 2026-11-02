@@ -301,3 +301,69 @@ PowerShell cada 15 s, con limpieza garantizada al salir) y deja
 `monitor_clock_<sello>.csv` junto a los resultados, con el resumen al final de la
 corrida. Desde el bloque 3, cada celda tendrá su contexto de frecuencia sin
 costar un minuto extra. `--sin-reloj` lo desactiva.
+
+### Bloque 3 — c=10, los dos motores (2026-11-02, 21:11–02:25 UTC)
+
+`results/run_benchmarks_20261102T211151Z.txt`. 12 celdas, 36 repeticiones,
+**0 fallos**, CSV `VÁLIDO`. **72 de 162 corridas** (c=1 y c=10 completos).
+
+Todas las filas salieron `ok` o `spill`. Q1 de Postgres sigue volcando en los
+tres perfiles, también con c=10. La estabilidad aguanta: de las 24 celdas, el
+CV del throughput solo pasa del 10 % en dos (11.6 % y 12.3 %) y ninguna del 15 %.
+
+**Dos avisos nuevos de tendencia, y ninguno es degradación.** Al mirarlos uno a
+uno aparece un patrón que conviene entender antes de seguir:
+
+| Celda | qps (r1→r3) | p50 (r1→r3) | Qué pasa |
+|---|---|---|---|
+| Postgres · A · Q2 · **c=1** | 2.147 → **1.733** (−19 %) | 444 → **551** (+24 %) | **Degradación real:** las dos métricas empeoran a la vez |
+| Postgres · B · Q2 · c=10 | 1.043 → 1.197 (**+15 %**) | 8 299 → 6 801 (**−18 %**) | **Mejora**, no degradación: r1 es la lenta |
+| Postgres · C · Q2 · c=10 | 0.607 → 0.607 (**0 %**) | 10 496 → 13 859 (+32 %) | El throughput **no cambia** y el p95 tampoco (28 901 → 28 890 ms): se movió la mediana dentro de una distribución con la misma cola |
+
+En bucle cerrado con 10 workers, el throughput depende de la latencia **media**,
+no de la mediana: el p50 puede moverse un 32 % con el throughput y el p95
+clavados, porque la distribución se reparte distinto. Eso no es que la celda
+mida peor, y mezclarlo con la degradación real tapa la señal que importa.
+
+Y la celda que **mejora** (B · Q2 · c=10, r1 la más lenta) apunta a la otra cara
+de lo ya documentado en A5/L4: `drop_caches` limpia la caché de la VM, pero **no
+la de Windows sobre el `.vhdx`**. La primera repetición de una celda lee del
+disco virtual en frío; las siguientes se aprovechan de la caché de Windows. El
+estado de partida es repetible, no frío, y está declarado.
+
+**Propuesta (F8-e), pendiente de tu aprobación.** Que el criterio de aceptación
+sea la **tendencia del throughput**, y que la del p50 se informe como
+observación que hay que explicar cuando aparezca. Motivo: lo que pediste cazar
+es la degradación progresiva, y una celda cuyo throughput y cuyo p95 no se
+mueven no se está degradando. Con este criterio, de las 24 celdas **solo se
+marca la de siempre** (Postgres · A · Q2 · c=1), que es justo la que tiene las
+dos métricas empeorando a la vez. No cambia nada de lo medido: solo qué se
+considera incumplimiento. Mientras no lo apruebes, el analizador sigue marcando
+las tres.
+
+### El muestreador de frecuencia estaba midiendo un valor clavado
+
+El de la sesión del bloque 3 dio **2010 MHz en las 1008 muestras**, con 4 h de
+carga incluidas. No es que el reloj no se moviera: **`Win32_Processor.
+CurrentClockSpeed` está clavado en esta máquina** y no sirve para esto. Fallo del
+instrumento, no de la hipótesis.
+
+El indicador que sí varía es el contador de rendimiento **"% de rendimiento del
+procesador"** (`% Processor Performance`): el porcentaje de la frecuencia nominal
+al que va de verdad. En reposo da 80.7–84.7 %, es decir **1 853–1 944 MHz** de
+los 2 295 nominales, mientras WMI insiste en 2010.
+
+`scripts/checks/monitor_cpu_clock.sh` reescrito: muestrea ese contador, estima
+los MHz y guarda también el valor de WMI y la carga, para que se vea que uno se
+mueve y el otro no. Tres detalles del entorno que hubo que resolver:
+
+- el contador está **traducido** ("Información del procesador"), así que se busca
+  por expresión regular y funciona igual en inglés;
+- la **política de ejecución de scripts de PowerShell está deshabilitada** en
+  esta máquina, así que el código va con `-EncodedCommand` en vez de un `.ps1`
+  (no se toca la política);
+- el bucle vive dentro de PowerShell y sobrevivía al `kill`; ahora hay una
+  trampa de limpieza, comprobada.
+
+Las columnas `mhz_wmi` de los bloques ya corridos quedan como están, con su
+valor inútil declarado aquí. Desde el bloque 4 hay dato real.

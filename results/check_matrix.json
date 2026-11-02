@@ -1,12 +1,12 @@
 {
  "descripcion": "estado de la matriz (F8): CV, tendencias y avisos por celda; verificación, no medición",
  "csv": "results/measurements.csv",
- "filas": 36,
+ "filas": 72,
  "resumen_matriz": {
   "matriz": 54,
   "corridas_de_la_matriz": 162,
-  "hechas": 36,
-  "faltan": 126
+  "hechas": 72,
+  "faltan": 90
  },
  "ajenas_a_esta_matriz": [],
  "descartadas": [],
@@ -92,6 +92,73 @@
    },
    "medible": true
   },
+  "mongodb_PROFILE_A_BASELINE_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.553333,
+    0.54,
+    0.54
+   ],
+   "p50_ms": [
+    17904.595,
+    18533.007,
+    18008.217
+   ],
+   "p95_ms": [
+    21794.798,
+    22672.39,
+    21005.335
+   ],
+   "p99_ms": [
+    23160.878,
+    24337.923,
+    22877.016
+   ],
+   "cpu_throttled_seconds": [
+    1180.976,
+    1179.639,
+    1181.846
+   ],
+   "max_rss_mb": [
+    872.84,
+    874.66,
+    871.301
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.21,
+   "cv_throughput": 0.0141,
+   "cv_p50": 0.0186,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.0241,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0058,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
   "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_1": {
    "repeticiones": 3,
    "status": [
@@ -146,6 +213,73 @@
    "tendencia_p50": {
     "monotona": "creciente",
     "cambio_rel": 0.0338,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    1.86,
+    1.94,
+    1.923333
+   ],
+   "p50_ms": [
+    5246.956,
+    4999.713,
+    5084.066
+   ],
+   "p95_ms": [
+    7327.179,
+    6788.937,
+    6822.05
+   ],
+   "p99_ms": [
+    8133.996,
+    7405.524,
+    7796.415
+   ],
+   "cpu_throttled_seconds": [
+    1183.467,
+    1187.363,
+    1188.714
+   ],
+   "max_rss_mb": [
+    860.156,
+    862.227,
+    861.258
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.21,
+   "cv_throughput": 0.0221,
+   "cv_p50": 0.0246,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.034,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.031,
     "umbral": 0.1,
     "hay_tendencia": false
    },
@@ -226,6 +360,73 @@
    },
    "medible": true
   },
+  "mongodb_PROFILE_B_MEDIUM_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.33,
+    0.33,
+    0.33
+   ],
+   "p50_ms": [
+    30585.18,
+    30596.529,
+    30610.424
+   ],
+   "p95_ms": [
+    35629.923,
+    34409.153,
+    35052.294
+   ],
+   "p99_ms": [
+    38698.692,
+    36659.486,
+    36666.24
+   ],
+   "cpu_throttled_seconds": [
+    1783.049,
+    1781.587,
+    1786.256
+   ],
+   "max_rss_mb": [
+    811.77,
+    827.43,
+    826.793
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 3.65,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0004,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0008,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 13,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
   "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_1": {
    "repeticiones": 3,
    "status": [
@@ -293,6 +494,73 @@
    },
    "medible": true
   },
+  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.433333,
+    0.4,
+    0.4
+   ],
+   "p50_ms": [
+    22717.666,
+    23950.158,
+    24409.098
+   ],
+   "p95_ms": [
+    25574.858,
+    26712.584,
+    26028.57
+   ],
+   "p99_ms": [
+    25661.927,
+    26797.557,
+    26039.721
+   ],
+   "cpu_throttled_seconds": [
+    1496.258,
+    1510.987,
+    1501.344
+   ],
+   "max_rss_mb": [
+    804.281,
+    807.828,
+    804.328
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 3.65,
+   "cv_throughput": 0.0468,
+   "cv_p50": 0.0369,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.0769,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0745,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 20,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
   "mongodb_PROFILE_C_SEVERE_Q1_1": {
    "repeticiones": 3,
    "status": [
@@ -351,6 +619,73 @@
     "hay_tendencia": false
    },
    "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "mongodb_PROFILE_C_SEVERE_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.173333,
+    0.166667,
+    0.2
+   ],
+   "p50_ms": [
+    62350.328,
+    54398.715,
+    54848.226
+   ],
+   "p95_ms": [
+    68764.997,
+    59232.176,
+    61378.122
+   ],
+   "p99_ms": [
+    70298.84,
+    60100.114,
+    63020.942
+   ],
+   "cpu_throttled_seconds": [
+    2080.056,
+    2080.858,
+    2082.961
+   ],
+   "max_rss_mb": [
+    621.41,
+    591.211,
+    609.422
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 26.67,
+   "cv_throughput": 0.098,
+   "cv_p50": 0.0781,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.1538,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.1203,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 18,
    "avisos": [],
    "checks": {
     "3_repeticiones": true,
@@ -431,6 +766,73 @@
    },
    "medible": true
   },
+  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "p50_ms": [
+    96915.205,
+    95396.213,
+    98403.52
+   ],
+   "p95_ms": [
+    115507.28,
+    112116.627,
+    114056.953
+   ],
+   "p99_ms": [
+    115507.809,
+    112117.622,
+    114059.489
+   ],
+   "cpu_throttled_seconds": [
+    1834.538,
+    1827.336,
+    1828.252
+   ],
+   "max_rss_mb": [
+    557.047,
+    565.152,
+    562.594
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 26.67,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0155,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.0154,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 30,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
   "postgresql_PROFILE_A_BASELINE_Q1_1": {
    "repeticiones": 3,
    "status": [
@@ -489,6 +891,73 @@
     "hay_tendencia": false
    },
    "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_A_BASELINE_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.146667,
+    0.16,
+    0.126667
+   ],
+   "p50_ms": [
+    70311.59,
+    67635.856,
+    86112.289
+   ],
+   "p95_ms": [
+    104832.037,
+    85461.304,
+    101272.031
+   ],
+   "p99_ms": [
+    106142.145,
+    86514.269,
+    101884.159
+   ],
+   "cpu_throttled_seconds": [
+    925.125,
+    889.54,
+    666.171
+   ],
+   "max_rss_mb": [
+    572.289,
+    569.043,
+    571.41
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.1162,
+   "cv_p50": 0.1337,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": -0.1364,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": 0.2247,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 30,
    "avisos": [],
    "checks": {
     "3_repeticiones": true,
@@ -565,6 +1034,73 @@
    },
    "medible": true
   },
+  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    2.283333,
+    2.356667,
+    2.413333
+   ],
+   "p50_ms": [
+    3586.264,
+    3509.556,
+    3426.465
+   ],
+   "p95_ms": [
+    7684.348,
+    7426.651,
+    7320.666
+   ],
+   "p99_ms": [
+    8765.335,
+    7963.121,
+    7774.385
+   ],
+   "cpu_throttled_seconds": [
+    908.44,
+    914.079,
+    900.5
+   ],
+   "max_rss_mb": [
+    43.629,
+    43.809,
+    42.625
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0277,
+   "cv_p50": 0.0228,
+   "tendencia_throughput": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0569,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.0446,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
   "postgresql_PROFILE_B_MEDIUM_Q1_1": {
    "repeticiones": 3,
    "status": [
@@ -623,6 +1159,73 @@
     "hay_tendencia": false
    },
    "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_B_MEDIUM_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "p50_ms": [
+    111444.699,
+    113287.745,
+    117495.665
+   ],
+   "p95_ms": [
+    112954.06,
+    119146.737,
+    123229.885
+   ],
+   "p99_ms": [
+    113496.389,
+    119574.689,
+    124350.426
+   ],
+   "cpu_throttled_seconds": [
+    1569.819,
+    1558.83,
+    1476.9
+   ],
+   "max_rss_mb": [
+    570.41,
+    570.324,
+    572.391
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0272,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.0543,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 23,
    "avisos": [],
    "checks": {
     "3_repeticiones": true,
@@ -699,6 +1302,73 @@
    },
    "medible": true
   },
+  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    1.043333,
+    1.203333,
+    1.196667
+   ],
+   "p50_ms": [
+    8298.679,
+    6890.369,
+    6801.322
+   ],
+   "p95_ms": [
+    17245.518,
+    14805.903,
+    14216.78
+   ],
+   "p99_ms": [
+    18568.095,
+    16237.043,
+    19011.757
+   ],
+   "cpu_throttled_seconds": [
+    1380.673,
+    1381.49,
+    1375.515
+   ],
+   "max_rss_mb": [
+    43.344,
+    43.43,
+    43.395
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.0,
+   "cv_throughput": 0.0789,
+   "cv_p50": 0.1146,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.147,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "decreciente",
+    "cambio_rel": -0.1804,
+    "umbral": 0.1,
+    "hay_tendencia": true
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": false
+   },
+   "medible": true
+  },
   "postgresql_PROFILE_C_SEVERE_Q1_1": {
    "repeticiones": 3,
    "status": [
@@ -761,6 +1431,77 @@
     "r1: baja densidad muestral (17 < 20; A4)",
     "r2: baja densidad muestral (17 < 20; A4)",
     "r3: baja densidad muestral (17 < 20; A4)"
+   ],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": true
+   },
+   "medible": true
+  },
+  "postgresql_PROFILE_C_SEVERE_Q1_10": {
+   "repeticiones": 3,
+   "status": [
+    "spill",
+    "spill",
+    "spill"
+   ],
+   "throughput_qps": [
+    0.033333,
+    0.033333,
+    0.033333
+   ],
+   "p50_ms": [
+    263221.815,
+    265589.897,
+    262941.018
+   ],
+   "p95_ms": [
+    267142.506,
+    267517.433,
+    266493.05
+   ],
+   "p99_ms": [
+    268008.77,
+    268053.679,
+    267176.533
+   ],
+   "cpu_throttled_seconds": [
+    1850.85,
+    1799.43,
+    1839.227
+   ],
+   "max_rss_mb": [
+    563.32,
+    565.215,
+    565.566
+   ],
+   "disk_spill": [
+    "true",
+    "true",
+    "true"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": 0.0,
+   "cv_p50": 0.0055,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": null,
+    "cambio_rel": -0.0011,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "workers_cortados_al_final": 24,
+   "avisos": [
+    "r1: baja densidad muestral (10 < 20; A4)",
+    "r2: baja densidad muestral (10 < 20; A4)",
+    "r3: baja densidad muestral (10 < 20; A4)"
    ],
    "checks": {
     "3_repeticiones": true,
@@ -836,12 +1577,85 @@
     "sin_tendencia_p50": true
    },
    "medible": true
+  },
+  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_10": {
+   "repeticiones": 3,
+   "status": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "throughput_qps": [
+    0.606667,
+    0.586667,
+    0.606667
+   ],
+   "p50_ms": [
+    10496.409,
+    11452.229,
+    13858.895
+   ],
+   "p95_ms": [
+    28901.483,
+    28751.238,
+    28889.653
+   ],
+   "p99_ms": [
+    29825.297,
+    29629.136,
+    30209.847
+   ],
+   "cpu_throttled_seconds": [
+    1627.931,
+    1617.844,
+    1620.781
+   ],
+   "max_rss_mb": [
+    44.09,
+    43.715,
+    43.734
+   ],
+   "disk_spill": [
+    "false",
+    "false",
+    "false"
+   ],
+   "throttling_en_reposo_estimado_s": 0.39,
+   "cv_throughput": 0.0192,
+   "cv_p50": 0.1452,
+   "tendencia_throughput": {
+    "monotona": null,
+    "cambio_rel": 0.0,
+    "umbral": 0.1,
+    "hay_tendencia": false
+   },
+   "tendencia_p50": {
+    "monotona": "creciente",
+    "cambio_rel": 0.3203,
+    "umbral": 0.1,
+    "hay_tendencia": true
+   },
+   "workers_cortados_al_final": 0,
+   "avisos": [],
+   "checks": {
+    "3_repeticiones": true,
+    "cv_throughput_<15%": true,
+    "sin_tendencia_throughput": true,
+    "sin_tendencia_p50": false
+   },
+   "medible": true
   }
  },
- "celdas_medibles": 12,
+ "celdas_medibles": 24,
  "celdas_con_criterio_incumplido": {
   "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_1": [
    "sin_tendencia_throughput",
+   "sin_tendencia_p50"
+  ],
+  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": [
+   "sin_tendencia_p50"
+  ],
+  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_10": [
    "sin_tendencia_p50"
   ]
  }
