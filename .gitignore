@@ -17,3 +17,13 @@ venv/
 
 # Entorno local
 .env
+
+# Archivos intermedios de LaTeX: se regeneran al compilar. El PDF sí se versiona,
+# porque es el entregable.
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz

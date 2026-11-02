@@ -19,7 +19,7 @@
 % una instalación mínima de LaTeX (R-33, reproducibilidad), aunque con peor
 % tipografía. Para tenerlos bien:
 %   sudo apt install texlive-lang-spanish texlive-science
-\IfFileExists{babel-spanish.ldf}%
+\IfFileExists{spanish.ldf}%   (así se llama el archivo que instala texlive-lang-spanish)
   {\usepackage[spanish,es-tabla]{babel}}%
   {\usepackage[english]{babel}%
    \GenericWarning{}{AVISO: falta texlive-lang-spanish; sin guionado en español}}
