@@ -46,6 +46,9 @@ Tipo: **OBL** = exigido literalmente · **DER** = derivado inequívocamente del 
 | R-25 | Entregables de código: `docker-compose.yml` parametrizado, `synthetic_data_generator.py`, benchmark runner (k6 o Python multiproceso), `queries/`, `run_benchmarks.sh` | playbook.pdf §8.1, p.4; diapo 10/13 | OBL | Existencia en el repo con esos nombres |
 | R-26 | Esquema CSV exacto de 14 columnas, **sin columnas inventadas ni renombradas** | playbook.pdf §8.2, p.4; diapo 9/13 | OBL | `scripts/validate_csv.py` compara encabezado byte a byte |
 | R-27 | Una fila CSV por repetición + nota de estado (`ok`/`spill`/`oom`/`error`) | diapo 8/13 | OBL | Dominio cerrado en el validador |
+| R-16.1 | **Cobertura parcial de las dos variantes de Q2, decidida por Alix (2026-11-04)**: con 36 celdas el CSV no distingue variantes, así que `Q2_MEM_HIGH` se mide **en anexo** y solo en **PROFILE_C_SEVERE**, los dos motores y las tres concurrencias (6 celdas, 18 corridas). Argumento: PROFILE_C es el perfil con menos memoria, así que si las dos variantes no difieren ahí no difieren en ninguno; y el top-K acota el ordenamiento a ~273 kB, muy por debajo de 4 MB y de 64 MB. La sección 6 del reporte declara que la premisa del manual (que diferirían) **no se cumple**, con la explicación del top-K, y que la cobertura es parcial y por qué | A2, R-16, `docs/F8_MATRIZ.md` | OBL | `results/f8_anexo/measurements.csv` + sección 6 |
+| R-29.1 | **M2 se responde distinguiendo dónde ocurrió el OOM** (Alix, 2026-11-04): 5 filas `oom`, de las cuales **3 con el OOM en el calentamiento** (el `oom_kill` del cgroup no se movió en la ventana) y **2 dentro de la ventana**. No se presentan como "5 OOM" sin esa distinción | F8-c, `results/logs/` | OBL | Sección 6 del reporte |
+| R-29.2 | **`postgresql · C · Q1 · c=50` lleva nota al pie en TODA tabla donde aparezca** (Alix, 2026-11-04): el motor estaba colapsado durante la ventana, sus ~15 000 "errores" son conexiones rechazadas y `max_rss_mb = 8.2` **no es eficiencia** | F8-c, `results/logs/postgresql_PROFILE_C_SEVERE_Q1_c50_r*.md` | OBL | Nota al pie en cada tabla |
 | R-27.1 | **Toda repetición descartada queda registrada con su motivo, y el reporte incluye la tabla de descartes** (Alix, 2026-11-02, al aprobar F8-b; **si fueron cero, el reporte lo dice**). Descartar una repetición —por ejemplo porque el equipo se suspendió dentro de la ventana— tiene que ser visible y auditable, no silencioso. Lo hace `scripts/descartar_repeticion.py`, que exige `--motivo`, escribe `results/.../descartadas.csv` y mueve el crudo y la telemetría a `descartadas/` sin borrarlos | F8-b, `docs/F8_MATRIZ.md` | OBL | `descartadas.csv` + tabla en el reporte |
 | R-28 | Registrar siempre: `profile`, límites Docker **reales**, versión del motor, si hubo spill/OOM | diapo 5/13 | OBL | `results/env/` por corrida |
 | R-29 | Reporte de métricas con las 7 secciones del playbook | playbook.pdf §8.3, p.4; diapo 10/13 | OBL | Índice del reporte |
@@ -227,9 +230,11 @@ Ninguna de estas resoluciones está aprobada. Cada una lleva impacto y qué pasa
 
 **Trampa técnica asociada.** `final_total` debe generarse como **número JSON**, no como string. En Postgres el `::numeric` fuerza el orden numérico; en Mongo `$sort` ordenaría lexicográficamente si fuera string (`"9.5" > "100.0"`), y los Top-1000 de ambos motores **no coincidirían**. La prueba de equivalencia de la Fase 4 existe justamente para atrapar esto.
 
-### A2 — 36 escenarios frente a las variantes de Q2 ⚠️ ALTA
+### A2 — 36 escenarios frente a las variantes de Q2 — **RESUELTA (2026-11-04): el docente fijó 36**
 
-**El conflicto.** playbook.pdf §6 (p.3) y diapo 8/13 fijan 36 celdas = 2 motores × 3 perfiles × 2 queries × 3 concurrencias, × 3 repeticiones = **108 corridas**. Pero §5.2 (p.2) exige dos variantes de estrés de memoria para Q2 y diapo 7/13 dice explícitamente que hay que reportar **ambas**. Si Q2 son dos configuraciones distintas, el conteo real es:
+**Resolución (2026-11-04).** El docente respondió **36 celdas = 108 corridas**. La matriz se corrió con la variante **restrictiva** de Q2 (`work_mem = 4MB` / `allowDiskUse: false`) y se reetiquetó `Q2_MEM_LOW` → `Q2` con `scripts/reetiquetar_q2.py` (copia de seguridad, registro por archivo y reversión; `docs/F8_MATRIZ.md`). La variante de memoria alta se mide **en anexo**, fuera del CSV: ver R-16.1.
+
+**El conflicto que había.** playbook.pdf §6 (p.3) y diapo 8/13 fijan 36 celdas = 2 motores × 3 perfiles × 2 queries × 3 concurrencias, × 3 repeticiones = **108 corridas**. Pero §5.2 (p.2) exige dos variantes de estrés de memoria para Q2 y diapo 7/13 dice explícitamente que hay que reportar **ambas**. Si Q2 son dos configuraciones distintas, el conteo real es:
 
 - Q1: 2 × 3 × 3 = 18 celdas
 - Q2: 18 × 2 variantes = 36 celdas

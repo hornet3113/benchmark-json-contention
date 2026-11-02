@@ -517,3 +517,74 @@ regenera del CSV y de `results/raw/`, así que no es una fuente de datos.
    consumió 8 MiB atendiendo 50 clientes": es que durante la ventana el motor no
    estaba trabajando, y los ~15 000 "errores" son conexiones rechazadas, no
    consultas ejecutadas. Citarlo sin esta nota sería engañoso.
+
+---
+
+## A2 resuelta: el docente fijó 36 celdas (2026-11-04)
+
+### Reetiquetado `Q2_MEM_LOW` → `Q2`
+
+Con 36 celdas, el dominio de `query_id` del manual es `Q1 | Q2`, y
+`validate_csv.py --matrix 36` rechazaba `Q2_MEM_LOW` por estar fuera de dominio.
+La variante medida es la **restrictiva** (`work_mem = 4MB` en Postgres,
+`allowDiskUse: false` en Mongo); los datos valen igual, solo cambia la etiqueta.
+
+`scripts/reetiquetar_q2.py`, aplicado el 2026-11-04 (`--confirmo`):
+
+- **54 filas** del CSV y **114 archivos** (54 crudos, 54 de telemetría, 6 planes).
+- Copia de seguridad: `results/measurements.csv.bak-20261104T134614Z`.
+- Registro con el mapa completo: `results/reetiquetado_20261104T134614Z.json`.
+- El CSV cambia **solo** la columna `query_id`; las demás líneas se copian byte a
+  byte, así que ningún número se reformatea.
+- Cada crudo renombrado lleva su propio rastro en un bloque `reetiquetado`
+  (de/a/motivo/sello) y **conserva `opciones` intacto**: ahí consta que lo medido
+  fue `allowDiskUse: false` / `work_mem 4MB`. La etiqueta se pierde, la
+  configuración real no.
+- **Reversible:** `--revertir results/reetiquetado_<sello>.json` restaura el CSV
+  de su copia y deshace los nombres. Esa fue la condición para aplicarlo sobre
+  evidencia ya medida.
+- **Pruebas:** `tests/test_reetiquetar.py`, 7, incluidas "sin `--confirmo` no
+  cambia nada", "solo la columna `query_id`", "el CSV pasa el validador con 36",
+  la reversión y correrlo dos veces.
+
+Después: `results/measurements.csv` **VÁLIDO con `--matrix 36 --expect-rows 108`**
+y `results/logs/` regenerado con los nombres nuevos (30 fichas, sin archivos
+huérfanos).
+
+### R-16: cobertura parcial de las dos variantes de Q2 (decisión de Alix)
+
+El manual (§5.2) pide las dos variantes de estrés de memoria para Q2, pero con 36
+celdas el CSV no tiene dónde distinguirlas. Alix decidió (2026-11-04), sin
+esperar más al docente: **medir `Q2_MEM_HIGH` en anexo, solo en PROFILE_C**, los
+dos motores y las tres concurrencias — **6 celdas, 18 corridas, ~2.2 h**.
+
+**El argumento, que va al reporte:** PROFILE_C es el perfil con menos memoria, así
+que si las dos variantes no se diferencian ahí, no se diferencian en ningún lado.
+Y por el top-K ya se sabe que el ordenamiento se acota a **~273 kB** (F7/F8,
+`Sort Space Used` del EXPLAIN), muy por debajo tanto de 4 MB como de 64 MB.
+
+**Va FUERA del CSV de 36 celdas, que no se toca.** Queda en
+`results/f8_anexo/measurements.csv` (18 filas, `query_id = Q2_MEM_HIGH`, se valida
+con `--matrix 54`).
+
+Comando, listo para lanzar:
+
+```bash
+scripts/run_benchmarks.sh --salida f8_anexo --query Q2_MEM_HIGH --perfil PROFILE_C_SEVERE
+```
+
+Queda como **R-16.1** en SPEC §2. La sección 6 del reporte declara que la premisa
+del manual —que las dos variantes diferirían— **no se cumple**, con la explicación
+del top-K, y que la cobertura es parcial y por qué se eligió PROFILE_C.
+
+### Los dos hallazgos de F8-c van al reporte con su matiz (decisión de Alix)
+
+Quedan como requisitos para que no se pierdan al escribir F9:
+
+- **R-29.1 — M2 se responde distinguiendo dónde ocurrió el OOM:** 5 filas `oom`,
+  **3 con el OOM en el calentamiento** (el `oom_kill` del cgroup no se movió
+  durante la ventana) y **2 dentro de la ventana**. No se presentan como "5 OOM"
+  sin esa distinción.
+- **R-29.2 — `postgresql · C · Q1 · c=50` lleva nota al pie en TODA tabla donde
+  aparezca:** el motor estaba colapsado durante la ventana, sus ~15 000 "errores"
+  son conexiones rechazadas y `max_rss_mb = 8.2` **no es eficiencia**.

@@ -5,403 +5,24 @@
  "resumen_matriz": {
   "matriz": 36,
   "corridas_de_la_matriz": 108,
-  "hechas": 54,
-  "faltan": 54
+  "hechas": 108,
+  "faltan": 0
  },
- "ajenas_a_esta_matriz": [
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "mongodb",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_A_BASELINE",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_B_MEDIUM",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   1,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   10,
-   3
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   1
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   2
-  ],
-  [
-   "postgresql",
-   "PROFILE_C_SEVERE",
-   "Q2_MEM_LOW",
-   50,
-   3
-  ]
- ],
+ "ajenas_a_esta_matriz": [],
  "descartadas": [],
  "planes": [
   "mongodb_PROFILE_A_BASELINE_Q1_c1.json",
-  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_c1.json",
+  "mongodb_PROFILE_A_BASELINE_Q2_c1.json",
   "mongodb_PROFILE_B_MEDIUM_Q1_c1.json",
-  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1.json",
+  "mongodb_PROFILE_B_MEDIUM_Q2_c1.json",
   "mongodb_PROFILE_C_SEVERE_Q1_c1.json",
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json",
+  "mongodb_PROFILE_C_SEVERE_Q2_c1.json",
   "postgresql_PROFILE_A_BASELINE_Q1_c1.json",
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_c1.json",
+  "postgresql_PROFILE_A_BASELINE_Q2_c1.json",
   "postgresql_PROFILE_B_MEDIUM_Q1_c1.json",
-  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_c1.json",
+  "postgresql_PROFILE_B_MEDIUM_Q2_c1.json",
   "postgresql_PROFILE_C_SEVERE_Q1_c1.json",
-  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_c1.json"
+  "postgresql_PROFILE_C_SEVERE_Q2_c1.json"
  ],
  "celdas": {
   "mongodb_PROFILE_A_BASELINE_Q1_1": {
@@ -605,7 +226,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_1": {
+  "mongodb_PROFILE_A_BASELINE_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -672,7 +293,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_10": {
+  "mongodb_PROFILE_A_BASELINE_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -739,7 +360,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_A_BASELINE_Q2_MEM_LOW_50": {
+  "mongodb_PROFILE_A_BASELINE_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1007,7 +628,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_1": {
+  "mongodb_PROFILE_B_MEDIUM_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1074,7 +695,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": {
+  "mongodb_PROFILE_B_MEDIUM_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1141,7 +762,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_50": {
+  "mongodb_PROFILE_B_MEDIUM_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1413,7 +1034,7 @@
    },
    "medible": false
   },
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_1": {
+  "mongodb_PROFILE_C_SEVERE_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1484,7 +1105,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_10": {
+  "mongodb_PROFILE_C_SEVERE_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1551,7 +1172,7 @@
    },
    "medible": true
   },
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_50": {
+  "mongodb_PROFILE_C_SEVERE_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1820,7 +1441,7 @@
    },
    "medible": false
   },
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_1": {
+  "postgresql_PROFILE_A_BASELINE_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1887,7 +1508,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_10": {
+  "postgresql_PROFILE_A_BASELINE_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -1954,7 +1575,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_50": {
+  "postgresql_PROFILE_A_BASELINE_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2230,7 +1851,7 @@
    },
    "medible": false
   },
-  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_1": {
+  "postgresql_PROFILE_B_MEDIUM_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2297,7 +1918,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": {
+  "postgresql_PROFILE_B_MEDIUM_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2364,7 +1985,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_50": {
+  "postgresql_PROFILE_B_MEDIUM_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2641,7 +2262,7 @@
    },
    "medible": false
   },
-  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_1": {
+  "postgresql_PROFILE_C_SEVERE_Q2_1": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2708,7 +2329,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_10": {
+  "postgresql_PROFILE_C_SEVERE_Q2_10": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2775,7 +2396,7 @@
    },
    "medible": true
   },
-  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_50": {
+  "postgresql_PROFILE_C_SEVERE_Q2_50": {
    "repeticiones": 3,
    "status": [
     "ok",
@@ -2845,25 +2466,25 @@
  },
  "celdas_medibles": 32,
  "celdas_con_criterio_incumplido": {
-  "mongodb_PROFILE_B_MEDIUM_Q2_MEM_LOW_50": [
+  "mongodb_PROFILE_B_MEDIUM_Q2_50": [
    "cv_throughput_<15%",
    "sin_tendencia_throughput"
   ],
-  "mongodb_PROFILE_C_SEVERE_Q2_MEM_LOW_50": [
+  "mongodb_PROFILE_C_SEVERE_Q2_50": [
    "sin_tendencia_p50"
   ],
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_1": [
+  "postgresql_PROFILE_A_BASELINE_Q2_1": [
    "sin_tendencia_throughput",
    "sin_tendencia_p50"
   ],
-  "postgresql_PROFILE_A_BASELINE_Q2_MEM_LOW_50": [
+  "postgresql_PROFILE_A_BASELINE_Q2_50": [
    "cv_throughput_<15%",
    "sin_tendencia_throughput"
   ],
-  "postgresql_PROFILE_B_MEDIUM_Q2_MEM_LOW_10": [
+  "postgresql_PROFILE_B_MEDIUM_Q2_10": [
    "sin_tendencia_p50"
   ],
-  "postgresql_PROFILE_C_SEVERE_Q2_MEM_LOW_10": [
+  "postgresql_PROFILE_C_SEVERE_Q2_10": [
    "sin_tendencia_p50"
   ]
  }
