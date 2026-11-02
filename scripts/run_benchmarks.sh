@@ -218,8 +218,13 @@ done
 [[ -n "$CLOCK_MON" ]] && kill "$CLOCK_MON" 2>/dev/null
 echo; echo "########## Resumen de la sesión: $HECHAS celda(s) completas, $FALLOS con fallo"
 if [[ -s "$BASE/monitor_clock_${STAMP}.csv" ]]; then
-  awk -F, 'NR>1 && $2!="" {n++; s+=$2; if(m==""||$2<m)m=$2; if($2>M)M=$2}
-           END{if(n) printf "Frecuencia del procesador: media %.0f MHz, mínimo %s, máximo %s (de %d muestras, máx. nominal 2301)\n", s/n, m, M, n}'       "$BASE/monitor_clock_${STAMP}.csv"
+  # Columnas: utc, rendimiento_pct, mhz_estimado, mhz_wmi, carga_pct. El resumen usaba
+  # la 2 y la llamaba MHz: eran porcentajes (bloque 4 de F8, "media 82 MHz").
+  awk -F, 'NR>1 && $2!="" && $3!="" {n++; sp+=$2; sm+=$3
+             if(mp==""||$2<mp)mp=$2; if($2>Mp)Mp=$2
+             if(mm==""||$3<mm)mm=$3; if($3>MM)MM=$3}
+           END{if(n) printf "Rendimiento del procesador: media %.1f %% (min %s, max %s) = %.0f MHz de media (min %s, max %s), nominal 2296, de %d muestras\n", sp/n, mp, Mp, sm/n, mm, MM, n}' \
+      "$BASE/monitor_clock_${STAMP}.csv"
 fi
 .venv/bin/python scripts/validate_csv.py "$CSV" || true
 [[ "$MAX_CELDAS" -gt 0 ]] && echo "Corte pedido con --max-celdas $MAX_CELDAS: vuelve a lanzar el mismo comando para seguir."

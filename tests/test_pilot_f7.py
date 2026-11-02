@@ -182,6 +182,58 @@ class DatasetAfterOomTest(unittest.TestCase):
             self.assertEqual(filas == DATASET_ROWS, intacto)
 
 
+class CountRetryTest(unittest.TestCase):
+    """Tras un OOM, un motor EN RECUPERACIÓN no es un dataset dañado (bloque 4 de F8).
+
+    Postgres responde "FATAL: the database system is in recovery mode" unos segundos
+    mientras rehace su WAL. La primera versión lo tomaba por daño y detuvo la matriz
+    con las 500 000 filas intactas.
+    """
+
+    def setUp(self):
+        from benchmark_runner import runner
+        self.runner = runner
+        self.original = runner._count_once
+        self.esperas = []
+
+    def tearDown(self):
+        self.runner._count_once = self.original
+
+    def count(self, **kw):
+        return self.runner.count_dataset("postgresql", {}, sleep=self.esperas.append, **kw)
+
+    def test_recovering_engine_is_retried_and_comes_out_intact(self):
+        intentos = []
+
+        def falla_dos_veces(engine, env):
+            intentos.append(1)
+            if len(intentos) <= 2:
+                raise RuntimeError("FATAL:  the database system is in recovery mode")
+            return 500_000
+
+        self.runner._count_once = falla_dos_veces
+        out = self.count()
+        self.assertTrue(out["intacto"])
+        self.assertEqual(out["filas"], 500_000)
+        self.assertEqual(out["intentos"], 3)
+        self.assertEqual(len(self.esperas), 2)                      # esperó entre intentos
+        self.assertIn("recovery mode", out["errores_mientras_recuperaba"][0])
+
+    def test_a_different_count_is_damage_without_retrying(self):
+        self.runner._count_once = lambda e, v: 499_999
+        out = self.count()
+        self.assertFalse(out["intacto"])
+        self.assertEqual(out["intentos"], 1)
+        self.assertEqual(self.esperas, [])
+
+    def test_an_engine_that_never_answers_stops_the_matrix(self):
+        self.runner._count_once = lambda e, v: (_ for _ in ()).throw(OSError("conexión rechazada"))
+        out = self.count(retry_s=0.01, wait_s=0)
+        self.assertFalse(out["intacto"])
+        self.assertIsNone(out["filas"])
+        self.assertIn("error", out)
+
+
 class V7HelperTest(unittest.TestCase):
     """V7 (opción 3): con la regla instalada no hacen falta credenciales en caché."""
 

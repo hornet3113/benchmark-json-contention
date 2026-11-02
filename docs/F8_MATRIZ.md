@@ -367,3 +367,73 @@ mueve y el otro no. Tres detalles del entorno que hubo que resolver:
 
 Las columnas `mhz_wmi` de los bloques ya corridos quedan como están, con su
 valor inútil declarado aquí. Desde el bloque 4 hay dato real.
+
+### Bloque 4 — c=50, los dos motores (2026-11-03, 02:46–08:00 UTC)
+
+`results/run_benchmarks_20261103T024628Z.txt`. **8 celdas completas y 1
+detenida**: 26 filas nuevas, 98 de 162 corridas. CSV `VÁLIDO`. A la tanda 1 le
+faltan **10 repeticiones (~1.2 h)**, todas de Postgres con c=50.
+
+**La matriz se detuvo sola, y fue una FALSA ALARMA mía.** En
+`postgresql · B · Q1 · c=50 · r2` el OOM mató backends y Postgres entró en
+**recuperación** (rehace su WAL). El recuento del dataset, que corre justo
+después, recibió `FATAL: the database system is in recovery mode`, y mi
+implementación trataba "no se puede contar" como "dañado": detuvo la matriz
+pidiendo recargar el dataset.
+
+**El dataset estaba intacto.** Comprobado después en los dos motores:
+
+```
+postgresql: 500000 de 500000 filas (1.73 s)
+mongodb:    500000 de 500000 filas (4.33 s)
+```
+
+No se recargó nada. La fila `oom` de r2 **se conserva**: es una medición válida
+(un OOM es un resultado). Lo único equivocado era el motivo añadido al crudo, y
+queda explicado aquí.
+
+**Arreglo:** `count_dataset` ahora **reintenta** mientras el motor no conteste
+(hasta 90 s, cada 5 s) y solo decide cuando responde. Un motor en recuperación no
+es un dataset dañado. Si al final no contesta, se para igual: no se puede
+afirmar que esté bien. Pruebas: `tests/test_pilot_f7.py::CountRetryTest` (motor
+que falla dos veces y luego cuenta 500 000 → intacto; recuento distinto → daño
+sin reintentar; motor que nunca contesta → se detiene).
+
+**La frecuencia del procesador sí baja, y mucho.** Primer bloque con el
+muestreador bueno, 632 muestras: **media 81.7 %, mínimo 60.8 %**, es decir
+**1 877 MHz de media y 1 396 MHz en el peor momento**, de 2 296 nominales. El
+resumen que imprimió la corrida decía "media 82 MHz" porque el `awk` leía la
+columna del porcentaje y la llamaba MHz; corregido.
+
+**Dos celdas incumplen el CV, y no tienen la misma causa.** Cruzando cada
+ventana de medición con el reloj:
+
+| | r1 | r2 | r3 | CPU en la ventana | Rendimiento del procesador |
+|---|---|---|---|---|---|
+| **Postgres · A · Q2 · c=50** | 1.833 | 1.697 | **1.207** (−34 %) | 1 197 s en las tres | 75.9 % → 75.7 % → **65.2 %** |
+| **Mongo · B · Q2 · c=50** | 0.477 | **0.323** | 0.320 (−33 %) | 598.6 s en las tres | 83.4 % → 81.7 % → 84.6 % |
+
+- En la de **Postgres** el reloj cae con el throughput: de 75.9 % a 65.2 % justo
+  en la repetición que pierde el 34 %. La frecuencia explica **parte** (−14 %),
+  no todo, pero va en la misma dirección y es la única variable que se mueve.
+- En la de **Mongo**, el reloj está plano (83.4 / 81.7 / 84.6) y el tiempo de CPU
+  es idéntico: **el mismo CPU, a la misma frecuencia, produjo un 33 % menos de
+  trabajo entre r1 y r2.** Esa causa **no está identificada**. Lo que queda fuera
+  del alcance de `drop_caches` —la caché de Windows sobre el `.vhdx` (A5, L4)— es
+  el sospechoso natural, pero no hay medición que lo demuestre.
+
+**Y no hay sesgo sistemático de "la primera repetición es más rápida":** r1 es la
+más rápida en **6 de 30** celdas medibles, cuando por azar serían ~10. Así que
+las dos celdas de arriba son sucesos puntuales, no un defecto del protocolo.
+
+**Otras lecturas del bloque:**
+
+- `postgresql · A · Q1 · c=50`: `error` ×3 con **CV del 173 %**. Es lo previsto en
+  F7.4 (92 % de timeouts): con 2–4 consultas completadas, el throughput es ruido
+  y el analizador marca la celda como **no medible**, sin exigirle criterios.
+- `mongodb · C · Q1 · c=50`: `error` ×3, también previsto (F7.3: ninguna consulta
+  termina en PROFILE_C con c=50).
+- `postgresql · B · Q1 · c=50`: **`oom` ×2** con `spill=true` y 1 791 MiB de RSS.
+  Segunda evidencia de OOM en una query del manual, ahora en PROFILE_B, no solo en C.
+- Mongo con c=50 en PROFILE_C **no dio OOM** (pendiente abierto desde F5): la
+  celda de Q2 salió `ok` ×3 con CV 0 %.

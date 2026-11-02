@@ -197,28 +197,55 @@ class EngineProbe:
 DATASET_ROWS = 500_000
 
 
-def count_dataset(engine: str, env: dict) -> dict:
-    """Filas (Postgres) o documentos (Mongo) que hay ahora. Nunca lanza: lo que falle se informa."""
+# Tras un OOM el motor puede estar RECUPERÁNDOSE, no dañado: Postgres responde
+# "FATAL: the database system is in recovery mode" unos segundos mientras rehace su WAL
+# (pasó en el bloque 4 de F8 y detuvo la matriz con el dataset intacto). Por eso el
+# recuento reintenta mientras el motor no responda, y solo decide cuando contesta.
+COUNT_RETRY_S = 90
+COUNT_RETRY_WAIT_S = 5
+
+
+def _count_once(engine: str, env: dict) -> int:
+    if engine == "postgresql":
+        import psycopg
+        with psycopg.connect(host="127.0.0.1", port=5432, dbname=env["POSTGRES_DB"],
+                             user=env["POSTGRES_USER"], password=env["POSTGRES_PASSWORD"],
+                             autocommit=True, connect_timeout=30) as conn:
+            return int(conn.execute("SELECT count(*) FROM orders").fetchone()[0])
+    from pymongo import MongoClient
+    client = MongoClient("mongodb://127.0.0.1:27017", maxPoolSize=1, serverSelectionTimeoutMS=30_000)
+    try:
+        return int(client[env["MONGO_DB"]]["orders"].count_documents({}))
+    finally:
+        client.close()
+
+
+def count_dataset(engine: str, env: dict, *, retry_s: float = COUNT_RETRY_S,
+                  wait_s: float = COUNT_RETRY_WAIT_S, sleep=time.sleep) -> dict:
+    """Filas (Postgres) o documentos (Mongo) que hay ahora. Nunca lanza: lo que falle se informa.
+
+    Reintenta hasta `retry_s` mientras el motor no conteste: un motor en recuperación no
+    es un dataset dañado. Si al final no contesta, se informa y se para igual: no se puede
+    afirmar que el dataset esté bien.
+    """
     out: dict = {"esperadas": DATASET_ROWS, "motor": engine}
     t0 = time.monotonic()
-    try:
-        if engine == "postgresql":
-            import psycopg
-            with psycopg.connect(host="127.0.0.1", port=5432, dbname=env["POSTGRES_DB"],
-                                 user=env["POSTGRES_USER"], password=env["POSTGRES_PASSWORD"],
-                                 autocommit=True, connect_timeout=30) as conn:
-                out["filas"] = int(conn.execute("SELECT count(*) FROM orders").fetchone()[0])
-        else:
-            from pymongo import MongoClient
-            client = MongoClient("mongodb://127.0.0.1:27017", maxPoolSize=1, serverSelectionTimeoutMS=30_000)
-            try:
-                out["filas"] = int(client[env["MONGO_DB"]]["orders"].count_documents({}))
-            finally:
-                client.close()
-    except Exception as exc:  # noqa: BLE001 — no poder contar también obliga a parar
-        out.update({"filas": None, "error": f"{type(exc).__name__}: {exc}"[:300]})
-    out["segundos"] = round(time.monotonic() - t0, 2)
-    out["intacto"] = out.get("filas") == DATASET_ROWS
+    intentos, errores = 0, []
+    while True:
+        intentos += 1
+        try:
+            out["filas"] = _count_once(engine, env)
+            break
+        except Exception as exc:  # noqa: BLE001
+            errores.append(f"{type(exc).__name__}: {exc}"[:200])
+            if time.monotonic() - t0 >= retry_s:
+                out.update({"filas": None, "error": errores[-1]})
+                break
+            sleep(wait_s)
+    out.update({"segundos": round(time.monotonic() - t0, 2), "intentos": intentos,
+                "intacto": out.get("filas") == DATASET_ROWS})
+    if errores and out["filas"] is not None:
+        out["errores_mientras_recuperaba"] = errores[:3]
     return out
 
 
